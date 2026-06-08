@@ -1,0 +1,1 @@
+export { OrderCollectedSuccessScreen } from './OrderCollectedScreen'

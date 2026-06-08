@@ -1,73 +1,81 @@
-import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
+import { Text, StyleSheet, type TextStyle, type StyleProp } from 'react-native'
+import { colors, typography } from '@/theme'
 
-import { Fonts, ThemeColor } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+interface ThemedTextProps {
+  children: React.ReactNode
+  type?: 'title' | 'subtitle' | 'default' | 'link' | 'small' | 'code' | 'linkPrimary' | 'smallBold'
+  style?: StyleProp<TextStyle>
+  themeColor?: string
+}
 
-export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
-  themeColor?: ThemeColor;
-};
+function getTypeStyle(type: string) {
+  switch (type) {
+    case 'title': return styles.title
+    case 'subtitle': return styles.subtitle
+    case 'link': return styles.link
+    case 'small': return styles.small
+    case 'code': return styles.code
+    case 'linkPrimary': return styles.linkPrimary
+    case 'smallBold': return styles.smallBold
+    default: return styles.default
+  }
+}
 
-export function ThemedText({ style, type = 'default', themeColor, ...rest }: ThemedTextProps) {
-  const theme = useTheme();
-
+export function ThemedText({ children, type = 'default', style, themeColor }: ThemedTextProps) {
   return (
     <Text
       style={[
-        { color: theme[themeColor ?? 'text'] },
-        type === 'default' && styles.default,
-        type === 'title' && styles.title,
-        type === 'small' && styles.small,
-        type === 'smallBold' && styles.smallBold,
-        type === 'subtitle' && styles.subtitle,
-        type === 'link' && styles.link,
-        type === 'linkPrimary' && styles.linkPrimary,
-        type === 'code' && styles.code,
+        styles.base,
+        getTypeStyle(type),
+        themeColor ? { color: (colors as any)[themeColor] || colors.text } : {},
         style,
       ]}
-      {...rest}
-    />
-  );
+    >
+      {children}
+    </Text>
+  )
 }
 
 const styles = StyleSheet.create({
+  base: {
+    color: colors.text,
+  },
+  title: {
+    ...typography.h1,
+  },
+  subtitle: {
+    ...typography.body,
+    color: colors.textSecondary,
+  },
+  default: {
+    ...typography.body,
+  },
+  link: {
+    ...typography.body,
+    color: colors.primary,
+    textDecorationLine: 'underline',
+  },
   small: {
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: 500,
+    color: colors.textSecondary,
+  },
+  code: {
+    fontFamily: 'monospace',
+    fontSize: 13,
+    backgroundColor: colors.backgroundTertiary,
+    color: colors.text,
+    paddingHorizontal: 4,
+    borderRadius: 3,
+  },
+  linkPrimary: {
+    fontSize: 14,
+    color: colors.primary,
+    fontWeight: '600',
   },
   smallBold: {
     fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 700,
+    fontWeight: '700',
+    color: colors.text,
   },
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: 500,
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
-  },
-  subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 14,
-  },
-  linkPrimary: {
-    lineHeight: 30,
-    fontSize: 14,
-    color: '#3c87f7',
-  },
-  code: {
-    fontFamily: Fonts.mono,
-    fontWeight: Platform.select({ android: 700 }) ?? 500,
-    fontSize: 12,
-  },
-});
+})
