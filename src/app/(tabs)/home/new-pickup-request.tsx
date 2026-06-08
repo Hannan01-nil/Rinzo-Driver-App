@@ -1,1 +1,1 @@
-export { NewPickupRequestScreen as default } from '@/screens/home/PickupRequest/PickupRequestScreen'
+export { NewPickupRequestScreen as default } from '@/screens/dashboard/NewPickupRequestScreen'
