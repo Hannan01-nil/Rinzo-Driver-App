@@ -1,25 +1,19 @@
-import { Href, Link } from 'expo-router';
-import { openBrowserAsync, WebBrowserPresentationStyle } from 'expo-web-browser';
-import { type ComponentProps } from 'react';
+import { Text, StyleSheet } from 'react-native'
+import { colors } from '@/theme'
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & { href: Href & string };
-
-export function ExternalLink({ href, ...rest }: Props) {
-  return (
-    <Link
-      target="_blank"
-      {...rest}
-      href={href}
-      onPress={async (event) => {
-        if (process.env.EXPO_OS !== 'web') {
-          // Prevent the default behavior of linking to the default browser on native.
-          event.preventDefault();
-          // Open the link in an in-app browser.
-          await openBrowserAsync(href, {
-            presentationStyle: WebBrowserPresentationStyle.AUTOMATIC,
-          });
-        }
-      }}
-    />
-  );
+interface ExternalLinkProps {
+  href: string
+  children: React.ReactNode
+  asChild?: boolean
 }
+
+export function ExternalLink({ href: _href, children, asChild: _asChild }: ExternalLinkProps) {
+  return <Text style={styles.link}>{children}</Text>
+}
+
+const styles = StyleSheet.create({
+  link: {
+    color: colors.primary,
+    textDecorationLine: 'underline',
+  },
+})

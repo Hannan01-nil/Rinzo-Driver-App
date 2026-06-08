@@ -1,0 +1,1 @@
+export { PersonalInformationScreen } from './PersonalInformationScreen'
