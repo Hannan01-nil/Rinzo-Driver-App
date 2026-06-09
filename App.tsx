@@ -2,11 +2,11 @@ import { BottomTabBar } from "@/components/navigation/BottomTabBar";
 import { authStore } from "@/store/auth-store";
 import { colors } from "@/theme";
 import {
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-    useFonts,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+  useFonts,
 } from "@expo-google-fonts/poppins";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -41,9 +41,9 @@ import { DailySummaryScreen } from "@/screens/performance/DailySummary/DailySumm
 import { PerformanceScreen } from "@/screens/performance/Performance/PerformanceScreen";
 import { DocumentsScreen } from "@/screens/profile/Documents/DocumentsScreen";
 import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation/PersonalInformationScreen";
-import { ProfileScreen } from "@/screens/profile/Profile/ProfileScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
 import { ContactSupportScreen } from "@/screens/support/ContactSupport/ContactSupportScreen";
+import ProfileScreen from "./src/screens/profile/Profile/ProfileScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -253,7 +253,7 @@ function MainTabs() {
         const activeRoute = props.state.routes[props.state.index];
 
         const nestedRouteName =
-          activeRoute.state?.routes?.[activeRoute.state.index]?.name;
+          activeRoute.state?.routes?.[activeRoute.state?.index ?? 0]?.name;
         const hideFor = ["order-accepted", "order-tracking"];
 
         if (nestedRouteName && hideFor.includes(nestedRouteName)) return null;
