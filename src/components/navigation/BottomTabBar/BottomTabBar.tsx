@@ -1,54 +1,23 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import Animated, { useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated'
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 interface TabConfig {
-  key: string
-  label: string
-  icon: string
+  key: string;
+  icon: string;
 }
 
 interface BottomTabBarProps {
-  activeTab: string
-  onTabPress: (tabKey: string) => void
-  tabs?: TabConfig[]
+  activeTab: string;
+  onTabPress: (tabKey: string) => void;
+  tabs?: TabConfig[];
 }
 
 const DEFAULT_TABS: TabConfig[] = [
-  { key: 'home', label: 'Home', icon: 'home' },
-  { key: 'earnings', label: 'Earnings', icon: 'wallet-outline' },
-  { key: 'orders', label: 'Orders', icon: 'shopping-outline' },
-  { key: 'profile', label: 'Profile', icon: 'account-outline' },
-]
-
-function TabItem({ tab, isActive, onPress }: { tab: TabConfig; isActive: boolean; onPress: () => void }) {
-  const pillAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      width: withSpring(isActive ? 120 : 56, { damping: 15, stiffness: 150, mass: 1 }),
-      backgroundColor: withTiming(isActive ? '#7C4DFF' : 'transparent', { duration: 200 }),
-    }
-  })
-
-  const labelAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(isActive ? 1 : 0, { duration: 200 }),
-      transform: [{ translateX: withTiming(isActive ? 0 : 10, { duration: 200 }) }],
-    }
-  })
-
-  const iconColor = isActive ? '#FFFFFF' : '#7B8494'
-
-  return (
-    <TouchableOpacity style={styles.tabItem} onPress={onPress} activeOpacity={0.7}>
-      <Animated.View style={[styles.pill, pillAnimatedStyle]}>
-        <MaterialCommunityIcons name={tab.icon as any} size={22} color={iconColor} />
-        <Animated.Text style={[styles.label, labelAnimatedStyle]}>
-          {tab.label}
-        </Animated.Text>
-      </Animated.View>
-    </TouchableOpacity>
-  )
-}
+  { key: "home", icon: "home" },
+  { key: "earnings", icon: "wallet-outline" },
+  { key: "orders", icon: "shopping-outline" },
+  { key: "profile", icon: "account-outline" },
+];
 
 export function BottomTabBar({
   activeTab,
@@ -57,31 +26,50 @@ export function BottomTabBar({
 }: BottomTabBarProps) {
   return (
     <View style={styles.container}>
-      {tabs.map((tab) => (
-        <TabItem
-          key={tab.key}
-          tab={tab}
-          isActive={tab.key === activeTab}
-          onPress={() => onTabPress(tab.key)}
-        />
-      ))}
+      {tabs.map((tab) => {
+        const isActive = tab.key === activeTab;
+        return (
+          <TouchableOpacity
+            key={tab.key}
+            style={styles.tabItem}
+            onPress={() => onTabPress(tab.key)}
+            activeOpacity={0.7}
+          >
+            {isActive ? (
+              <View style={styles.activeCircle}>
+                <MaterialCommunityIcons
+                  name={tab.icon as any}
+                  size={22}
+                  color="#FFFFFF"
+                />
+              </View>
+            ) : (
+              <MaterialCommunityIcons
+                name={tab.icon as any}
+                size={22}
+                color="#7E8794"
+              />
+            )}
+          </TouchableOpacity>
+        );
+      })}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    left: 28,
-    right: 28,
-    bottom: 30,
+    position: "absolute",
+    left: 30,
+    right: 30,
+    bottom: 28,
     height: 64,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 32,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    shadowColor: '#000',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },
@@ -89,24 +77,16 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     height: 64,
   },
   activeCircle: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: '#7C4DFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    paddingHorizontal: 18,
+    backgroundColor: "#8259D2",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  label: {
-    fontFamily: 'Poppins_500Medium',
-    fontSize: 14,
-    color: '#FFFFFF',
-    marginLeft: 6,
-  },
-})
+});
