@@ -21,6 +21,7 @@ import { LoginScreen } from '@/screens/auth/Login/LoginScreen'
 import { OTPScreen } from '@/screens/auth/OTP/OTPScreen'
 import { DashboardScreen } from '@/screens/dashboard/DashboardScreen'
 import { NewPickupRequestScreen } from '@/screens/dashboard/NewPickupRequestScreen'
+import { OrderAcceptedScreen } from '@/screens/orders/OrderAccepted/OrderAcceptedScreen'
 import { OrderTrackingScreen } from '@/screens/home/Tracking/TrackingScreen'
 import { OrdersListScreen } from '@/screens/orders/OrdersList/OrdersListScreen'
 import { CollectClothesScreen } from '@/screens/orders/CollectClothes/CollectClothesScreen'
@@ -75,7 +76,8 @@ function HomeStackScreen() {
     >
       <HomeStack.Screen name="index" component={DashboardScreen} options={{ title: 'Dashboard' }} />
       <HomeStack.Screen name="new-pickup-request" component={NewPickupRequestScreen} options={{ title: 'New Pickup Request', headerShown: false }} />
-      <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} options={{ title: 'Order Tracking' }} />
+      <HomeStack.Screen name="order-accepted" component={OrderAcceptedScreen} options={{ title: 'Order Accepted', headerShown: false }} />
+      <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} options={{ headerShown: false }} />
     </HomeStack.Navigator>
   )
 }
@@ -147,6 +149,12 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index]
+        const homeState = activeRoute.state as any
+        const currentRouteName = homeState?.routes?.[homeState?.index ?? -1]?.name
+        const isDashboard = activeRoute.name === 'home' && currentRouteName === 'index'
+
+        if (!isDashboard) return null
+
         return (
           <BottomTabBar
             activeTab={activeRoute.name}
@@ -179,6 +187,7 @@ const linking = {
             screens: {
               index: 'home',
               'new-pickup-request': 'home/new-pickup',
+              'order-accepted': 'home/order-accepted/:orderId',
               'order-tracking': 'home/tracking/:orderId',
             },
           },

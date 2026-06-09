@@ -1,5 +1,6 @@
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import Animated, { useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated'
 
 interface TabConfig {
   key: string
@@ -20,6 +21,35 @@ const DEFAULT_TABS: TabConfig[] = [
   { key: 'profile', label: 'Profile', icon: 'account-outline' },
 ]
 
+function TabItem({ tab, isActive, onPress }: { tab: TabConfig; isActive: boolean; onPress: () => void }) {
+  const pillAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(isActive ? 120 : 56, { damping: 15, stiffness: 150, mass: 1 }),
+      backgroundColor: withTiming(isActive ? '#7C4DFF' : 'transparent', { duration: 200 }),
+    }
+  })
+
+  const labelAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(isActive ? 1 : 0, { duration: 200 }),
+      transform: [{ translateX: withTiming(isActive ? 0 : 10, { duration: 200 }) }],
+    }
+  })
+
+  const iconColor = isActive ? '#FFFFFF' : '#7B8494'
+
+  return (
+    <TouchableOpacity style={styles.tabItem} onPress={onPress} activeOpacity={0.7}>
+      <Animated.View style={[styles.pill, pillAnimatedStyle]}>
+        <MaterialCommunityIcons name={tab.icon as any} size={22} color={iconColor} />
+        <Animated.Text style={[styles.label, labelAnimatedStyle]}>
+          {tab.label}
+        </Animated.Text>
+      </Animated.View>
+    </TouchableOpacity>
+  )
+}
+
 export function BottomTabBar({
   activeTab,
   onTabPress,
@@ -27,25 +57,14 @@ export function BottomTabBar({
 }: BottomTabBarProps) {
   return (
     <View style={styles.container}>
-      {tabs.map((tab) => {
-        const isActive = tab.key === activeTab
-        return (
-          <TouchableOpacity
-            key={tab.key}
-            style={styles.tabItem}
-            onPress={() => onTabPress(tab.key)}
-            activeOpacity={0.7}
-          >
-            {isActive ? (
-              <View style={styles.activeCircle}>
-                <MaterialCommunityIcons name={tab.icon as any} size={22} color="#FFFFFF" />
-              </View>
-            ) : (
-              <MaterialCommunityIcons name={tab.icon as any} size={22} color="#7B8494" />
-            )}
-          </TouchableOpacity>
-        )
-      })}
+      {tabs.map((tab) => (
+        <TabItem
+          key={tab.key}
+          tab={tab}
+          isActive={tab.key === activeTab}
+          onPress={() => onTabPress(tab.key)}
+        />
+      ))}
     </View>
   )
 }
@@ -74,12 +93,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 64,
   },
-  activeCircle: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: '#7C4DFF',
+  pill: {
+    height: 48,
+    borderRadius: 999,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+    paddingHorizontal: 18,
+  },
+  label: {
+    fontFamily: 'Poppins_500Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginLeft: 6,
   },
 })
