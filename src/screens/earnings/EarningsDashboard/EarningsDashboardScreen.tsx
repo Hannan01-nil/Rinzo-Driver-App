@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Card, Button } from '@/components/ui'
 import { EarningsCard } from '@/components/data-display/earnings-card'
@@ -9,7 +10,7 @@ import { colors, typography, spacing } from '@/theme'
 import { formatCurrency } from '@/utils'
 
 export function EarningsDashboardScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const { summary, weekly } = useEarnings()
 
   return (
@@ -34,14 +35,14 @@ export function EarningsDashboardScreen() {
           <Text style={styles.availableAmount}>{formatCurrency(summary?.availableForWithdrawal ?? 0)}</Text>
           <Button
             title="Withdraw"
-            onPress={() => router.push('/(tabs)/earnings/withdraw')}
+            onPress={() => navigation.navigate('withdraw')}
             fullWidth
           />
         </Card>
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>This Week</Text>
-          <Button title="Details" onPress={() => router.push('/(tabs)/earnings/last-7-days')} variant="ghost" size="sm" />
+          <Button title="Details" onPress={() => navigation.navigate('last-7-days')} variant="ghost" size="sm" />
         </View>
 
         <Card>
@@ -54,7 +55,7 @@ export function EarningsDashboardScreen() {
         <View style={{ marginTop: spacing.lg }}>
           <Button
             title="View Full History"
-            onPress={() => router.push('/(tabs)/earnings/earnings-history')}
+            onPress={() => navigation.navigate('earnings-history')}
             variant="outline"
             fullWidth
           />

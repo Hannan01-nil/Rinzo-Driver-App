@@ -1,1 +1,0 @@
-export { DailyDetailsScreen } from './DailyDetailsScreen'

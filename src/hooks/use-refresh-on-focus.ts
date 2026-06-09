@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useFocusEffect } from 'expo-router'
+import { useFocusEffect } from '@react-navigation/native'
 
 export function useRefreshOnFocus(refetch: () => void) {
   const firstLoad = useRef(true)

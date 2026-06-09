@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { OrderCard } from '@/components/data-display/order-card'
 import { useOrders } from '@/hooks'
@@ -14,7 +15,7 @@ const FILTERS: { label: string; value: OrderStatus | 'all' }[] = [
 ]
 
 export function OrdersListScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const { orders } = useOrders()
   const [activeFilter, setActiveFilter] = useState<OrderStatus | 'all'>('all')
 
@@ -47,8 +48,8 @@ export function OrdersListScreen() {
               <OrderCard
                 order={order}
                 onPress={(id) => {
-                  if (order.status === 'collected') router.push({ pathname: '/(tabs)/orders/in-transit', params: { orderId: id } })
-                  else router.push({ pathname: '/(tabs)/orders/collect-clothes', params: { orderId: id } })
+                  if (order.status === 'collected') navigation.navigate('in-transit', { orderId: id })
+                  else navigation.navigate('collect-clothes', { orderId: id })
                 }}
               />
             </View>

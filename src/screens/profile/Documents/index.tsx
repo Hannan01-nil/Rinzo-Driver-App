@@ -1,1 +1,0 @@
-export { DocumentsScreen } from './DocumentsScreen'

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { useRoute } from '@react-navigation/native'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Header } from '@/components/layout/header'
 import { Card, Badge, Button } from '@/components/ui'
@@ -9,7 +9,8 @@ import { formatDate, formatTime } from '@/utils'
 import { DOCUMENT_TYPE_LABELS } from '@/constants'
 
 export function DocumentViewScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>()
+  const route = useRoute()
+  const { id } = route.params as { id: string }
   const { documents } = useDocuments()
   const doc = documents.find(d => d.id === id)
 

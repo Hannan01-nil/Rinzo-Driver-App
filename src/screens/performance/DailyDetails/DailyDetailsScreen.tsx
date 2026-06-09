@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { useRoute } from '@react-navigation/native'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Header } from '@/components/layout/header'
 import { Card } from '@/components/ui'
@@ -9,7 +9,8 @@ import { formatCurrency, formatDate } from '@/utils'
 import { mockDailySummaries } from '@/data/profile'
 
 export function DailyDetailsScreen() {
-  const { date } = useLocalSearchParams<{ date: string }>()
+  const route = useRoute()
+  const { date } = route.params as { date: string }
   const day = mockDailySummaries.find(d => d.date === date)
 
   if (!day) {

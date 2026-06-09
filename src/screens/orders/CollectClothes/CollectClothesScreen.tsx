@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useRouter, useLocalSearchParams } from 'expo-router'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Header } from '@/components/layout/header'
 import { Card, Button, Badge } from '@/components/ui'
@@ -9,8 +10,9 @@ import { formatCurrency, formatTime, formatDistance } from '@/utils'
 import { ORDER_STATUS_LABELS } from '@/constants'
 
 export function CollectClothesScreen() {
-  const router = useRouter()
-  const { orderId } = useLocalSearchParams<{ orderId: string }>()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
+  const route = useRoute()
+  const { orderId } = route.params as { orderId: string }
   const { orders } = useOrders()
   const order = orders.find(o => o.id === orderId)
 
@@ -55,7 +57,7 @@ export function CollectClothesScreen() {
         <View style={{ marginTop: spacing.xxl }}>
           <Button
             title="Mark as Collected"
-            onPress={() => router.push({ pathname: '/(tabs)/orders/order-collected-success', params: { orderId } })}
+            onPress={() => navigation.navigate('order-collected-success', { orderId })}
             fullWidth
           />
         </View>

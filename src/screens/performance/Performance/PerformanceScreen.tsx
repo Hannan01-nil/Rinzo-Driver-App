@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Card, Button } from '@/components/ui'
 import { StatsTile } from '@/components/data-display/stats-tile'
@@ -7,7 +8,7 @@ import { colors, typography, spacing } from '@/theme'
 import { mockPerformance } from '@/data/profile'
 
 export function PerformanceScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const perf = mockPerformance
 
   return (
@@ -51,8 +52,8 @@ export function PerformanceScreen() {
         </Card>
 
         <View style={{ marginTop: spacing.xl, gap: spacing.md }}>
-          <Button title="Daily Summary" onPress={() => router.push('/(tabs)/profile/performance/daily-summary')} variant="outline" fullWidth />
-          <Button title="Bonus & Incentives" onPress={() => router.push('/(tabs)/profile/performance/bonus-incentives')} variant="outline" fullWidth />
+          <Button title="Daily Summary" onPress={() => navigation.navigate('performance/daily-summary')} variant="outline" fullWidth />
+          <Button title="Bonus & Incentives" onPress={() => navigation.navigate('performance/bonus-incentives')} variant="outline" fullWidth />
         </View>
       </ScrollView>
     </ScreenWrapper>

@@ -13,7 +13,8 @@ import {
   StatusBar,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import Svg, { Path } from 'react-native-svg'
@@ -45,12 +46,12 @@ function GoogleIcon() {
 }
 
 export function LoginScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const [phone, setPhone] = useState('')
 
   const handleLogin = useCallback(() => {
-    router.push('/(auth)/otp-verification')
-  }, [router])
+    navigation.navigate('otp-verification', { phone })
+  }, [navigation])
 
   return (
     <View style={styles.root}>
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
   illustration: {
     width: ILLUSTRATION_WIDTH,
     height: ILLUSTRATION_WIDTH * 1.05,
-    maxHeight: 380,
+    maxHeight: 325,
   },
 
   logoContainer: {

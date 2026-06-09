@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { useRoute } from '@react-navigation/native'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Header } from '@/components/layout/header'
 import { Card } from '@/components/ui'
@@ -9,7 +9,8 @@ import { colors, typography, spacing } from '@/theme'
 import { formatCurrency, formatDate, formatTime } from '@/utils'
 
 export function OrderTrackingScreen() {
-  const { orderId } = useLocalSearchParams<{ orderId: string }>()
+  const route = useRoute()
+  const { orderId } = route.params as { orderId: string }
   const { orders } = useOrders()
   const order = orders.find(o => o.id === orderId)
 

@@ -1,1 +1,0 @@
-export { PersonalInformationScreen } from './PersonalInformationScreen'
