@@ -18,7 +18,6 @@ import { colors } from '@/theme'
 import { BottomTabBar } from '@/components/navigation/BottomTabBar'
 
 import { LoginScreen } from '@/screens/auth/Login/LoginScreen'
-import { OTPScreen } from '@/screens/auth/OTP/OTPScreen'
 import { DashboardScreen } from '@/screens/dashboard/DashboardScreen'
 import { NewPickupRequestScreen } from '@/screens/dashboard/NewPickupRequestScreen'
 import { OrderTrackingScreen } from '@/screens/home/Tracking/TrackingScreen'
@@ -59,7 +58,6 @@ function AuthStack() {
   return (
     <AuthNavigator.Navigator screenOptions={{ headerShown: false }}>
       <AuthNavigator.Screen name="login" component={LoginScreen} />
-      <AuthNavigator.Screen name="otp-verification" component={OTPScreen} />
     </AuthNavigator.Navigator>
   )
 }
@@ -73,7 +71,7 @@ function HomeStackScreen() {
         headerTitleStyle: { fontWeight: '600' },
       }}
     >
-      <HomeStack.Screen name="index" component={DashboardScreen} options={{ title: 'Dashboard' }} />
+      <HomeStack.Screen name="index" component={DashboardScreen} options={{ headerShown: false }} />
       <HomeStack.Screen name="new-pickup-request" component={NewPickupRequestScreen} options={{ title: 'New Pickup Request', headerShown: false }} />
       <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} options={{ title: 'Order Tracking' }} />
     </HomeStack.Navigator>
@@ -89,7 +87,7 @@ function OrdersStackScreen() {
         headerTitleStyle: { fontWeight: '600' },
       }}
     >
-      <OrdersStack.Screen name="index" component={OrdersListScreen} options={{ title: 'Orders' }} />
+      <OrdersStack.Screen name="index" component={OrdersListScreen} options={{ headerShown: false }} />
       <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} options={{ title: 'Collect Clothes' }} />
       <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} options={{ title: 'Collected', headerBackVisible: false }} />
       <OrdersStack.Screen name="in-transit" component={InTransitScreen} options={{ title: 'In Transit' }} />
@@ -108,7 +106,7 @@ function EarningsStackScreen() {
         headerTitleStyle: { fontWeight: '600' },
       }}
     >
-      <EarningsStack.Screen name="index" component={EarningsDashboardScreen} options={{ title: 'Earnings' }} />
+      <EarningsStack.Screen name="index" component={EarningsDashboardScreen} options={{ headerShown: false }} />
       <EarningsStack.Screen name="withdraw" component={WithdrawScreen} options={{ title: 'Withdraw' }} />
       <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} options={{ title: 'Last 7 Days' }} />
       <EarningsStack.Screen name="earnings-history" component={EarningsHistoryScreen} options={{ title: 'Earnings History' }} />
@@ -125,7 +123,7 @@ function ProfileStackScreen() {
         headerTitleStyle: { fontWeight: '600' },
       }}
     >
-      <ProfileStack.Screen name="index" component={ProfileScreen} options={{ title: 'Profile' }} />
+      <ProfileStack.Screen name="index" component={ProfileScreen} options={{ headerShown: false }} />
       <ProfileStack.Screen name="personal-information" component={PersonalInformationScreen} options={{ title: 'Personal Information' }} />
       <ProfileStack.Screen name="vehicle-information" component={VehicleInformationScreen} options={{ title: 'Vehicle Information' }} />
       <ProfileStack.Screen name="documents/index" component={DocumentsScreen} options={{ title: 'Documents' }} />
@@ -170,7 +168,6 @@ const linking = {
       '(auth)': {
         screens: {
           login: 'login',
-          'otp-verification': 'verify-otp',
         },
       },
       '(tabs)': {

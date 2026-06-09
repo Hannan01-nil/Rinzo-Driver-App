@@ -15,15 +15,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import FontAwesome from '@expo/vector-icons/FontAwesome'
-import Svg, { Path } from 'react-native-svg'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
 const COLORS = {
   background: '#F8F7FC',
-  primary: '#8457E5',
+  primary: '#8259D2',
   buttonText: '#FFFFFF',
   inputBackground: '#FFFFFF',
   inputBorder: '#E5E7EB',
@@ -34,23 +31,14 @@ const COLORS = {
   white: '#FFFFFF',
 }
 
-function GoogleIcon() {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 48 48">
-      <Path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z" />
-      <Path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z" />
-      <Path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z" />
-      <Path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z" />
-    </Svg>
-  )
-}
 
 export function LoginScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
-  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleLogin = useCallback(() => {
-    navigation.navigate('otp-verification', { phone })
+    navigation.navigate('(tabs)')
   }, [navigation])
 
   return (
@@ -86,15 +74,26 @@ export function LoginScreen() {
             </View>
 
             <View style={styles.formSection}>
-              <Text style={styles.label}>Phone number</Text>
+              <Text style={styles.label}>Email ID</Text>
               <TextInput
                 style={styles.input}
-                placeholder="+ 91 8777734343"
+                placeholder="example_123@gmail.com"
                 placeholderTextColor={COLORS.inputText}
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad"
-                maxLength={15}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+
+              <Text style={styles.label}>Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your password"
+                placeholderTextColor={COLORS.inputText}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
                 autoCapitalize="none"
                 autoCorrect={false}
               />
@@ -106,25 +105,13 @@ export function LoginScreen() {
               >
                 <Text style={styles.loginButtonText}>Login</Text>
               </TouchableOpacity>
-            </View>
 
-            <View style={styles.dividerRow}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>or sign in with</Text>
-              <View style={styles.dividerLine} />
-            </View>
-
-            <View style={styles.socialRow}>
-              <TouchableOpacity style={styles.socialButton} activeOpacity={0.75}>
-                <GoogleIcon />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.socialButton} activeOpacity={0.75}>
-                <FontAwesome name="facebook" size={22} color="#1877F2" />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.socialButton} activeOpacity={0.75}>
-                <AntDesign name="apple" size={22} color="#000000" />
+              <TouchableOpacity
+                style={styles.signUpButton}
+                onPress={() => {}}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.signUpButtonText}>Sign Up</Text>
               </TouchableOpacity>
             </View>
 
@@ -187,7 +174,7 @@ const styles = StyleSheet.create({
   formSection: {
     width: '100%',
     maxWidth: FORM_MAX_WIDTH,
-    marginTop: 32,
+    marginTop: 12,
   },
 
   label: {
@@ -208,6 +195,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Poppins_400Regular',
     color: '#111827',
+    marginBottom: 16,
   },
 
   loginButton: {
@@ -226,44 +214,24 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_500Medium',
   },
 
-  dividerRow: {
-    flexDirection: 'row',
+  signUpButton: {
+    height: 48,
+    backgroundColor: COLORS.white,
+    borderRadius: 6,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
     width: '100%',
-    maxWidth: FORM_MAX_WIDTH,
-    marginTop: 28,
-    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
   },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.dividerLine,
-  },
-  dividerText: {
-    fontSize: 12,
-    fontWeight: '400',
-    fontFamily: 'Poppins_400Regular',
-    color: COLORS.dividerText,
-    marginHorizontal: 16,
+  signUpButtonText: {
+    color: COLORS.primary,
+    fontSize: 16,
+    fontWeight: '500',
+    fontFamily: 'Poppins_500Medium',
   },
 
-  socialRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-    marginBottom: 24,
-  },
-  socialButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#F0F0F0',
-  },
   bottomSpacer: {
     height: 40,
   },

@@ -34,7 +34,7 @@ export function NewPickupRequestScreen() {
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerSide}>
-          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
+          <Ionicons name="arrow-back" size={18} color="#1F1F1F" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>New Pickup Request</Text>
         <View style={styles.headerSide} />
@@ -64,7 +64,7 @@ export function NewPickupRequestScreen() {
               <Text style={styles.customerName}>{MOCK_ORDER.customer}</Text>
             </View>
             <TouchableOpacity style={styles.callButton}>
-              <Ionicons name="call-outline" size={24} color="#7C4DFF" />
+              <Ionicons name="call-outline" size={20} color="#2C2C2C" />
             </TouchableOpacity>
           </View>
         </View>
@@ -135,9 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    height: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EAEAEA',
+    height: 48,
   },
   headerSide: {
     width: 32,
@@ -146,7 +144,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: 'Poppins_600SemiBold',
-    fontSize: 17,
+    fontSize: 16,
     color: '#1F1F1F',
   },
   scroll: {
@@ -162,6 +160,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EAEAEA',
     padding: 16,
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOpacity: 0.04,
     shadowRadius: 8,
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: 'Poppins_500Medium',
-    fontSize: 12,
+    fontSize: 13,
     color: '#8E8E93',
     marginBottom: 2,
   },
@@ -192,21 +191,21 @@ const styles = StyleSheet.create({
   },
   badge: {
     backgroundColor: '#DDF4E8',
-    height: 32,
-    borderRadius: 16,
-    paddingHorizontal: 18,
+    height: 28,
+    borderRadius: 14,
+    paddingHorizontal: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   badgeText: {
     fontFamily: 'Poppins_500Medium',
-    fontSize: 13,
+    fontSize: 12,
     color: '#5D9C74',
   },
   divider: {
     height: 1,
-    backgroundColor: '#EAEAEA',
-    marginVertical: 12,
+    backgroundColor: '#F2F2F2',
+    marginVertical: 8,
   },
   customerRow: {
     flexDirection: 'row',
@@ -218,7 +217,7 @@ const styles = StyleSheet.create({
   },
   customerName: {
     fontFamily: 'Poppins_600SemiBold',
-    fontSize: 15,
+    fontSize: 16,
     color: '#1F1F1F',
   },
   callButton: {
@@ -234,7 +233,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   addressText: {
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: 'Poppins_500Medium',
     fontSize: 14,
     color: '#1F1F1F',
     lineHeight: 20,
@@ -244,23 +243,23 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   distanceText: {
-    fontFamily: 'Poppins_600SemiBold',
+    fontFamily: 'Poppins_500Medium',
     fontSize: 13,
     color: '#8E8E93',
   },
   timeText: {
     fontFamily: 'Poppins_600SemiBold',
-    fontSize: 14,
+    fontSize: 15,
     color: '#1F1F1F',
   },
   itemRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 10,
   },
   itemName: {
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: 'Poppins_500Medium',
     fontSize: 14,
     color: '#1F1F1F',
     flex: 1,
@@ -268,15 +267,15 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 14,
-    color: '#1F1F1F',
+    color: '#8259D2',
   },
   itemDivider: {
     height: 1,
-    backgroundColor: '#EAEAEA',
+    backgroundColor: '#F2F2F2',
   },
   totalDivider: {
     height: 1,
-    backgroundColor: '#1F1F1F',
+    backgroundColor: '#F2F2F2',
     marginTop: 4,
   },
   totalRow: {
@@ -287,17 +286,17 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontFamily: 'Poppins_600SemiBold',
-    fontSize: 16,
+    fontSize: 15,
     color: '#1F1F1F',
   },
   totalPrice: {
     fontFamily: 'Poppins_600SemiBold',
-    fontSize: 20,
-    color: '#1F1F1F',
+    fontSize: 15,
+    color: '#8259D2',
   },
   acceptButton: {
     height: 44,
-    backgroundColor: '#7C4DFF',
+    backgroundColor: '#8259D2',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -306,13 +305,13 @@ const styles = StyleSheet.create({
   acceptButtonText: {
     fontFamily: 'Poppins_500Medium',
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 15,
   },
   rejectButton: {
     height: 44,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#7C4DFF',
+    borderColor: '#8259D2',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -320,10 +319,10 @@ const styles = StyleSheet.create({
   },
   rejectButtonText: {
     fontFamily: 'Poppins_500Medium',
-    color: '#7C4DFF',
+    color: '#8259D2',
     fontSize: 14,
   },
   bottomSpacer: {
-    height: 180,
+    height: 110,
   },
 })
