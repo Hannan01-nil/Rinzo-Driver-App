@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Card } from '@/components/ui'
 import { useProfile } from '@/hooks'
@@ -53,14 +54,14 @@ function MenuItem({ label, icon, onPress }: MenuItemProps) {
 }
 
 export function ProfileScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const { profile } = useProfile()
 
   return (
     <ScreenWrapper>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <TouchableOpacity
-          onPress={() => router.push('personal-information')}
+          onPress={() => navigation.navigate('personal-information')}
           style={styles.profileHeader}
         >
           <View style={styles.avatar}>
@@ -84,7 +85,7 @@ export function ProfileScreen() {
                   <MenuItem
                     label={item.label}
                     icon={item.icon}
-                    onPress={() => router.push(item.route as any)}
+                    onPress={() => navigation.navigate(item.route as any)}
                   />
                   {itemIdx < section.items.length - 1 && <View style={styles.divider} />}
                 </View>

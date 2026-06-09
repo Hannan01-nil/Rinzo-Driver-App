@@ -1,12 +1,14 @@
 import { View } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import { StackActions } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { SuccessAnimation } from '@/components/feedback/success-animation'
 import { Button } from '@/components/ui'
 import { spacing } from '@/theme'
 
 export function DeliveredSuccessScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
   return (
     <ScreenWrapper>
@@ -18,7 +20,7 @@ export function DeliveredSuccessScreen() {
         <View style={{ marginTop: spacing.xxl }}>
           <Button
             title="Back to Orders"
-            onPress={() => router.push('/(tabs)/orders')}
+            onPress={() => navigation.dispatch(StackActions.popToTop())}
             fullWidth
           />
         </View>

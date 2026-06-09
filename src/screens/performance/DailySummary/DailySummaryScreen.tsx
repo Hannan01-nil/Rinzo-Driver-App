@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Header } from '@/components/layout/header'
 import { Card } from '@/components/ui'
@@ -9,7 +10,7 @@ import { formatCurrency, formatDate } from '@/utils'
 import { mockDailySummaries } from '@/data/profile'
 
 export function DailySummaryScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const summaries = mockDailySummaries
 
   return (
@@ -23,7 +24,7 @@ export function DailySummaryScreen() {
           >
             <Text
               style={styles.date}
-              onPress={() => router.push({ pathname: '/(tabs)/profile/performance/daily-details', params: { date: day.date } })}
+              onPress={() => navigation.navigate('performance/daily-details', { date: day.date })}
             >
               {formatDate(day.date, 'long')}
             </Text>

@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Stack, useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Ionicons } from '@expo/vector-icons'
 
 const MOCK_ORDER = {
@@ -19,22 +20,20 @@ const MOCK_ORDER = {
 }
 
 export function NewPickupRequestScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
   const handleAccept = () => {
     Alert.alert('Pickup Accepted', 'The pickup request has been accepted successfully.')
   }
 
   const handleReject = () => {
-    router.back()
+    navigation.goBack()
   }
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <Stack.Screen options={{ headerShown: false }} />
-
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.headerSide}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerSide}>
           <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>New Pickup Request</Text>

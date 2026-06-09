@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { colors, typography, spacing } from '@/theme'
 
 interface HeaderProps {
@@ -9,13 +10,13 @@ interface HeaderProps {
 }
 
 export function Header({ title, showBack = true, rightAction }: HeaderProps) {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
   return (
     <View style={styles.header}>
       <View style={styles.left}>
         {showBack && (
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Text style={styles.backIcon}>‹</Text>
           </TouchableOpacity>
         )}

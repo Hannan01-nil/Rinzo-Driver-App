@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useRouter, useLocalSearchParams } from 'expo-router'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Header } from '@/components/layout/header'
 import { Card, Button } from '@/components/ui'
@@ -8,8 +9,9 @@ import { colors, typography, spacing } from '@/theme'
 import { formatCurrency } from '@/utils'
 
 export function OrderAtLaundryScreen() {
-  const router = useRouter()
-  const { orderId } = useLocalSearchParams<{ orderId: string }>()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
+  const route = useRoute()
+  const { orderId } = route.params as { orderId: string }
   const { orders } = useOrders()
   const order = orders.find(o => o.id === orderId)
 
@@ -27,7 +29,7 @@ export function OrderAtLaundryScreen() {
         <View style={{ marginTop: spacing.xxl }}>
           <Button
             title="Mark as Delivered"
-            onPress={() => router.push({ pathname: '/(tabs)/orders/delivered-success', params: { orderId } })}
+            onPress={() => navigation.navigate('delivered-success', { orderId })}
             fullWidth
           />
         </View>

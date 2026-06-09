@@ -1,1 +1,0 @@
-export { CollectClothesScreen } from './CollectClothesScreen'

@@ -20,7 +20,7 @@ export const authStore = create<TAuthStore>((set) => ({
   token: null,
   refreshToken: null,
   isAuthenticated: false,
-  isLoading: true,
+  isLoading: false,
   setUser: (user) => set({ user }),
   setToken: (token) => set({ token }),
   setRefreshToken: (refreshToken) => set({ refreshToken }),

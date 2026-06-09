@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { authStore } from '@/store/auth-store'
 import { Ionicons } from '@expo/vector-icons'
 import { OtpInput } from '@/components/forms/OtpInput'
 import { CustomKeypad } from '@/components/common/CustomKeypad'
@@ -16,7 +18,7 @@ const COLORS = {
 }
 
 export function OTPScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const [otp, setOtp] = useState('')
   const [seconds, setSeconds] = useState(30)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -39,11 +41,15 @@ export function OTPScreen() {
   useEffect(() => {
     if (otp.length === OTP_LENGTH) {
       const timer = setTimeout(() => {
-        router.replace('/(tabs)/home')
+        authStore.getState().setAuthenticated(true)
+        navigation.getParent()?.reset({
+          index: 0,
+          routes: [{ name: '(tabs)' }],
+        })
       }, 300)
       return () => clearTimeout(timer)
     }
-  }, [otp, router])
+  }, [otp])
 
   const handlePress = useCallback((digit: string) => {
     setOtp((prev) => (prev.length < OTP_LENGTH ? prev + digit : prev))
@@ -54,8 +60,8 @@ export function OTPScreen() {
   }, [])
 
   const handleBack = useCallback(() => {
-    router.back()
-  }, [router])
+    navigation.goBack()
+  }, [navigation])
 
   return (
     <View style={s.root}>

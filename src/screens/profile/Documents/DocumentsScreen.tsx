@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScreenWrapper } from '@/components/layout/screen-wrapper'
 import { Header } from '@/components/layout/header'
 import { Button } from '@/components/ui'
@@ -8,7 +9,7 @@ import { useDocuments } from '@/hooks'
 import { colors, typography, spacing } from '@/theme'
 
 export function DocumentsScreen() {
-  const router = useRouter()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const { documents } = useDocuments()
 
   return (
@@ -22,7 +23,7 @@ export function DocumentsScreen() {
             <View key={doc.id} style={{ marginBottom: spacing.md }}>
               <DocumentItem
                 document={doc}
-                onPress={(id) => router.push({ pathname: '/(tabs)/profile/documents/[id]', params: { id } })}
+                onPress={(id) => navigation.navigate('documents/[id]', { id })}
               />
             </View>
           ))
@@ -31,7 +32,7 @@ export function DocumentsScreen() {
         <View style={{ marginTop: spacing.xl }}>
           <Button
             title="Upload New Document"
-            onPress={() => router.push('/(tabs)/profile/documents/upload')}
+            onPress={() => navigation.navigate('documents/upload')}
             fullWidth
           />
         </View>
