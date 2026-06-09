@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { StyleSheet, Text, View } from "react-native";
 
 export function EarningsCard() {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Today's Earnings</Text>
-      <Text style={styles.amount}>₹ 620</Text>
+      <Text style={styles.amount}>Rs 620</Text>
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
           <Text style={styles.statNumber}>5</Text>
@@ -22,56 +22,56 @@ export function EarningsCard() {
         </View>
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   card: {
-    width: '100%',
-    backgroundColor: '#7C4DFF',
+    width: "100%",
+    backgroundColor: "#8259D2",
     borderRadius: 16,
     paddingHorizontal: 20,
     paddingVertical: 18,
-    marginTop: 16,
-    justifyContent: 'center',
-    shadowColor: '#7C4DFF',
+    marginTop: 20,
+    justifyContent: "center",
+    shadowColor: "#8259D2",
     shadowOpacity: 0.25,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
   },
   title: {
-    fontFamily: 'Poppins_500Medium',
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.9)',
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 16,
+    color: "rgba(255,255,255,0.9)",
   },
   amount: {
-    fontFamily: 'Poppins_600SemiBold',
+    fontFamily: "Poppins_600SemiBold",
     fontSize: 20,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
   },
   statItem: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   statNumber: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 18,
-    color: '#FFFFFF',
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 22,
+    color: "#FFFFFF",
   },
   statLabel: {
-    fontSize: 12,
-    color: '#FFFFFF',
+    fontSize: 14,
+    color: "#FFFFFF",
     marginTop: 2,
   },
   divider: {
     width: 1,
-    height: 28,
-    backgroundColor: 'rgba(255,255,255,0.25)',
+    height: 45,
+    backgroundColor: "rgba(255,255,255,0.25)",
   },
-})
+});

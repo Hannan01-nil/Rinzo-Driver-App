@@ -1,0 +1,85 @@
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+
+interface TabConfig {
+  key: string
+  label: string
+  icon: string
+}
+
+interface BottomNavProps {
+  activeTab: string
+  onTabPress: (tabKey: string) => void
+  tabs?: TabConfig[]
+}
+
+const DEFAULT_TABS: TabConfig[] = [
+  { key: 'home', label: 'Home', icon: 'home' },
+  { key: 'earnings', label: 'Earnings', icon: 'wallet-outline' },
+  { key: 'orders', label: 'Orders', icon: 'shopping-outline' },
+  { key: 'profile', label: 'Profile', icon: 'account-outline' },
+]
+
+export function BottomNav({
+  activeTab,
+  onTabPress,
+  tabs = DEFAULT_TABS,
+}: BottomNavProps) {
+  return (
+    <View style={styles.container}>
+      {tabs.map((tab) => {
+        const isActive = tab.key === activeTab
+        return (
+          <TouchableOpacity
+            key={tab.key}
+            style={styles.tabItem}
+            onPress={() => onTabPress(tab.key)}
+            activeOpacity={0.7}
+          >
+            {isActive ? (
+              <View style={styles.activeCircle}>
+                <MaterialCommunityIcons name={tab.icon as any} size={18} color="#FFFFFF" />
+              </View>
+            ) : (
+              <MaterialCommunityIcons name={tab.icon as any} size={18} color="#9CA3AF" />
+            )}
+          </TouchableOpacity>
+        )
+      })}
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 12,
+    height: 72,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 6,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 72,
+  },
+  activeCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#8259D2',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})

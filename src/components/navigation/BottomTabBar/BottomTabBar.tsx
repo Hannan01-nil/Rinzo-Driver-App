@@ -72,9 +72,9 @@ export function BottomTabBar({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    left: 12,
-    right: 12,
-    bottom: 12,
+    left: 28,
+    right: 28,
+    bottom: 30,
     height: 64,
     backgroundColor: '#FFFFFF',
     borderRadius: 32,
@@ -93,10 +93,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 64,
   },
-  pill: {
-    height: 48,
-    borderRadius: 999,
-    flexDirection: 'row',
+  activeCircle: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: '#7C4DFF',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',

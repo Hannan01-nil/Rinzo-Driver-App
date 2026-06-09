@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Image, StyleSheet } from 'react-native'
+import { useEffect } from 'react'
+import { View, Text, ScrollView, Image, StyleSheet, BackHandler } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -36,6 +37,15 @@ const MOCK_SCHEDULE = [
 
 export function DashboardScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
+
+  useEffect(() => {
+    const onBackPress = () => {
+      navigation.navigate('login')
+      return true
+    }
+    const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+    return () => subscription.remove()
+  }, [navigation])
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -133,6 +143,6 @@ const styles = StyleSheet.create({
     marginTop: -1,
   },
   bottomSpacer: {
-    height: 180,
+    height: 110,
   },
 })
