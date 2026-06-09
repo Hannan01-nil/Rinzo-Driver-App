@@ -1,9 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  RouteProp,
-  useNavigation,
-  useRoute
-} from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect, useRef } from "react";
 import {
