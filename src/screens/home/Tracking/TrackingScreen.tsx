@@ -1,6 +1,10 @@
 import mapImage from "@/assets/images/DriverAppImages/map.png";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { useEffect } from "react";
 import {
   Dimensions,
@@ -50,7 +54,25 @@ export function OrderTrackingScreen() {
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            // Always navigate to dashboard (tabs -> home -> index)
+            try {
+              navigation.dispatch(
+                CommonActions.navigate({
+                  name: "(tabs)",
+                  params: { screen: "home", params: { screen: "index" } },
+                }) as any,
+              );
+            } catch (e) {
+              // Fallback: try parent navigate
+              const parentNav =
+                (navigation as any).getParent &&
+                (navigation as any).getParent();
+              if (parentNav && typeof parentNav.navigate === "function") {
+                parentNav.navigate("home", { screen: "index" });
+              }
+            }
+          }}
           style={styles.headerSide}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >

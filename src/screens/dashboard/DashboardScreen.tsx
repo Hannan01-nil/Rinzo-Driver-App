@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect } from "react";
 import {
@@ -47,7 +47,12 @@ export function DashboardScreen() {
 
   useEffect(() => {
     const onBackPress = () => {
-      navigation.navigate("login");
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: "(tabs)",
+          params: { screen: "home", params: { screen: "index" } },
+        }) as any,
+      );
       return true;
     };
     const subscription = BackHandler.addEventListener(
