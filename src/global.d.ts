@@ -7,3 +7,8 @@ declare module '*.css' {
   const content: never
   export default content
 }
+
+declare module '*.png' {
+  const value: number
+  export default value
+}

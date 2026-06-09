@@ -1,80 +1,286 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { useRoute } from '@react-navigation/native'
-import { ScreenWrapper } from '@/components/layout/screen-wrapper'
-import { Header } from '@/components/layout/header'
-import { Card } from '@/components/ui'
-import { ProgressStepper } from '@/components/data-display/progress-stepper'
-import { useOrders } from '@/hooks'
-import { colors, typography, spacing } from '@/theme'
-import { formatCurrency, formatDate, formatTime } from '@/utils'
+import mapImage from "@/assets/images/DriverAppImages/map.png";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect } from "react";
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export function OrderTrackingScreen() {
-  const route = useRoute()
-  const { orderId } = route.params as { orderId: string }
-  const { orders } = useOrders()
-  const order = orders.find(o => o.id === orderId)
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { orderId } = route.params as { orderId: string };
 
-  if (!order) {
-    return (
-      <ScreenWrapper>
-        <Header title="Order Tracking" />
-        <Text style={styles.notFound}>Order not found</Text>
-      </ScreenWrapper>
-    )
-  }
+  useEffect(() => {
+    const { redirectToCollect } = (route.params || {}) as {
+      redirectToCollect?: boolean;
+    };
+    if (redirectToCollect) {
+      const t = setTimeout(() => {
+        const parentNav =
+          (navigation as any).getParent && (navigation as any).getParent();
+        if (parentNav && typeof parentNav.navigate === "function") {
+          parentNav.navigate("orders", {
+            screen: "collect-clothes",
+            params: { orderId },
+          });
+        } else {
+          // fallback: try direct navigate
+          try {
+            (navigation as any).navigate("collect-clothes", { orderId });
+          } catch (e) {
+            // no-op if navigation fails
+          }
+        }
+      }, 200);
+
+      return () => clearTimeout(t);
+    }
+  }, [route.params]);
 
   return (
-    <ScreenWrapper>
-      <Header title={`Order ${order.orderNumber}`} />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Card>
-          <Text style={styles.orderNumber}>{order.orderNumber}</Text>
-          <Text style={styles.amount}>{formatCurrency(order.totalAmount)}</Text>
-        </Card>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.headerSide}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Ionicons name="chevron-back" size={22} color="#1F1F1F" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{orderId}</Text>
+        <View style={styles.headerSide} />
+      </View>
 
-        <Card style={{ marginTop: spacing.lg }}>
-          <Text style={styles.sectionTitle}>Customer</Text>
-          <Text style={styles.infoText}>{order.customerName}</Text>
-          <Text style={styles.infoText}>{order.customerPhone}</Text>
-        </Card>
+      <View style={styles.mapContainer}>
+        <Image source={mapImage} style={styles.mapImage} resizeMode="cover" />
+      </View>
 
-        <Card style={{ marginTop: spacing.lg }}>
-          <Text style={styles.sectionTitle}>Pickup Address</Text>
-          <Text style={styles.infoText}>{order.pickupAddress.street}</Text>
-          <Text style={styles.infoText}>{order.pickupAddress.city}, {order.pickupAddress.state}</Text>
-        </Card>
+      <View style={styles.bottomCard}>
+        <Text style={styles.title}>Order Tracking</Text>
+        <View style={styles.driverRow}>
+          <Image
+            source={{ uri: "https://i.pravatar.cc/150?u=driver_tracking" }}
+            style={styles.avatar}
+          />
+          <View style={styles.driverInfo}>
+            <Text style={styles.driverName}>Cameron Williamson</Text>
+            <Text style={styles.driverRole}>Delivery Man</Text>
+          </View>
+          <TouchableOpacity style={styles.callButton} activeOpacity={0.7}>
+            <Ionicons name="call-outline" size={20} color="#8259D2" />
+          </TouchableOpacity>
+        </View>
 
-        <Card style={{ marginTop: spacing.lg }}>
-          <Text style={styles.sectionTitle}>Order Progress</Text>
-          <ProgressStepper currentStatus={order.status} />
-        </Card>
+        <View style={styles.divider} />
 
-        <Card style={{ marginTop: spacing.lg }}>
-          <Text style={styles.sectionTitle}>Timeline</Text>
-          {order.timeline.map((entry, index) => (
-            <View key={index} style={styles.timelineRow}>
-              <View style={styles.timelineDot} />
-              <View>
-                <Text style={styles.timelineStatus}>{entry.status.replace(/_/g, ' ')}</Text>
-                <Text style={styles.timelineTime}>{formatDate(entry.timestamp, 'long')} at {formatTime(entry.timestamp)}</Text>
-              </View>
+        <View style={styles.timelineSection}>
+          <View style={styles.timelineLine} />
+
+          <View style={styles.trackingRow}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="location-outline" size={16} color="#8259D2" />
             </View>
-          ))}
-        </Card>
-      </ScrollView>
-    </ScreenWrapper>
-  )
+            <View style={styles.trackingContent}>
+              <Text style={styles.trackingLabel}>Pickup</Text>
+              <Text style={styles.trackingValue}>
+                221b baker street, bangalore - 500001
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.trackingRow}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="flag-outline" size={16} color="#8259D2" />
+            </View>
+            <View style={styles.trackingContent}>
+              <Text style={styles.trackingLabel}>Dropoff</Text>
+              <Text style={styles.trackingValue}>03:00PM (Max 20 min)</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingBottom: spacing.xxl },
-  notFound: { ...typography.body, color: colors.textSecondary, textAlign: 'center', marginTop: spacing.xxl },
-  orderNumber: { ...typography.h4, color: colors.text },
-  amount: { ...typography.h2, color: colors.primary, marginTop: spacing.xs },
-  sectionTitle: { ...typography.label, color: colors.textSecondary, marginBottom: spacing.sm, textTransform: 'uppercase' },
-  infoText: { ...typography.body, color: colors.text, marginBottom: spacing.xxs },
-  timelineRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: spacing.md },
-  timelineDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary, marginTop: 6, marginRight: spacing.md },
-  timelineStatus: { ...typography.bodySmall, color: colors.text, fontWeight: '500', textTransform: 'capitalize' },
-  timelineTime: { ...typography.caption, color: colors.textTertiary },
-})
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingHorizontal: 16,
+    height: 56,
+    borderBottomWidth: 0,
+  },
+  headerRight: {
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerSide: {
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#1F1F1F",
+    textAlign: "center",
+  },
+  badge: {
+    backgroundColor: "#DDF4E8",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
+  },
+  badgeText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 11,
+    color: "#5D9C74",
+  },
+  mapContainer: {
+    width: "100%",
+    height: SCREEN_HEIGHT * 0.62,
+    overflow: "hidden",
+    backgroundColor: "#F5F5F5",
+  },
+  mapImage: {
+    width: "100%",
+    height: "100%",
+  },
+  bottomCard: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    marginTop: -92,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: -6 },
+    elevation: 6,
+  },
+  title: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#1F1F1F",
+    marginBottom: 14,
+  },
+  driverRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+    marginBottom: 12,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 16,
+  },
+  driverInfo: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  driverName: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 16,
+    color: "#1F1F1F",
+    lineHeight: 22,
+    marginBottom: 2,
+  },
+  driverRole: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 12,
+    color: "#8E8E93",
+    lineHeight: 16,
+  },
+  callButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#F7F3FF",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#F1F1F1",
+    marginVertical: 12,
+  },
+  timelineSection: {
+    position: "relative",
+  },
+  timelineLine: {
+    position: "absolute",
+    left: 20,
+    top: 30,
+    width: 2,
+    height: 40,
+    backgroundColor: "#EAEAEA",
+  },
+  trackingRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 16,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.02,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  trackingContent: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  trackingLabel: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 13,
+    color: "#8E8E93",
+    marginBottom: 4,
+  },
+  trackingValue: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 14,
+    color: "#1F1F1F",
+    lineHeight: 20,
+  },
+});

@@ -1,24 +1,23 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 interface TabConfig {
-  key: string
-  label: string
-  icon: string
+  key: string;
+  icon: string;
 }
 
 interface BottomTabBarProps {
-  activeTab: string
-  onTabPress: (tabKey: string) => void
-  tabs?: TabConfig[]
+  activeTab: string;
+  onTabPress: (tabKey: string) => void;
+  tabs?: TabConfig[];
 }
 
 const DEFAULT_TABS: TabConfig[] = [
-  { key: 'home', label: 'Home', icon: 'home' },
-  { key: 'earnings', label: 'Earnings', icon: 'wallet-outline' },
-  { key: 'orders', label: 'Orders', icon: 'shopping-outline' },
-  { key: 'profile', label: 'Profile', icon: 'account-outline' },
-]
+  { key: "home", icon: "home" },
+  { key: "earnings", icon: "wallet-outline" },
+  { key: "orders", icon: "shopping-outline" },
+  { key: "profile", icon: "account-outline" },
+];
 
 export function BottomTabBar({
   activeTab,
@@ -28,7 +27,7 @@ export function BottomTabBar({
   return (
     <View style={styles.container}>
       {tabs.map((tab) => {
-        const isActive = tab.key === activeTab
+        const isActive = tab.key === activeTab;
         return (
           <TouchableOpacity
             key={tab.key}
@@ -38,31 +37,39 @@ export function BottomTabBar({
           >
             {isActive ? (
               <View style={styles.activeCircle}>
-                <MaterialCommunityIcons name={tab.icon as any} size={22} color="#FFFFFF" />
+                <MaterialCommunityIcons
+                  name={tab.icon as any}
+                  size={22}
+                  color="#FFFFFF"
+                />
               </View>
             ) : (
-              <MaterialCommunityIcons name={tab.icon as any} size={22} color="#7B8494" />
+              <MaterialCommunityIcons
+                name={tab.icon as any}
+                size={22}
+                color="#7E8794"
+              />
             )}
           </TouchableOpacity>
-        )
+        );
       })}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    left: 28,
-    right: 28,
-    bottom: 30,
+    position: "absolute",
+    left: 30,
+    right: 30,
+    bottom: 28,
     height: 64,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 32,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    shadowColor: '#000',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },
@@ -70,16 +77,16 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     height: 64,
   },
   activeCircle: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: '#8259D2',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#8259D2",
+    alignItems: "center",
+    justifyContent: "center",
   },
-})
+});

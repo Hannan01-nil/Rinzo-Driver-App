@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -23,7 +23,7 @@ export function NewPickupRequestScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
   const handleAccept = () => {
-    Alert.alert('Pickup Accepted', 'The pickup request has been accepted successfully.')
+    navigation.navigate('order-accepted', { orderId: MOCK_ORDER.orderNumber })
   }
 
   const handleReject = () => {
