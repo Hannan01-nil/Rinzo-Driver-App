@@ -1,6 +1,5 @@
 export type AuthStackParamList = {
   login: undefined
-  'otp-verification': { phone: string }
 }
 
 export type HomeStackParamList = {

@@ -7,7 +7,7 @@ interface TabConfig {
   icon: string
 }
 
-interface BottomTabBarProps {
+interface BottomNavProps {
   activeTab: string
   onTabPress: (tabKey: string) => void
   tabs?: TabConfig[]
@@ -20,11 +20,11 @@ const DEFAULT_TABS: TabConfig[] = [
   { key: 'profile', label: 'Profile', icon: 'account-outline' },
 ]
 
-export function BottomTabBar({
+export function BottomNav({
   activeTab,
   onTabPress,
   tabs = DEFAULT_TABS,
-}: BottomTabBarProps) {
+}: BottomNavProps) {
   return (
     <View style={styles.container}>
       {tabs.map((tab) => {
@@ -38,10 +38,10 @@ export function BottomTabBar({
           >
             {isActive ? (
               <View style={styles.activeCircle}>
-                <MaterialCommunityIcons name={tab.icon as any} size={22} color="#FFFFFF" />
+                <MaterialCommunityIcons name={tab.icon as any} size={18} color="#FFFFFF" />
               </View>
             ) : (
-              <MaterialCommunityIcons name={tab.icon as any} size={22} color="#7B8494" />
+              <MaterialCommunityIcons name={tab.icon as any} size={18} color="#9CA3AF" />
             )}
           </TouchableOpacity>
         )
@@ -53,12 +53,12 @@ export function BottomTabBar({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    left: 28,
-    right: 28,
-    bottom: 30,
-    height: 64,
+    left: 12,
+    right: 12,
+    bottom: 12,
+    height: 72,
     backgroundColor: '#FFFFFF',
-    borderRadius: 32,
+    borderRadius: 24,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
@@ -72,12 +72,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 64,
+    height: 72,
   },
   activeCircle: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: '#8259D2',
     alignItems: 'center',
     justifyContent: 'center',
