@@ -1,51 +1,161 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { ScreenWrapper } from '@/components/layout/screen-wrapper'
-import { Header } from '@/components/layout/header'
-import { Card, Badge } from '@/components/ui'
-import { useEarnings } from '@/hooks'
-import { colors, typography, spacing } from '@/theme'
-import { formatCurrency, formatDate, formatTime } from '@/utils'
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
+import { useEarnings } from "@/hooks";
+import { formatCurrency, formatDate, formatTime } from "@/utils";
 
 export function EarningsHistoryScreen() {
-  const { history } = useEarnings()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { history } = useEarnings();
 
   return (
-    <ScreenWrapper>
-      <Header title="Earnings History" />
-      <ScrollView contentContainerStyle={styles.scroll}>
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.header}>
+        <HeaderBackButton />
+        <Text style={styles.headerTitle}>Earnings History</Text>
+        <View style={styles.headerRight} />
+      </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {history.length === 0 ? (
           <Text style={styles.empty}>No earnings history yet</Text>
         ) : (
-          history.map(entry => (
+          history.map((entry) => (
             <View key={entry.id} style={styles.entryRow}>
               <View style={styles.entryLeft}>
-                <Text style={styles.entryDescription}>{entry.description}</Text>
+                <Text style={styles.entryOrder}>Order {entry.orderNumber}</Text>
                 <Text style={styles.entryDate}>
-                  {formatDate(entry.createdAt, 'long')} at {formatTime(entry.createdAt)}
+                  {formatDate(entry.createdAt, "long")} at{" "}
+                  {formatTime(entry.createdAt)}
                 </Text>
               </View>
               <View style={styles.entryRight}>
-                <Text style={[styles.entryAmount, entry.type === 'bonus' && styles.bonusAmount]}>
-                  {entry.type === 'adjustment' ? '-' : '+'}{formatCurrency(entry.amount)}
+                <Text
+                  style={[
+                    styles.entryAmount,
+                    entry.type === "bonus" && styles.bonusAmount,
+                  ]}
+                >
+                  {entry.type === "adjustment" ? "-" : "+"}
+                  {formatCurrency(entry.amount)}
                 </Text>
-                <Badge label={entry.status} variant={entry.status === 'settled' ? 'success' : 'warning'} />
+                <View
+                  style={[
+                    styles.statusPill,
+                    entry.status === "settled" && styles.statusPillSuccess,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.statusText,
+                      entry.status === "settled" && styles.statusTextSuccess,
+                    ]}
+                  >
+                    {entry.status === "settled" ? "Settled" : "Pending"}
+                  </Text>
+                </View>
               </View>
             </View>
           ))
         )}
       </ScrollView>
-    </ScreenWrapper>
-  )
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingBottom: spacing.xxl },
-  empty: { ...typography.body, color: colors.textSecondary, textAlign: 'center', marginTop: spacing.xxl },
-  entryRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.divider },
-  entryLeft: { flex: 1, marginRight: spacing.md },
-  entryRight: { alignItems: 'flex-end' },
-  entryDescription: { ...typography.bodySmall, color: colors.text },
-  entryDate: { ...typography.caption, color: colors.textTertiary, marginTop: 2 },
-  entryAmount: { ...typography.body, fontWeight: '600', color: colors.success, marginBottom: spacing.xs },
-  bonusAmount: { color: colors.warning },
-})
+  safe: {
+    flex: 1,
+    backgroundColor: "#F8F9FF",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 48,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  headerRight: {
+    width: 38,
+  },
+  headerTitle: {
+    flex: 1,
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#1F2A5A",
+    textAlign: "center",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 8,
+    paddingBottom: 32,
+  },
+  empty: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 16,
+    color: "#6F6B7D",
+    textAlign: "center",
+    marginTop: 48,
+  },
+  entryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  entryLeft: {
+    flex: 1,
+    marginRight: 12,
+  },
+  entryRight: {
+    alignItems: "flex-end",
+  },
+  entryOrder: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 16,
+    color: "#10213A",
+  },
+  entryDate: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 13,
+    color: "#6F6B7D",
+    marginTop: 2,
+  },
+  entryAmount: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 16,
+    color: "#16A34A",
+    marginBottom: 4,
+  },
+  bonusAmount: {
+    color: "#FFC107",
+  },
+  statusPill: {
+    backgroundColor: "#FFF3CD",
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 999,
+  },
+  statusPillSuccess: {
+    backgroundColor: "#E6F7E6",
+  },
+  statusText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 11,
+    color: "#856404",
+  },
+  statusTextSuccess: {
+    color: "#16A34A",
+  },
+});
