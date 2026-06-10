@@ -1,7 +1,7 @@
 import { useProfile } from "@/hooks";
 import { spacing } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
@@ -67,11 +67,17 @@ const ProfileScreen: React.FC = () => {
     },
   ];
 
-  function MenuRow({ icon, label, onPress, danger }: any) {
+  function MenuRow({ icon, label, route, danger }: any) {
+    const handlePress = () => {
+      if (route) {
+        navigation.dispatch(CommonActions.navigate({ name: route as string }));
+      }
+    };
+
     return (
       <TouchableOpacity
         style={styles.row}
-        onPress={onPress}
+        onPress={handlePress}
         activeOpacity={0.7}
       >
         <View style={styles.leftIcon}>
@@ -118,22 +124,24 @@ const ProfileScreen: React.FC = () => {
               <View style={styles.nameRow}>
                 <Text style={styles.name}>Rahul Sharma</Text>
                 <View style={styles.verifiedWrapSmall}>
-                  <Ionicons name="checkmark" size={18} color="#FFFFFF" />
+                  <Ionicons name="checkmark" size={12} color="#FFFFFF" />
                 </View>
               </View>
               <Text style={styles.driverId}>Driver ID: DR-2024-001</Text>
               <View style={styles.statsRow}>
                 <View style={[styles.statItem, { marginRight: 18 }]}>
                   <Ionicons name="star" size={14} color="#FFD24D" />
-                  <Text style={[styles.statText, { marginLeft: 6 }]}>
-                    4.9 Rating
-                  </Text>
+                  <View style={[styles.statRowContainer, { marginLeft: 6 }]}>
+                    <Text style={styles.statValue}>4.9</Text>
+                    <Text style={styles.statLabel}> Rating</Text>
+                  </View>
                 </View>
                 <View style={styles.statItem}>
                   <Ionicons name="key" size={14} color="#8259D2" />
-                  <Text style={[styles.statText, { marginLeft: 6 }]}>
-                    1,240 Deliveries
-                  </Text>
+                  <View style={[styles.statRowContainer, { marginLeft: 6 }]}>
+                    <Text style={styles.statValue}>1,240</Text>
+                    <Text style={styles.statLabel}> Deliveries</Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -173,7 +181,7 @@ const ProfileScreen: React.FC = () => {
                   <MenuRow
                     icon={it.icon + "-outline"}
                     label={it.label}
-                    onPress={() => navigation.navigate(it.route as any)}
+                    route={it.route}
                   />
                   {idx < section.items.length - 1 && (
                     <View style={styles.rowDivider} />
@@ -195,7 +203,7 @@ const ProfileScreen: React.FC = () => {
                 <Ionicons name="log-out-outline" size={20} color="#FF4D4F" />
               </View>
               <Text style={styles.rowLabelLogout}>Logout</Text>
-              <Ionicons name="chevron-forward" size={16} color="#FF4D4F" />
+              <Ionicons name="chevron-forward" size={16} color="#fa373a" />
             </TouchableOpacity>
           </View>
         </View>
@@ -257,8 +265,8 @@ const styles = StyleSheet.create({
   nameRow: { flexDirection: "row", alignItems: "center" },
   name: { fontFamily: "Poppins_600SemiBold", fontSize: 20, color: "#1F1F1F" },
   verifiedWrapSmall: {
-    width: 22,
-    height: 22,
+    width: 16,
+    height: 16,
     borderRadius: 11,
     backgroundColor: "#8259D2",
     justifyContent: "center",
@@ -274,7 +282,10 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: "row", marginTop: 6, alignItems: "center" },
   statItem: { flexDirection: "row", alignItems: "center" },
   statStar: { color: "#FFCC00", marginRight: 6 },
-  statText: { fontFamily: "Poppins_500Medium", fontSize: 12, color: "#8259D2" },
+  statText: { fontFamily: "Poppins_500Medium", fontSize: 12 },
+  statRowContainer: { flexDirection: "row", alignItems: "center" },
+  statValue: { fontFamily: "Poppins_600SemiBold", fontSize: 12, color: "#8259D2" },
+  statLabel: { fontFamily: "Poppins_400Regular", fontSize: 12, color: "#8E8E93" },
 
   earningsCardWrap: { marginTop: 18 },
   earningsCard: {

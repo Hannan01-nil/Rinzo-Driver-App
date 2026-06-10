@@ -67,6 +67,7 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator
       screenOptions={{
+        headerShown: false,
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: "600" },
@@ -100,6 +101,7 @@ function OrdersStackScreen() {
   return (
     <OrdersStack.Navigator
       screenOptions={{
+        headerShown: false,
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: "600" },
@@ -143,6 +145,7 @@ function EarningsStackScreen() {
   return (
     <EarningsStack.Navigator
       screenOptions={{
+        headerShown: false,
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: "600" },
@@ -176,6 +179,7 @@ function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator
       screenOptions={{
+        headerShown: false,
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: "600" },
@@ -251,12 +255,10 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index];
-
         const nestedRouteName =
           activeRoute.state?.routes?.[activeRoute.state?.index ?? 0]?.name;
-        const hideFor = ["order-accepted", "order-tracking"];
 
-        if (nestedRouteName && hideFor.includes(nestedRouteName)) return null;
+        if (nestedRouteName && nestedRouteName !== "index") return null;
 
         return (
           <BottomTabBar
