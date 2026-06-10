@@ -30,10 +30,12 @@ import { BankDetailsScreen } from "@/screens/finance/BankDetails/BankDetailsScre
 import { OrderTrackingScreen } from "@/screens/home/Tracking/TrackingScreen";
 import { CollectClothesScreen } from "@/screens/orders/CollectClothes/CollectClothesScreen";
 import { DeliveredSuccessScreen } from "@/screens/orders/Delivered/DeliveredScreen";
-import { OrderAtLaundryScreen } from "@/screens/orders/Laundry/LaundryScreen";
+import { LaundryTrackingScreen } from "@/screens/orders/Laundry/LaundryScreen";
 import { OrderAcceptedScreen } from "@/screens/orders/OrderAccepted/OrderAcceptedScreen";
 import { OrderCollectedSuccessScreen } from "@/screens/orders/OrderCollected/OrderCollectedScreen";
 import { OrdersListScreen } from "@/screens/orders/OrdersList/OrdersListScreen";
+import { InOrderToTransitScreen } from "@/screens/orders/InOrderToTransit/InOrderToTransitScreen";
+import { LaundryOtpVerificationScreen } from "@/screens/orders/LaundryOtpVerification/LaundryOtpVerificationScreen";
 import { InTransitScreen } from "@/screens/orders/Transit/TransitScreen";
 import { BonusScreen } from "@/screens/performance/Bonus/BonusScreen";
 import { DailyDetailsScreen } from "@/screens/performance/DailyDetails/DailyDetailsScreen";
@@ -65,32 +67,22 @@ function AuthStack() {
 
 function HomeStackScreen() {
   return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen
         name="index"
         component={DashboardScreen}
-        options={{ headerShown: false }}
       />
       <HomeStack.Screen
         name="new-pickup-request"
         component={NewPickupRequestScreen}
-        options={{ title: "New Pickup Request", headerShown: false }}
       />
       <HomeStack.Screen
         name="order-accepted"
         component={OrderAcceptedScreen}
-        options={{ title: "Order Accepted", headerShown: false }}
       />
       <HomeStack.Screen
         name="order-tracking"
         component={OrderTrackingScreen}
-        options={{ headerShown: false }}
       />
     </HomeStack.Navigator>
   );
@@ -98,42 +90,38 @@ function HomeStackScreen() {
 
 function OrdersStackScreen() {
   return (
-    <OrdersStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
+    <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
       <OrdersStack.Screen
         name="index"
         component={OrdersListScreen}
-        options={{ headerShown: false }}
       />
       <OrdersStack.Screen
         name="collect-clothes"
         component={CollectClothesScreen}
-        options={{ title: "Collect Clothes" }}
       />
       <OrdersStack.Screen
         name="order-collected-success"
         component={OrderCollectedSuccessScreen}
-        options={{ title: "Collected", headerBackVisible: false }}
       />
       <OrdersStack.Screen
         name="in-transit"
         component={InTransitScreen}
-        options={{ title: "In Transit" }}
+      />
+      <OrdersStack.Screen
+        name="order-in-transit"
+        component={InOrderToTransitScreen}
+      />
+      <OrdersStack.Screen
+        name="laundry-otp"
+        component={LaundryOtpVerificationScreen}
       />
       <OrdersStack.Screen
         name="order-at-laundry"
-        component={OrderAtLaundryScreen}
-        options={{ title: "At Laundry" }}
+        component={LaundryTrackingScreen}
       />
       <OrdersStack.Screen
         name="delivered-success"
         component={DeliveredSuccessScreen}
-        options={{ title: "Delivered", headerBackVisible: false }}
       />
     </OrdersStack.Navigator>
   );
@@ -141,32 +129,22 @@ function OrdersStackScreen() {
 
 function EarningsStackScreen() {
   return (
-    <EarningsStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
+    <EarningsStack.Navigator screenOptions={{ headerShown: false }}>
       <EarningsStack.Screen
         name="index"
         component={EarningsDashboardScreen}
-        options={{ headerShown: false }}
       />
       <EarningsStack.Screen
         name="withdraw"
         component={WithdrawScreen}
-        options={{ title: "Withdraw" }}
       />
       <EarningsStack.Screen
         name="last-7-days"
         component={Last7DaysScreen}
-        options={{ title: "Last 7 Days" }}
       />
       <EarningsStack.Screen
         name="earnings-history"
         component={EarningsHistoryScreen}
-        options={{ title: "Earnings History" }}
       />
     </EarningsStack.Navigator>
   );
@@ -174,72 +152,54 @@ function EarningsStackScreen() {
 
 function ProfileStackScreen() {
   return (
-    <ProfileStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
+    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
       <ProfileStack.Screen
         name="index"
         component={ProfileScreen}
-        options={{ headerShown: false }}
       />
       <ProfileStack.Screen
         name="personal-information"
         component={PersonalInformationScreen}
-        options={{ title: "Personal Information" }}
       />
       <ProfileStack.Screen
         name="vehicle-information"
         component={VehicleInformationScreen}
-        options={{ title: "Vehicle Information" }}
       />
       <ProfileStack.Screen
         name="documents/index"
         component={DocumentsScreen}
-        options={{ title: "Documents" }}
       />
       <ProfileStack.Screen
         name="documents/upload"
         component={UploadDocumentScreen}
-        options={{ title: "Upload Document" }}
       />
       <ProfileStack.Screen
         name="documents/[id]"
         component={DocumentViewScreen}
-        options={{ title: "Document" }}
       />
       <ProfileStack.Screen
         name="finance/bank-details"
         component={BankDetailsScreen}
-        options={{ title: "Bank Details" }}
       />
       <ProfileStack.Screen
         name="performance/index"
         component={PerformanceScreen}
-        options={{ title: "Performance" }}
       />
       <ProfileStack.Screen
         name="performance/bonus-incentives"
         component={BonusScreen}
-        options={{ title: "Bonus & Incentives" }}
       />
       <ProfileStack.Screen
         name="performance/daily-summary"
         component={DailySummaryScreen}
-        options={{ title: "Daily Summary" }}
       />
       <ProfileStack.Screen
         name="performance/daily-details"
         component={DailyDetailsScreen}
-        options={{ title: "Daily Details" }}
       />
       <ProfileStack.Screen
         name="support/contact"
         component={ContactSupportScreen}
-        options={{ title: "Contact Support" }}
       />
     </ProfileStack.Navigator>
   );
@@ -253,8 +213,8 @@ function MainTabs() {
         const activeRoute = props.state.routes[props.state.index];
 
         const nestedRouteName =
-          activeRoute.state?.routes?.[activeRoute.state.index]?.name;
-        const hideFor = ["order-accepted", "order-tracking"];
+          activeRoute.state?.routes?.[activeRoute.state?.index ?? -1]?.name;
+        const hideFor = ["order-accepted", "order-tracking", "order-collected-success", "order-at-laundry", "in-transit", "order-in-transit", "laundry-otp"];
 
         if (nestedRouteName && hideFor.includes(nestedRouteName)) return null;
 
@@ -299,6 +259,8 @@ const linking = {
               "collect-clothes": "orders/collect/:orderId",
               "order-collected-success": "orders/collected/:orderId",
               "in-transit": "orders/in-transit/:orderId",
+              "order-in-transit": "orders/in-transit/:orderId",
+              "laundry-otp": "orders/laundry-otp/:orderId",
               "order-at-laundry": "orders/at-laundry/:orderId",
               "delivered-success": "orders/delivered/:orderId",
             },

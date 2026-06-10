@@ -32,4 +32,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  spacerSlot: {
+    flex: 1,
+  },
 })

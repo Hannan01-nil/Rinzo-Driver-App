@@ -28,7 +28,7 @@ export function CustomKeypad({ onPress, onDelete }: CustomKeypadProps) {
       ))}
 
       <View style={styles.row}>
-        <View style={styles.button} />
+        <View style={styles.spacerSlot} />
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.7}
