@@ -107,13 +107,13 @@ export function OrderCollectedSuccessScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Ionicons
-            name="chevron-back"
-            size={22}
+            name="arrow-back"
+            size={24}
             color="#1F1F1F"
           />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>
+        <Text style={styles.headerTitle} pointerEvents="none">
           {orderId}
         </Text>
 
@@ -224,28 +224,15 @@ export function OrderCollectedSuccessScreen() {
                   stiffness: 150,
                 })
               }}
-              onPress={() =>
-                navigation.navigate('order-at-laundry', {
-                  orderId,
-                })
-              }
+              onPress={() => {
+                navigation.navigate("laundry-tracking", { orderId });
+              }}
             >
               <Text style={styles.continueButtonText}>
-                Start Transit
+                Track Order
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.outlineButton}
-              activeOpacity={0.85}
-              onPress={() =>
-                navigation.dispatch(StackActions.popToTop())
-              }
-            >
-              <Text style={styles.outlineButtonText}>
-                Back to Orders
-              </Text>
-            </TouchableOpacity>
           </Animated.View>
         </Animated.View>
       </View>
@@ -271,6 +258,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     justifyContent: 'center',
+    zIndex: 10,
   },
 
   headerTitle: {

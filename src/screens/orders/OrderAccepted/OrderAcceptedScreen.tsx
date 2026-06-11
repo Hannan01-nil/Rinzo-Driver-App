@@ -138,7 +138,7 @@ export function OrderAcceptedScreen() {
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("new-pickup-request")}
+          onPress={() => navigation.goBack()}
           style={styles.headerSide}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           accessibilityRole="button"
@@ -208,17 +208,17 @@ export function OrderAcceptedScreen() {
               ]}
             >
               <Svg
-                width={120}
-                height={120}
+                width={80}
+                height={80}
                 viewBox="0 0 120 110"
                 style={{ alignSelf: "center" }}
               >
                 <AnimatedPath
                   d="M 30 55 L 48 73 L 90 30"
                   stroke="#FFFFFF"
-                  strokeWidth={12}
-                  strokeLinecap="butt"
-                  strokeLinejoin="miter"
+                  strokeWidth={10}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   fill="none"
                   strokeDasharray={120}
                   strokeDashoffset={checkmarkOffset as any}
@@ -273,7 +273,7 @@ export function OrderAcceptedScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FAFAFA",
   },
   header: {
     flexDirection: "row",
@@ -281,14 +281,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     height: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: "#EAEAEA",
+    backgroundColor: "#FAFAFA",
+    borderBottomWidth: 0,
   },
   headerSide: {
     width: 48,
     height: 48,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   headerTitle: {
     position: "absolute",
@@ -328,38 +329,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 4,
-    marginTop: 36,
+    marginTop: 48,
   },
   outerRing: {
     position: "absolute",
-    width: 320,
-    height: 320,
-    borderRadius: 160,
-    borderWidth: 12,
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    borderWidth: 15,
     borderColor: "#F2F2F6",
     backgroundColor: "#FFFFFF",
   },
   innerRing: {
     position: "absolute",
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    borderWidth: 8,
+    width: 170,
+    height: 170,
+    borderRadius: 85,
+    borderWidth: 10,
     borderColor: "#FFFFFF",
     backgroundColor: "#F7F5FF",
   },
   successCircle: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     backgroundColor: "#8259D2",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#8259D2",
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
   },
   confettiPiece: {
     position: "absolute",
@@ -369,19 +370,19 @@ const styles = StyleSheet.create({
   },
   successTitle: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 18,
+    fontSize: 22,
     color: "#1F1F1F",
     textAlign: "center",
-    marginTop: 16,
+    marginTop: 24,
   },
   successSubtitle: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 14,
+    fontSize: 15,
     color: "#8E8E93",
     textAlign: "center",
-    maxWidth: "80%",
-    marginTop: 12,
-    lineHeight: 20,
+    maxWidth: "85%",
+    marginTop: 8,
+    lineHeight: 22,
   },
   card: {
     backgroundColor: "#FFFFFF",
@@ -389,22 +390,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EAEAEA",
     padding: 16,
-    marginTop: 52,
+    marginTop: 40,
     shadowColor: "#000",
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
     elevation: 2,
   },
   cardRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   cardLabel: {
     fontFamily: "Poppins_500Medium",
-    fontSize: 14,
+    fontSize: 13,
     color: "#8E8E93",
   },
   cardValue: {
@@ -415,31 +416,36 @@ const styles = StyleSheet.create({
   pickupRow: {
     flexDirection: "column",
     alignItems: "flex-start",
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   pickupValue: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 15,
     color: "#1F1F1F",
-    marginTop: 2,
+    marginTop: 4,
   },
   cardDivider: {
-    height: 2,
+    height: 1,
     backgroundColor: "#F1F1F1",
-    marginVertical: 8,
+    marginVertical: 10,
   },
   trackButton: {
     width: "100%",
     alignSelf: "center",
-    height: 48,
+    height: 52,
     backgroundColor: "#8259D2",
-    borderRadius: 10,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 36,
+    marginTop: 40,
+    shadowColor: "#8259D2",
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
   trackButtonText: {
-    fontFamily: "Poppins_500Medium",
+    fontFamily: "Poppins_600SemiBold",
     color: "#FFFFFF",
     fontSize: 16,
   },

@@ -1,11 +1,7 @@
 import mapImage from "@/assets/images/DriverAppImages/map.png";
+import laundryHubImage from "@/assets/images/DriverAppImages/laundry_hub.png";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  CommonActions,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
-import { useEffect } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Dimensions,
   Image,
@@ -18,83 +14,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-export function OrderTrackingScreen() {
+export function LaundryTrackingScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { orderId, fromCollected } = route.params as { orderId: string; fromCollected?: boolean };
+  const { orderId } = (route.params || {}) as { orderId: string };
 
-  useEffect(() => {
-    const { redirectToCollect } = (route.params || {}) as {
-      redirectToCollect?: boolean;
-    };
-    if (redirectToCollect) {
-      const t = setTimeout(() => {
-        const parentNav =
-          (navigation as any).getParent && (navigation as any).getParent();
-        if (parentNav && typeof parentNav.navigate === "function") {
-          parentNav.navigate("orders", {
-            screen: "collect-clothes",
-            params: { orderId, fromScreen: "order-tracking" },
-          });
-        } else {
-          try {
-            (navigation as any).navigate("collect-clothes", {
-              orderId,
-              fromScreen: "order-tracking",
-            });
-          } catch (e) {
-            // no-op if navigation fails
-          }
-        }
-      }, 200);
-
-      return () => clearTimeout(t);
-    }
-  }, [route.params]);
+  const handleTransitNavigate = () => {
+    (navigation as any).navigate("order-in-transit", { orderId });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => {
-            if (fromCollected) {
-              const parentNav =
-                (navigation as any).getParent &&
-                (navigation as any).getParent();
-              if (parentNav && typeof parentNav.navigate === "function") {
-                parentNav.navigate("orders", {
-                  screen: "order-collected-success",
-                  params: { orderId },
-                });
-              } else {
-                try {
-                  (navigation as any).navigate("order-collected-success", { orderId });
-                } catch (e) {}
-              }
-              return;
-            }
-            try {
-              navigation.dispatch(
-                CommonActions.navigate({
-                  name: "(tabs)",
-                  params: { screen: "home", params: { screen: "index" } },
-                }) as any,
-              );
-            } catch (e) {
-              const parentNav =
-                (navigation as any).getParent &&
-                (navigation as any).getParent();
-              if (parentNav && typeof parentNav.navigate === "function") {
-                parentNav.navigate("home", { screen: "index" });
-              }
-            }
-          }}
+          onPress={() => navigation.goBack()}
           style={styles.headerSide}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
+        <Text style={styles.headerTitle} pointerEvents="none">{orderId ?? "Laundry Tracking"}</Text>
         <View style={styles.headerSide} />
       </View>
 
@@ -104,37 +43,20 @@ export function OrderTrackingScreen() {
 
       <View style={styles.bottomCard}>
         <View style={styles.cardUpper}>
-          <Text style={styles.title}>Order Tracking</Text>
+          <Text style={styles.title}>Laundry Tracking</Text>
           <View style={styles.driverRow}>
             <Image
-              source={{ uri: "https://i.pravatar.cc/150?u=driver_tracking" }}
+              source={laundryHubImage}
               style={styles.avatar}
             />
             <View style={styles.driverInfo}>
-              <Text style={styles.driverName}>Cameron Williamson</Text>
-              <Text style={styles.driverRole}>Delivery Man</Text>
+              <Text style={styles.driverName}>Rinzo Laundry Hub</Text>
+              <Text style={styles.driverRole}>Laundry Partner</Text>
             </View>
             <TouchableOpacity
               style={styles.callButton}
               activeOpacity={0.7}
-            onPress={() => {
-              const parentNav =
-                (navigation as any).getParent &&
-                (navigation as any).getParent();
-              if (parentNav && typeof parentNav.navigate === "function") {
-                parentNav.navigate("orders", {
-                  screen: "order-in-transit",
-                  params: { orderId, fromHomeTrack: true },
-                });
-              } else {
-                try {
-                  (navigation as any).navigate("order-in-transit", {
-                    orderId,
-                    fromHomeTrack: true,
-                  });
-                } catch (e) {}
-              }
-            }}
+              onPress={handleTransitNavigate}
             >
               <Ionicons name="call-outline" size={20} color="#8259D2" />
             </TouchableOpacity>
@@ -150,9 +72,9 @@ export function OrderTrackingScreen() {
                 <Ionicons name="location-outline" size={16} color="#8259D2" />
               </View>
               <View style={styles.trackingContent}>
-                <Text style={styles.trackingLabel}>Pickup</Text>
+                <Text style={styles.trackingLabel}>Pickup Location (Completed)</Text>
                 <Text style={styles.trackingValue}>
-                  221b baker street, bangalore - 500001
+                  Clothes collected from customer
                 </Text>
               </View>
             </View>
@@ -162,8 +84,8 @@ export function OrderTrackingScreen() {
                 <Ionicons name="flag-outline" size={16} color="#8259D2" />
               </View>
               <View style={styles.trackingContent}>
-                <Text style={styles.trackingLabel}>Dropoff</Text>
-                <Text style={styles.trackingValue}>03:00PM (Max 20 min)</Text>
+                <Text style={styles.trackingLabel}>Laundry Dropoff</Text>
+                <Text style={styles.trackingValue}>Rinzo Hub, Koramangala (ETA: 20 min)</Text>
               </View>
             </View>
           </View>
@@ -171,18 +93,10 @@ export function OrderTrackingScreen() {
 
         <TouchableOpacity
           style={styles.reachedButton}
-          activeOpacity={0.7}
-          onPress={() => {
-            const parentNav = (navigation as any).getParent?.();
-            if (parentNav && typeof parentNav.navigate === "function") {
-              parentNav.navigate("orders", {
-                screen: "collect-clothes",
-                params: { orderId, fromScreen: "order-tracking" },
-              });
-            }
-          }}
+          activeOpacity={0.75}
+          onPress={handleTransitNavigate}
         >
-          <Text style={styles.reachedButtonText}>Reached Pickup Point</Text>
+          <Text style={styles.reachedButtonText}>Start Transit to Laundry</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -200,13 +114,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingHorizontal: 16,
     height: 56,
-    borderBottomWidth: 0,
-  },
-  headerRight: {
-    width: 48,
-    height: 48,
-    justifyContent: "center",
-    alignItems: "center",
   },
   headerSide: {
     width: 48,
@@ -223,20 +130,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#1F1F1F",
     textAlign: "center",
-  },
-  badge: {
-    backgroundColor: "#DDF4E8",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 8,
-  },
-  badgeText: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 11,
-    color: "#5D9C74",
   },
   mapContainer: {
     width: "100%",
@@ -280,9 +173,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     marginRight: 16,
   },
   driverInfo: {

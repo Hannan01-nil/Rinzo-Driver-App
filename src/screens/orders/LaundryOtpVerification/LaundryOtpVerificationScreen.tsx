@@ -1,6 +1,6 @@
 import { CustomKeypad } from "@/components/common/CustomKeypad";
 import { OTP_LENGTH } from "@/constants/config";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useState } from "react";
 import {
@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -19,10 +20,13 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import orderTickImage from "@/assets/images/DriverAppImages/order_tick.png";
+import Svg, { Path } from "react-native-svg";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const OTP_BOX_SIZE = Math.min(56, (SCREEN_WIDTH - 80) / 4.5);
+const OTP_WIDTH = 56;
+const OTP_HEIGHT = 68;
 const OTP_GAP = 12;
 
 export function LaundryOtpVerificationScreen() {
@@ -53,6 +57,12 @@ export function LaundryOtpVerificationScreen() {
       if (emptyIndex !== -1) {
         next[emptyIndex] = digit;
       }
+      
+      const isNowComplete = next.every((d) => d !== "");
+      if (isNowComplete) {
+        setKeypadVisible(false);
+      }
+      
       return next;
     });
   };
@@ -87,9 +97,9 @@ export function LaundryOtpVerificationScreen() {
           style={styles.headerSide}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="chevron-back" size={22} color="#1F1F1F" />
+          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{orderId}</Text>
+        <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>Pickup</Text>
         </View>
@@ -100,7 +110,7 @@ export function LaundryOtpVerificationScreen() {
           entering={FadeInUp.delay(200).duration(500).springify()}
           style={styles.iconCircle}
         >
-          <Ionicons name="car-outline" size={36} color="#FFFFFF" />
+          <MaterialCommunityIcons name="truck" size={42} color="#FFFFFF" />
         </Animated.View>
 
         <Animated.Text
@@ -114,8 +124,7 @@ export function LaundryOtpVerificationScreen() {
           entering={FadeInUp.delay(400).duration(400).springify()}
           style={styles.description}
         >
-          Please ask the laundry staff for the 4-digit verification code
-          sent for order handover confirmation.
+          Please ask the customer for the 4-digit verification code sent to their phone.
         </Animated.Text>
 
         <Animated.View
@@ -159,8 +168,16 @@ export function LaundryOtpVerificationScreen() {
           entering={FadeInUp.delay(700).duration(400).springify()}
           style={styles.orderCard}
         >
-          <Ionicons name="shirt-outline" size={28} color="#8259D2" />
+          <View style={styles.bagIconContainer}>
+            <Image
+              source={orderTickImage}
+              style={styles.orderCardImage}
+              resizeMode="contain"
+            />
+          </View>
+
           <View style={styles.orderInfo}>
+            <Text style={styles.orderLabelText}>ORDER {orderId}</Text>
             <Text
               style={styles.customerName}
               numberOfLines={1}
@@ -168,10 +185,13 @@ export function LaundryOtpVerificationScreen() {
             >
               {customerName}
             </Text>
-            <Text style={styles.orderIdText}>{orderId}</Text>
           </View>
-          <View style={styles.statusBadge}>
-            <Text style={styles.statusText}>{status}</Text>
+
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusLabelText}>Status</Text>
+            <View style={styles.statusBadge}>
+              <Text style={styles.statusText}>{status}</Text>
+            </View>
           </View>
         </Animated.View>
 
@@ -223,7 +243,7 @@ export function LaundryOtpVerificationScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FAFAFA",
   },
   header: {
     flexDirection: "row",
@@ -231,11 +251,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     height: 48,
+    backgroundColor: "#FAFAFA",
   },
   headerSide: {
     width: 32,
     height: 32,
     justifyContent: "center",
+    zIndex: 10,
   },
   headerTitle: {
     position: "absolute",
@@ -267,33 +289,33 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: "#8259D2",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 14,
+    marginBottom: 20,
     shadowColor: "#8259D2",
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.2,
     shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 4,
   },
   title: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 22,
+    fontSize: 24,
     color: "#1F1F1F",
-    marginBottom: 6,
+    marginBottom: 8,
     textAlign: "center",
   },
   description: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 13,
+    fontSize: 14,
     color: "#8E8E93",
-    lineHeight: 18,
+    lineHeight: 20,
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 28,
     paddingHorizontal: 8,
   },
   otpRow: {
@@ -303,8 +325,8 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   otpBox: {
-    width: OTP_BOX_SIZE,
-    height: OTP_BOX_SIZE + 6,
+    width: OTP_WIDTH,
+    height: OTP_HEIGHT,
     borderRadius: 12,
     borderWidth: 1.5,
     borderColor: "#EAEAEA",
@@ -318,7 +340,7 @@ const styles = StyleSheet.create({
   },
   otpDigit: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 20,
+    fontSize: 22,
     color: "#1F1F1F",
     textAlign: "center",
   },
@@ -330,7 +352,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   countdownText: {
     fontFamily: "Poppins_400Regular",
@@ -345,60 +367,87 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#EAEAEA",
-    padding: 12,
-    marginBottom: 14,
+    padding: 16,
+    marginBottom: 20,
     shadowColor: "#000",
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
     elevation: 2,
+  },
+  bagIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  orderCardImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
   },
   orderInfo: {
     flex: 1,
-    marginHorizontal: 10,
+    marginLeft: 14,
+    justifyContent: "center",
+  },
+  orderLabelText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 12,
+    color: "#8E8E93",
+    textTransform: "uppercase",
+    marginBottom: 2,
   },
   customerName: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 14,
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 16,
     color: "#1F1F1F",
   },
-  orderIdText: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 11,
-    color: "#8E8E93",
+  statusContainer: {
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
-  statusBadge: {
-    backgroundColor: "#FFF3E0",
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 999,
-  },
-  statusText: {
+  statusLabelText: {
     fontFamily: "Poppins_500Medium",
     fontSize: 11,
-    color: "#E67E22",
+    color: "#8E8E93",
+    marginBottom: 4,
+  },
+  statusBadge: {
+    backgroundColor: "#8259D2",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 12,
+    color: "#FFFFFF",
   },
   verifyWrapper: {
     width: "100%",
+    marginTop: 10,
   },
   verifyButton: {
-    height: 48,
+    height: 52,
     backgroundColor: "#8259D2",
-    borderRadius: 16,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#8259D2",
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
-    elevation: 5,
+    elevation: 4,
   },
   verifyButtonDisabled: {
     opacity: 0.5,
   },
   verifyText: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 15,
+    fontSize: 16,
     color: "#FFFFFF",
   },
 });

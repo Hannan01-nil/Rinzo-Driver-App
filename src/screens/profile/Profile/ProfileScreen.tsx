@@ -170,7 +170,7 @@ const ProfileScreen: React.FC = () => {
           >
             <View style={styles.earnTopRowV2}>
               <View style={styles.earnColumn}>
-                <Text style={styles.earnLabelTop}>Today's Earnings</Text>
+                <Text style={styles.earnLabelTop}>Today{"'"}s Earnings</Text>
                 <Text style={styles.earnValueTop}>₹650</Text>
               </View>
               <View style={styles.earnColumnRight}>

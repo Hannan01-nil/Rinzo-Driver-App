@@ -6,14 +6,14 @@ import { Header } from '@/components/layout/header'
 import { Card, Button } from '@/components/ui'
 import { useOrders } from '@/hooks'
 import { colors, typography, spacing } from '@/theme'
-import { formatCurrency } from '@/utils'
+
 
 export function InTransitScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const route = useRoute()
   const { orderId } = route.params as { orderId: string }
   const { orders } = useOrders()
-  const order = orders.find(o => o.id === orderId)
+  const order = orders.find(o => o.id === orderId || o.orderNumber === orderId)
 
   return (
     <ScreenWrapper>

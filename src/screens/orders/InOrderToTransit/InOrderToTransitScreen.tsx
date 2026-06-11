@@ -21,12 +21,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export function InOrderToTransitScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const route = useRoute();
   const orderId = (route.params as any)?.orderId ?? "#129348393";
   const distance =
     (route.params as any)?.distance ?? "2.8 km away";
   const eta = (route.params as any)?.eta ?? "20 mins";
+  const fromHomeTrack = (route.params as any)?.fromHomeTrack;
 
   const reachedScale = useSharedValue(1);
   const helpScale = useSharedValue(1);
@@ -53,13 +54,27 @@ export function InOrderToTransitScreen() {
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            if (fromHomeTrack) {
+              const parentNav = navigation.getParent && navigation.getParent();
+              if (parentNav && typeof parentNav.navigate === "function") {
+                parentNav.navigate("home", {
+                  screen: "order-tracking",
+                  params: { orderId },
+                });
+              } else {
+                navigation.navigate("order-tracking" as any, { orderId } as any);
+              }
+            } else {
+              navigation.goBack();
+            }
+          }}
           style={styles.headerSide}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="chevron-back" size={22} color="#1F1F1F" />
+          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{orderId}</Text>
+        <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>Pickup</Text>
         </View>
@@ -176,6 +191,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     justifyContent: "center",
+    zIndex: 10,
   },
   headerTitle: {
     position: "absolute",

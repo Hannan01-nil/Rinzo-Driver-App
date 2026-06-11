@@ -29,7 +29,7 @@ export function OrderAtLaundryScreen() {
   const { orderId } = route.params as { orderId: string }
 
   const { orders } = useOrders()
-  const order = orders.find(o => o.id === orderId)
+  const order = orders.find(o => o.id === orderId || o.orderNumber === orderId)
 
   const laundryName = 'Rinzo Laundry Hub'
 
