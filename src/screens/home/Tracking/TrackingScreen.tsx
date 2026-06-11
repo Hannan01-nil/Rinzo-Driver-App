@@ -21,7 +21,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export function OrderTrackingScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { orderId } = route.params as { orderId: string };
+  const { orderId, fromCollected } = route.params as { orderId: string; fromCollected?: boolean };
 
   useEffect(() => {
     const { redirectToCollect } = (route.params || {}) as {
@@ -34,11 +34,14 @@ export function OrderTrackingScreen() {
         if (parentNav && typeof parentNav.navigate === "function") {
           parentNav.navigate("orders", {
             screen: "collect-clothes",
-            params: { orderId },
+            params: { orderId, fromScreen: "order-tracking" },
           });
         } else {
           try {
-            (navigation as any).navigate("collect-clothes", { orderId });
+            (navigation as any).navigate("collect-clothes", {
+              orderId,
+              fromScreen: "order-tracking",
+            });
           } catch (e) {
             // no-op if navigation fails
           }
@@ -54,6 +57,22 @@ export function OrderTrackingScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => {
+            if (fromCollected) {
+              const parentNav =
+                (navigation as any).getParent &&
+                (navigation as any).getParent();
+              if (parentNav && typeof parentNav.navigate === "function") {
+                parentNav.navigate("orders", {
+                  screen: "order-collected-success",
+                  params: { orderId },
+                });
+              } else {
+                try {
+                  (navigation as any).navigate("order-collected-success", { orderId });
+                } catch (e) {}
+              }
+              return;
+            }
             try {
               navigation.dispatch(
                 CommonActions.navigate({
@@ -73,9 +92,9 @@ export function OrderTrackingScreen() {
           style={styles.headerSide}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="chevron-back" size={22} color="#1F1F1F" />
+          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{orderId}</Text>
+        <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
         <View style={styles.headerSide} />
       </View>
 
@@ -98,23 +117,24 @@ export function OrderTrackingScreen() {
             <TouchableOpacity
               style={styles.callButton}
               activeOpacity={0.7}
-              onPress={() => {
-                const parentNav =
-                  (navigation as any).getParent &&
-                  (navigation as any).getParent();
-                if (parentNav && typeof parentNav.navigate === "function") {
-                  parentNav.navigate("orders", {
-                    screen: "order-in-transit",
-                    params: { orderId },
+            onPress={() => {
+              const parentNav =
+                (navigation as any).getParent &&
+                (navigation as any).getParent();
+              if (parentNav && typeof parentNav.navigate === "function") {
+                parentNav.navigate("orders", {
+                  screen: "order-in-transit",
+                  params: { orderId, fromHomeTrack: true },
+                });
+              } else {
+                try {
+                  (navigation as any).navigate("order-in-transit", {
+                    orderId,
+                    fromHomeTrack: true,
                   });
-                } else {
-                  try {
-                    (navigation as any).navigate("order-in-transit", {
-                      orderId,
-                    });
-                  } catch (e) {}
-                }
-              }}
+                } catch (e) {}
+              }
+            }}
             >
               <Ionicons name="call-outline" size={20} color="#8259D2" />
             </TouchableOpacity>
@@ -157,7 +177,7 @@ export function OrderTrackingScreen() {
             if (parentNav && typeof parentNav.navigate === "function") {
               parentNav.navigate("orders", {
                 screen: "collect-clothes",
-                params: { orderId },
+                params: { orderId, fromScreen: "order-tracking" },
               });
             }
           }}
@@ -193,6 +213,7 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 10,
   },
   headerTitle: {
     position: "absolute",

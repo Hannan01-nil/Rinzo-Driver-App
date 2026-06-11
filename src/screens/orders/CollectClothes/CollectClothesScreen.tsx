@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -6,59 +6,117 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Linking,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Ionicons } from '@expo/vector-icons'
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated'
 
-import { ScreenWrapper } from '@/components/layout/screen-wrapper'
-import { Header } from '@/components/layout/header'
-import { Card, Button, Badge } from '@/components/ui'
 import { useOrders } from '@/hooks'
-import { colors, typography, spacing } from '@/theme'
-import { formatCurrency } from '@/utils'
-import { ORDER_STATUS_LABELS } from '@/constants'
+import { colors, typography } from '@/theme'
+import { BottomTabBar } from '@/components/navigation/BottomTabBar'
 
 const FALLBACK_ITEMS = [
   { name: 'Wash and Fold', price: '₹200' },
-  { name: 'Iron Only', price: '₹75/item' },
-  { name: 'Dry Cleaning', price: '₹125/item' },
+  { name: 'Iron Only', price: '₹15/Item' },
+  { name: 'Dry Cleaning', price: '₹125/Item' },
 ]
 
 export function CollectClothesScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const route = useRoute()
-  const { orderId } = route.params as { orderId: string }
+  const { orderId } = (route.params || {}) as { orderId: string }
 
   const { orders } = useOrders()
-  const order = orders.find(o => o.id === orderId)
+  const order = orders.find(o => o.id === orderId || o.orderNumber === orderId)
+  const [notes, setNotes] = useState('')
+
+  const buttonScale = useSharedValue(1)
+
+  const animatedButtonStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }))
+
+  const handleCall = () => {
+    if (order?.customerPhone) {
+      Linking.openURL(`tel:${order.customerPhone}`)
+    } else {
+      Linking.openURL('tel:+919999999999')
+    }
+  }
 
   if (!order) {
     return (
-      <ScreenWrapper>
-        <Header title="Collect Clothes" />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => {
+              const fromScreen = (route.params as any)?.fromScreen;
+              if (fromScreen === 'order-tracking') {
+                const parentNav = navigation.getParent && navigation.getParent();
+                if (parentNav && typeof parentNav.navigate === 'function') {
+                  parentNav.navigate('home', {
+                    screen: 'order-tracking',
+                    params: { orderId },
+                  });
+                } else {
+                  navigation.navigate('order-tracking' as any, { orderId } as any);
+                }
+              } else {
+                navigation.goBack();
+              }
+            }}
+            style={styles.headerSide}
+          >
+            <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle} pointerEvents="none">Collect Clothes</Text>
+          <View style={styles.headerSide} />
+        </View>
         <Text style={styles.notFound}>Order not found</Text>
-      </ScreenWrapper>
+      </SafeAreaView>
     )
   }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            const fromScreen = (route.params as any)?.fromScreen;
+            if (fromScreen === 'order-tracking') {
+              const parentNav = navigation.getParent && navigation.getParent();
+              if (parentNav && typeof parentNav.navigate === 'function') {
+                parentNav.navigate('home', {
+                  screen: 'order-tracking',
+                  params: { orderId },
+                });
+              } else {
+                navigation.navigate('order-tracking' as any, { orderId } as any);
+              }
+            } else {
+              navigation.goBack();
+            }
+          }}
           style={styles.headerSide}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="chevron-back" size={22} color="#1F1F1F" />
+          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>{order.orderNumber}</Text>
+        <Text style={styles.headerTitle} pointerEvents="none">
+          {order.orderNumber}
+        </Text>
 
-        <Badge
-          label={ORDER_STATUS_LABELS[order.status]}
-          variant="info"
-        />
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>Pickup</Text>
+        </View>
       </View>
 
       <ScrollView
@@ -69,40 +127,16 @@ export function CollectClothesScreen() {
           <View style={styles.customerLeft}>
             <Text style={styles.customerLabel}>Customer</Text>
             <Text style={styles.customerName}>{order.customerName}</Text>
-            <Text style={styles.customerPhone}>{order.customerPhone}</Text>
           </View>
 
-          <TouchableOpacity style={styles.callButton}>
-            <Ionicons name="call-outline" size={22} color="#1F1F1F" />
+          <TouchableOpacity
+            style={styles.callButton}
+            onPress={handleCall}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="call-outline" size={20} color="#1F1F1F" />
           </TouchableOpacity>
         </View>
-
-        <Card>
-          <Text style={styles.sectionTitle}>Pickup Address</Text>
-
-          <Text style={styles.value}>
-            {order.pickupAddress.street}
-          </Text>
-
-          <Text style={styles.value}>
-            {order.pickupAddress.city}, {order.pickupAddress.state}
-          </Text>
-
-          <View style={styles.divider} />
-
-          <Text style={styles.sectionTitle}>Order Summary</Text>
-
-          <Text style={styles.value}>
-            {order.itemsCount} items ·{' '}
-            {order.totalWeight
-              ? `${order.totalWeight} kg`
-              : 'Weight not available'}
-          </Text>
-
-          <Text style={styles.amount}>
-            {formatCurrency(order.totalAmount)}
-          </Text>
-        </Card>
 
         <View style={styles.verifySection}>
           <Text style={styles.verifyTitle}>Verify Items</Text>
@@ -127,26 +161,47 @@ export function CollectClothesScreen() {
         </View>
 
         <View style={styles.notesSection}>
-          <Text style={styles.notesLabel}>Notes (Optional)</Text>
+          <Text style={styles.notesLabel}>Notes ( Optional )</Text>
 
           <TextInput
             style={styles.notesInput}
             placeholder="E.g handle with care"
             placeholderTextColor="#B8B8B8"
-            multiline
+            value={notes}
+            onChangeText={setNotes}
           />
         </View>
 
-        <Button
-          title="Confirm Collection"
-          fullWidth
-          onPress={() =>
-            navigation.navigate('order-collected-success', {
-              orderId,
-            })
-          }
-        />
+        <Animated.View style={animatedButtonStyle}>
+          <TouchableOpacity
+            style={styles.confirmButton}
+            activeOpacity={0.85}
+            onPressIn={() => {
+              buttonScale.value = withSpring(0.97, {
+                damping: 15,
+                stiffness: 200,
+              })
+            }}
+            onPressOut={() => {
+              buttonScale.value = withSpring(1, {
+                damping: 10,
+                stiffness: 150,
+              })
+            }}
+            onPress={() =>
+              navigation.navigate('order-collected-success', {
+                orderId,
+              })
+            }
+          >
+            <Text style={styles.confirmButtonText}>Confirm collection</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
+        <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      <BottomTabBar activeTab="home" onTabPress={() => {}} />
     </SafeAreaView>
   )
 }
@@ -154,19 +209,19 @@ export function CollectClothesScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAFAFA',
   },
 
   scrollContent: {
     padding: 20,
-    paddingBottom: 40,
+    paddingTop: 8,
   },
 
   notFound: {
     ...typography.body,
     color: colors.textSecondary,
     textAlign: 'center',
-    marginTop: spacing.xxl,
+    marginTop: 40,
   },
 
   header: {
@@ -175,21 +230,40 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     height: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EAEAEA',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAFAFA',
   },
 
   headerSide: {
-    width: 32,
-    height: 32,
+    width: 48,
+    height: 48,
     justifyContent: 'center',
+    alignItems: 'flex-start',
+    zIndex: 10,
   },
 
   headerTitle: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 18,
     color: '#1F1F1F',
+    textAlign: 'center',
+  },
+
+  badge: {
+    backgroundColor: '#DDF4E8',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  badgeText: {
+    fontFamily: 'Poppins_500Medium',
+    fontSize: 11,
+    color: '#5D9C74',
   },
 
   customerCard: {
@@ -199,8 +273,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EAEAEA',
     borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    marginTop: 12,
+    marginBottom: 24,
     backgroundColor: '#FFFFFF',
   },
 
@@ -218,13 +294,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 15,
     color: '#1F1F1F',
-    marginTop: 2,
-  },
-
-  customerPhone: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: 13,
-    color: '#666',
     marginTop: 4,
   },
 
@@ -232,38 +301,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  sectionTitle: {
-    ...typography.caption,
-    color: colors.textSecondary,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: spacing.xs,
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: colors.divider,
-    marginVertical: spacing.md,
-  },
-
-  value: {
-    ...typography.body,
-    color: colors.text,
-    marginBottom: spacing.xs,
-  },
-
-  amount: {
-    ...typography.h3,
-    color: colors.primary,
-    marginTop: spacing.sm,
+    alignItems: 'flex-end',
   },
 
   verifySection: {
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 16,
   },
 
   verifyTitle: {
@@ -283,16 +326,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EAEAEA',
     borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
     backgroundColor: '#FFFFFF',
+    overflow: 'hidden',
+    marginBottom: 24,
   },
 
   itemRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 44,
+    paddingHorizontal: 20,
+    height: 60,
   },
 
   itemName: {
@@ -310,10 +354,11 @@ const styles = StyleSheet.create({
   itemDivider: {
     height: 1,
     backgroundColor: '#F2F2F2',
+    marginHorizontal: 20,
   },
 
   notesSection: {
-    marginBottom: 24,
+    marginBottom: 32,
   },
 
   notesLabel: {
@@ -324,15 +369,33 @@ const styles = StyleSheet.create({
   },
 
   notesInput: {
-    minHeight: 56,
+    height: 52,
     borderWidth: 1,
     borderColor: '#EAEAEA',
     borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: 20,
     fontFamily: 'Poppins_400Regular',
     fontSize: 14,
     color: '#1F1F1F',
-    textAlignVertical: 'top',
+    backgroundColor: '#FFFFFF',
+  },
+
+  confirmButton: {
+    height: 52,
+    backgroundColor: '#8259D2',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+
+  confirmButtonText: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 16,
+    color: '#FFFFFF',
+  },
+
+  bottomSpacer: {
+    height: 110,
   },
 })

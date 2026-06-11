@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Image,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -28,12 +29,27 @@ export function BankDetailsScreen() {
   const maskedNumber = `******${bank.accountNumber.slice(-4)}`;
   const displayNumber = showAccountNumber ? bank.accountNumber : maskedNumber;
 
+  const handleShare = async () => {
+    try {
+      const shareMessage = `Bank Account Details:\n\nAccount Holder: ${bank.accountHolderName}\nBank Name: ${bank.bankName}\nAccount Number: ${bank.accountNumber}\nIFSC Code: ${bank.ifscCode}\nUPI ID: ${bank.upiId}`;
+      await Share.share({
+        message: shareMessage,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <HeaderBackButton />
         <Text style={styles.headerTitle}>Bank Details</Text>
-        <TouchableOpacity style={styles.headerSide}>
+        <TouchableOpacity
+          style={styles.headerSide}
+          onPress={handleShare}
+          activeOpacity={0.7}
+        >
           <Ionicons name="share-social-outline" size={22} color="#4B4458" />
         </TouchableOpacity>
       </View>
@@ -132,7 +148,11 @@ export function BankDetailsScreen() {
           />
         </View>
 
-        <TouchableOpacity activeOpacity={0.9} style={styles.updateWrap}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={styles.updateWrap}
+          onPress={() => navigation.navigate("index")}
+        >
           <LinearGradient
             colors={["#8259D2", "#8259D2"]}
             style={styles.updateButton}
