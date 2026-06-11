@@ -20,6 +20,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
 import orderTickImage from "@/assets/images/DriverAppImages/order_tick.png";
 import Svg, { Path } from "react-native-svg";
 
@@ -92,13 +93,9 @@ export function LaundryOtpVerificationScreen() {
         entering={FadeInUp.delay(100).duration(400)}
         style={styles.header}
       >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.headerSide}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
-        </TouchableOpacity>
+        <View style={styles.headerSide}>
+          <HeaderBackButton />
+        </View>
         <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>Pickup</Text>

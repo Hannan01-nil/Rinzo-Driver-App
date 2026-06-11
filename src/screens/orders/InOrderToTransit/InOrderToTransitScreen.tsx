@@ -17,6 +17,7 @@ import Animated, {
   FadeInUp,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -53,27 +54,25 @@ export function InOrderToTransitScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            if (fromHomeTrack) {
-              const parentNav = navigation.getParent && navigation.getParent();
-              if (parentNav && typeof parentNav.navigate === "function") {
-                parentNav.navigate("home", {
-                  screen: "order-tracking",
-                  params: { orderId },
-                });
+        <View style={styles.headerSide}>
+          <HeaderBackButton
+            onPress={() => {
+              if (fromHomeTrack) {
+                const parentNav = navigation.getParent && navigation.getParent();
+                if (parentNav && typeof parentNav.navigate === "function") {
+                  parentNav.navigate("home", {
+                    screen: "order-tracking",
+                    params: { orderId },
+                  });
+                } else {
+                  navigation.navigate("order-tracking" as any, { orderId } as any);
+                }
               } else {
-                navigation.navigate("order-tracking" as any, { orderId } as any);
+                navigation.goBack();
               }
-            } else {
-              navigation.goBack();
-            }
-          }}
-          style={styles.headerSide}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
-        </TouchableOpacity>
+            }}
+          />
+        </View>
         <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>Pickup</Text>

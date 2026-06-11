@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -26,13 +27,9 @@ export function LaundryTrackingScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.headerSide}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
-        </TouchableOpacity>
+        <View style={styles.headerSide}>
+          <HeaderBackButton />
+        </View>
         <Text style={styles.headerTitle} pointerEvents="none">{orderId ?? "Laundry Tracking"}</Text>
         <View style={styles.headerSide} />
       </View>
