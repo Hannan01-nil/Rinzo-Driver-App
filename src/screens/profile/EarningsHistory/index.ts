@@ -1,0 +1,1 @@
+export { EarningsHistoryScreen } from "./EarningsHistoryScreen";

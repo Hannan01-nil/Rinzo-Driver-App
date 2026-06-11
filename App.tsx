@@ -2,11 +2,11 @@ import { BottomTabBar } from "@/components/navigation/BottomTabBar";
 import { authStore } from "@/store/auth-store";
 import { colors } from "@/theme";
 import {
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-    useFonts,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+  useFonts,
 } from "@expo-google-fonts/poppins";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,14 +23,14 @@ import { NewPickupRequestScreen } from "@/screens/dashboard/NewPickupRequestScre
 import { DocumentViewScreen } from "@/screens/documents/DocumentView/DocumentViewScreen";
 import { UploadDocumentScreen } from "@/screens/documents/UploadDocument/UploadDocumentScreen";
 import { EarningsDashboardScreen } from "@/screens/earnings/EarningsDashboard/EarningsDashboardScreen";
-import { EarningsHistoryScreen } from "@/screens/earnings/EarningsHistory/EarningsHistoryScreen";
+import { EarningsHistoryScreen } from "@/screens/profile/EarningsHistory/EarningsHistoryScreen";
 import { Last7DaysScreen } from "@/screens/earnings/Last7Days/Last7DaysScreen";
 import { WithdrawScreen } from "@/screens/earnings/Withdraw/WithdrawScreen";
 import { BankDetailsScreen } from "@/screens/finance/BankDetails/BankDetailsScreen";
 import { OrderTrackingScreen } from "@/screens/home/Tracking/TrackingScreen";
 import { CollectClothesScreen } from "@/screens/orders/CollectClothes/CollectClothesScreen";
 import { DeliveredSuccessScreen } from "@/screens/orders/Delivered/DeliveredScreen";
-import { LaundryTrackingScreen } from "@/screens/orders/Laundry/LaundryScreen";
+import { OrderAtLaundryScreen } from "@/screens/orders/Laundry/LaundryScreen";
 import { OrderAcceptedScreen } from "@/screens/orders/OrderAccepted/OrderAcceptedScreen";
 import { OrderCollectedSuccessScreen } from "@/screens/orders/OrderCollected/OrderCollectedScreen";
 import { OrdersListScreen } from "@/screens/orders/OrdersList/OrdersListScreen";
@@ -43,7 +43,7 @@ import { DailySummaryScreen } from "@/screens/performance/DailySummary/DailySumm
 import { PerformanceScreen } from "@/screens/performance/Performance/PerformanceScreen";
 import { DocumentsScreen } from "@/screens/profile/Documents/DocumentsScreen";
 import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation/PersonalInformationScreen";
-import { ProfileScreen } from "@/screens/profile/Profile/ProfileScreen";
+import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
 import { ContactSupportScreen } from "@/screens/support/ContactSupport/ContactSupportScreen";
 
@@ -68,22 +68,10 @@ function AuthStack() {
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen
-        name="index"
-        component={DashboardScreen}
-      />
-      <HomeStack.Screen
-        name="new-pickup-request"
-        component={NewPickupRequestScreen}
-      />
-      <HomeStack.Screen
-        name="order-accepted"
-        component={OrderAcceptedScreen}
-      />
-      <HomeStack.Screen
-        name="order-tracking"
-        component={OrderTrackingScreen}
-      />
+      <HomeStack.Screen name="index" component={DashboardScreen} />
+      <HomeStack.Screen name="new-pickup-request" component={NewPickupRequestScreen} />
+      <HomeStack.Screen name="order-accepted" component={OrderAcceptedScreen} />
+      <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -91,38 +79,14 @@ function HomeStackScreen() {
 function OrdersStackScreen() {
   return (
     <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
-      <OrdersStack.Screen
-        name="index"
-        component={OrdersListScreen}
-      />
-      <OrdersStack.Screen
-        name="collect-clothes"
-        component={CollectClothesScreen}
-      />
-      <OrdersStack.Screen
-        name="order-collected-success"
-        component={OrderCollectedSuccessScreen}
-      />
-      <OrdersStack.Screen
-        name="in-transit"
-        component={InTransitScreen}
-      />
-      <OrdersStack.Screen
-        name="order-in-transit"
-        component={InOrderToTransitScreen}
-      />
-      <OrdersStack.Screen
-        name="laundry-otp"
-        component={LaundryOtpVerificationScreen}
-      />
-      <OrdersStack.Screen
-        name="order-at-laundry"
-        component={LaundryTrackingScreen}
-      />
-      <OrdersStack.Screen
-        name="delivered-success"
-        component={DeliveredSuccessScreen}
-      />
+      <OrdersStack.Screen name="index" component={OrdersListScreen} />
+      <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} />
+      <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
+      <OrdersStack.Screen name="in-transit" component={InTransitScreen} />
+      <OrdersStack.Screen name="order-in-transit" component={InOrderToTransitScreen} />
+      <OrdersStack.Screen name="laundry-otp" component={LaundryOtpVerificationScreen} />
+      <OrdersStack.Screen name="order-at-laundry" component={OrderAtLaundryScreen} />
+      <OrdersStack.Screen name="delivered-success" component={DeliveredSuccessScreen} />
     </OrdersStack.Navigator>
   );
 }
@@ -130,22 +94,10 @@ function OrdersStackScreen() {
 function EarningsStackScreen() {
   return (
     <EarningsStack.Navigator screenOptions={{ headerShown: false }}>
-      <EarningsStack.Screen
-        name="index"
-        component={EarningsDashboardScreen}
-      />
-      <EarningsStack.Screen
-        name="withdraw"
-        component={WithdrawScreen}
-      />
-      <EarningsStack.Screen
-        name="last-7-days"
-        component={Last7DaysScreen}
-      />
-      <EarningsStack.Screen
-        name="earnings-history"
-        component={EarningsHistoryScreen}
-      />
+      <EarningsStack.Screen name="index" component={EarningsDashboardScreen} />
+      <EarningsStack.Screen name="withdraw" component={WithdrawScreen} />
+      <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} />
+      <EarningsStack.Screen name="earnings-history" component={EarningsHistoryScreen} />
     </EarningsStack.Navigator>
   );
 }
@@ -153,54 +105,18 @@ function EarningsStackScreen() {
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
-      <ProfileStack.Screen
-        name="index"
-        component={ProfileScreen}
-      />
-      <ProfileStack.Screen
-        name="personal-information"
-        component={PersonalInformationScreen}
-      />
-      <ProfileStack.Screen
-        name="vehicle-information"
-        component={VehicleInformationScreen}
-      />
-      <ProfileStack.Screen
-        name="documents/index"
-        component={DocumentsScreen}
-      />
-      <ProfileStack.Screen
-        name="documents/upload"
-        component={UploadDocumentScreen}
-      />
-      <ProfileStack.Screen
-        name="documents/[id]"
-        component={DocumentViewScreen}
-      />
-      <ProfileStack.Screen
-        name="finance/bank-details"
-        component={BankDetailsScreen}
-      />
-      <ProfileStack.Screen
-        name="performance/index"
-        component={PerformanceScreen}
-      />
-      <ProfileStack.Screen
-        name="performance/bonus-incentives"
-        component={BonusScreen}
-      />
-      <ProfileStack.Screen
-        name="performance/daily-summary"
-        component={DailySummaryScreen}
-      />
-      <ProfileStack.Screen
-        name="performance/daily-details"
-        component={DailyDetailsScreen}
-      />
-      <ProfileStack.Screen
-        name="support/contact"
-        component={ContactSupportScreen}
-      />
+      <ProfileStack.Screen name="index" component={ProfileScreen} />
+      <ProfileStack.Screen name="personal-information" component={PersonalInformationScreen} />
+      <ProfileStack.Screen name="vehicle-information" component={VehicleInformationScreen} />
+      <ProfileStack.Screen name="documents/index" component={DocumentsScreen} />
+      <ProfileStack.Screen name="documents/upload" component={UploadDocumentScreen} />
+      <ProfileStack.Screen name="documents/[id]" component={DocumentViewScreen} />
+      <ProfileStack.Screen name="finance/bank-details" component={BankDetailsScreen} />
+      <ProfileStack.Screen name="performance/index" component={PerformanceScreen} />
+      <ProfileStack.Screen name="performance/bonus-incentives" component={BonusScreen} />
+      <ProfileStack.Screen name="performance/daily-summary" component={DailySummaryScreen} />
+      <ProfileStack.Screen name="performance/daily-details" component={DailyDetailsScreen} />
+      <ProfileStack.Screen name="support/contact" component={ContactSupportScreen} />
     </ProfileStack.Navigator>
   );
 }
@@ -211,12 +127,9 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index];
+        const nestedRoute = activeRoute.state?.routes?.[activeRoute.state?.index ?? 0];
 
-        const nestedRouteName =
-          activeRoute.state?.routes?.[activeRoute.state?.index ?? -1]?.name;
-        const hideFor = ["order-accepted", "order-tracking", "order-collected-success", "order-at-laundry", "in-transit", "order-in-transit", "laundry-otp"];
-
-        if (nestedRouteName && hideFor.includes(nestedRouteName)) return null;
+        if (nestedRoute && nestedRoute.name !== "index") return null;
 
         return (
           <BottomTabBar

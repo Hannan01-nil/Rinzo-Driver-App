@@ -3,12 +3,16 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export function HeaderBackButton() {
+interface HeaderBackButtonProps {
+  onPress?: () => void;
+}
+
+export function HeaderBackButton({ onPress }: HeaderBackButtonProps) {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.goBack()}
+      onPress={() => (onPress ? onPress() : navigation.goBack())}
       style={styles.container}
       activeOpacity={0.7}
     >

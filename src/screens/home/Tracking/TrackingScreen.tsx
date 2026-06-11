@@ -1,6 +1,10 @@
 import mapImage from "@/assets/images/DriverAppImages/map.png";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { useEffect } from "react";
 import {
   Dimensions,
@@ -33,7 +37,6 @@ export function OrderTrackingScreen() {
             params: { orderId },
           });
         } else {
-          // fallback: try direct navigate
           try {
             (navigation as any).navigate("collect-clothes", { orderId });
           } catch (e) {
@@ -47,10 +50,26 @@ export function OrderTrackingScreen() {
   }, [route.params]);
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            try {
+              navigation.dispatch(
+                CommonActions.navigate({
+                  name: "(tabs)",
+                  params: { screen: "home", params: { screen: "index" } },
+                }) as any,
+              );
+            } catch (e) {
+              const parentNav =
+                (navigation as any).getParent &&
+                (navigation as any).getParent();
+              if (parentNav && typeof parentNav.navigate === "function") {
+                parentNav.navigate("home", { screen: "index" });
+              }
+            }
+          }}
           style={styles.headerSide}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
@@ -81,7 +100,8 @@ export function OrderTrackingScreen() {
               activeOpacity={0.7}
               onPress={() => {
                 const parentNav =
-                  (navigation as any).getParent && (navigation as any).getParent();
+                  (navigation as any).getParent &&
+                  (navigation as any).getParent();
                 if (parentNav && typeof parentNav.navigate === "function") {
                   parentNav.navigate("orders", {
                     screen: "order-in-transit",
@@ -89,9 +109,10 @@ export function OrderTrackingScreen() {
                   });
                 } else {
                   try {
-                    (navigation as any).navigate("order-in-transit", { orderId });
-                  } catch (e) {
-                  }
+                    (navigation as any).navigate("order-in-transit", {
+                      orderId,
+                    });
+                  } catch (e) {}
                 }
               }}
             >

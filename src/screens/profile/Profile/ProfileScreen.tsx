@@ -70,7 +70,11 @@ const ProfileScreen: React.FC = () => {
   function MenuRow({ icon, label, route, danger }: any) {
     const handlePress = () => {
       if (route) {
-        navigation.dispatch(CommonActions.navigate({ name: route as string }));
+        if (route === "earnings-history") {
+          navigation.navigate("earnings", { screen: "earnings-history" });
+        } else {
+          navigation.dispatch(CommonActions.navigate({ name: route as string }));
+        }
       }
     };
 
