@@ -3,7 +3,7 @@ import type { TOrder } from '@/types'
 export const mockOrders: TOrder[] = [
   {
     id: 'ord_001',
-    orderNumber: 'RZ-2024-001',
+    orderNumber: '#471c8b54',
     status: 'collected',
     customerName: 'Rahul Sharma',
     customerPhone: '+919876543210',
@@ -36,7 +36,7 @@ export const mockOrders: TOrder[] = [
   },
   {
     id: 'ord_002',
-    orderNumber: 'RZ-2024-002',
+    orderNumber: '#123454797',
     status: 'at_laundry',
     customerName: 'Priya Patel',
     customerPhone: '+919812345678',
@@ -71,7 +71,7 @@ export const mockOrders: TOrder[] = [
   },
   {
     id: 'ord_003',
-    orderNumber: 'RZ-2024-003',
+    orderNumber: '#123454799',
     status: 'pending',
     customerName: 'Arun Kumar',
     customerPhone: '+919900112233',

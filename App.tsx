@@ -30,13 +30,14 @@ import { BankDetailsScreen } from "@/screens/finance/BankDetails/BankDetailsScre
 import { OrderTrackingScreen } from "@/screens/home/Tracking/TrackingScreen";
 import { CollectClothesScreen } from "@/screens/orders/CollectClothes/CollectClothesScreen";
 import { DeliveredSuccessScreen } from "@/screens/orders/Delivered/DeliveredScreen";
-import { OrderAtLaundryScreen } from "@/screens/orders/Laundry/LaundryScreen";
+import { OrderAtLaundryScreen } from "@/screens/orders/OrderAtLaundry/OrderAtLaundryScreen";
 import { OrderAcceptedScreen } from "@/screens/orders/OrderAccepted/OrderAcceptedScreen";
 import { OrderCollectedSuccessScreen } from "@/screens/orders/OrderCollected/OrderCollectedScreen";
 import { OrdersListScreen } from "@/screens/orders/OrdersList/OrdersListScreen";
 import { InOrderToTransitScreen } from "@/screens/orders/InOrderToTransit/InOrderToTransitScreen";
-import { LaundryOtpVerificationScreen } from "@/screens/orders/LaundryOtpVerification/LaundryOtpVerificationScreen";
 import { InTransitScreen } from "@/screens/orders/Transit/TransitScreen";
+import { LaundryOtpVerificationScreen } from "@/screens/orders/LaundryOtpVerification/LaundryOtpVerificationScreen";
+import { LaundryTrackingScreen } from "@/screens/orders/LaundryTracking/LaundryTrackingScreen";
 import { BonusScreen } from "@/screens/performance/Bonus/BonusScreen";
 import { DailyDetailsScreen } from "@/screens/performance/DailyDetails/DailyDetailsScreen";
 import { DailySummaryScreen } from "@/screens/performance/DailySummary/DailySummaryScreen";
@@ -85,6 +86,7 @@ function OrdersStackScreen() {
       <OrdersStack.Screen name="in-transit" component={InTransitScreen} />
       <OrdersStack.Screen name="order-in-transit" component={InOrderToTransitScreen} />
       <OrdersStack.Screen name="laundry-otp" component={LaundryOtpVerificationScreen} />
+      <OrdersStack.Screen name="laundry-tracking" component={LaundryTrackingScreen} />
       <OrdersStack.Screen name="order-at-laundry" component={OrderAtLaundryScreen} />
       <OrdersStack.Screen name="delivered-success" component={DeliveredSuccessScreen} />
     </OrdersStack.Navigator>
@@ -174,6 +176,7 @@ const linking = {
               "in-transit": "orders/in-transit/:orderId",
               "order-in-transit": "orders/in-transit/:orderId",
               "laundry-otp": "orders/laundry-otp/:orderId",
+              "laundry-tracking": "orders/laundry-tracking/:orderId",
               "order-at-laundry": "orders/at-laundry/:orderId",
               "delivered-success": "orders/delivered/:orderId",
             },
