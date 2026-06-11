@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { authStore } from '@/store/auth-store'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
@@ -38,6 +39,7 @@ export function LoginScreen() {
   const [password, setPassword] = useState('')
 
   const handleLogin = useCallback(() => {
+    authStore.setState({ isAuthenticated: true })
     navigation.navigate('(tabs)')
   }, [navigation])
 
@@ -152,7 +154,8 @@ const styles = StyleSheet.create({
   illustrationContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
+    marginTop: -8,
+    marginBottom: -30,
   },
   illustration: {
     width: ILLUSTRATION_WIDTH,

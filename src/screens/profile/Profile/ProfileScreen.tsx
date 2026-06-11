@@ -1,10 +1,11 @@
-import { useProfile } from "@/hooks";
+import { useProfile, useAuth } from "@/hooks";
 import { spacing } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -17,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const ProfileScreen: React.FC = () => {
   const navigation: any = useNavigation();
   const { profile } = useProfile();
+  const { logout } = useAuth();
 
   const MENU_SECTIONS = [
     {
@@ -60,9 +62,9 @@ const ProfileScreen: React.FC = () => {
     {
       title: "SUPPORT",
       items: [
-        { label: "Help Center", route: "support/contact", icon: "help-circle" },
+        { label: "Help Center", route: "support/help-center", icon: "help-circle" },
         { label: "Contact Support", route: "support/contact", icon: "call" },
-        { label: "Report Issue", route: "ReportIssueScreen", icon: "warning" },
+        { label: "Report Issue", route: "support/report-issue", icon: "warning" },
       ],
     },
   ];
@@ -150,6 +152,13 @@ const ProfileScreen: React.FC = () => {
               </View>
             </View>
           </View>
+          <TouchableOpacity
+            style={styles.settingsBtn}
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate("profile/settings")}
+          >
+            <Ionicons name="settings-outline" size={24} color="#8259D2" />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.earningsCardWrap}>
@@ -201,7 +210,34 @@ const ProfileScreen: React.FC = () => {
             <TouchableOpacity
               style={styles.logoutRow}
               activeOpacity={0.7}
-              onPress={() => {}}
+              onPress={() => {
+                Alert.alert(
+                  "Logout",
+                  "Are you sure you want to log out of your account?",
+                  [
+                    { text: "Cancel", style: "cancel" },
+                    {
+                      text: "Logout",
+                      style: "destructive",
+                      onPress: () => {
+                        logout();
+                        const rootNavigation = navigation.getParent()?.getParent();
+                        if (rootNavigation && typeof rootNavigation.reset === "function") {
+                          rootNavigation.reset({
+                            index: 0,
+                            routes: [{ name: "(auth)" }],
+                          });
+                        } else {
+                          navigation.reset({
+                            index: 0,
+                            routes: [{ name: "(auth)" }],
+                          });
+                        }
+                      },
+                    },
+                  ]
+                );
+              }}
             >
               <View style={styles.leftIconLogout}>
                 <Ionicons name="log-out-outline" size={20} color="#FF4D4F" />
@@ -221,8 +257,13 @@ const ProfileScreen: React.FC = () => {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#FFFFFF" },
   scroll: { paddingHorizontal: 16, paddingTop: 10 },
-  headerRow: { marginBottom: 12 },
-  leftRow: { flexDirection: "row", alignItems: "flex-start" },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 12,
+  },
+  leftRow: { flexDirection: "row", alignItems: "flex-start", flex: 1 },
   avatarWrap: { marginRight: 12 },
   avatar: { width: 80, height: 80, borderRadius: 42 },
   avatarOuter: {

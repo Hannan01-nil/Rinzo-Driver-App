@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -128,14 +129,15 @@ export function EarningsHistoryScreen() {
               {TRANSACTIONS.length} Transactions
             </Text>
           </View>
+          <View style={styles.titleDivider} />
 
           {TRANSACTIONS.map((tx) => (
-            <View
-              key={tx.id}
-              style={styles.transactionRow}
-            >
+            <View key={tx.id} style={styles.transactionRow}>
               <View style={styles.txIconWrap}>
-                <Ionicons name="wallet-outline" size={16} color="#8259D2" />
+                <Image
+                  source={require("@/assets/images/DriverAppImages/order_icon.png")}
+                  style={styles.txIcon}
+                />
               </View>
               <View style={styles.txInfo}>
                 <Text style={styles.txOrder}>{tx.order}</Text>
@@ -148,6 +150,7 @@ export function EarningsHistoryScreen() {
             </View>
           ))}
 
+          <View style={styles.viewDivider} />
           <TouchableOpacity style={styles.viewAllRow} activeOpacity={0.7}>
             <Text style={styles.viewAllText}>View All Transactions</Text>
           </TouchableOpacity>
@@ -208,9 +211,9 @@ const styles = StyleSheet.create({
   },
   segmentedControl: {
     flexDirection: "row",
-    height: 40,
+    height: 36,
     backgroundColor: "#EDE4FF",
-    borderRadius: 14,
+    borderRadius: 10,
     padding: 3,
   },
   segmentTab: {
@@ -241,6 +244,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 26,
     gap: 93,
+    marginRight: 20,
   },
   navArrow: {
     width: 22,
@@ -266,13 +270,13 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_500Medium",
     fontSize: 11,
     color: "#6F6B7D",
-    letterSpacing: 3,
+    letterSpacing: 2,
+    marginBottom: 2,
   },
   earningsAmount: {
     fontFamily: "Poppins_700Bold",
     fontSize: 44,
     color: "#0F1E37",
-    marginTop: 2,
   },
   growthPill: {
     flexDirection: "row",
@@ -281,18 +285,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 14,
-    marginTop: 8,
     gap: 4,
     height: 28,
+    marginTop: 2,
   },
   growthText: {
     fontFamily: "Poppins_500Medium",
     fontSize: 13,
-    color: "#16A34A",
+    color: "#0b913c",
   },
   transactionCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 18,
+    borderRadius: 8,
     marginTop: 16,
     shadowColor: "#000",
     shadowOpacity: 0.04,
@@ -307,6 +311,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
+    marginTop: 4,
   },
   transactionTitle: {
     fontFamily: "Poppins_600SemiBold",
@@ -315,22 +320,38 @@ const styles = StyleSheet.create({
   },
   transactionCount: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 13,
+    fontSize: 14,
     color: "#6F6B7D",
+  },
+  titleDivider: {
+    width: 370,
+    height: 1,
+    backgroundColor: "#bdb9d2",
+    marginTop: 4,
+    marginBottom: 4,
+    marginLeft: -16,
+    marginRight: -16,
   },
   transactionRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 18,
   },
   txIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "#F7F7F7",
+    width: 40,
+    height: 40,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 12,
+    marginRight: 20,
+    marginLeft: -2,
+  },
+  txIcon: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+    borderRadius: 12,
+    marginLeft: 12,
   },
   txInfo: {
     flex: 1,
@@ -338,38 +359,48 @@ const styles = StyleSheet.create({
   },
   txOrder: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 22,
+    fontSize: 21,
     color: "#0F1E37",
   },
   txDate: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 12,
+    fontSize: 14,
     color: "#6F6B7D",
-    marginTop: 2,
+    marginTop: -7,
   },
   txRight: {
     alignItems: "flex-end",
   },
   txAmount: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 22,
+    fontSize: 21,
     color: "#000000",
   },
   txStatus: {
     fontFamily: "Poppins_400Regular",
     fontSize: 14,
     color: "#6F6B7D",
-    marginTop: 1,
+    marginTop: -7,
   },
   viewAllRow: {
     alignItems: "center",
     justifyContent: "center",
     height: 56,
   },
+  viewDivider: {
+    width: 370,
+    height: 1,
+    backgroundColor: "#bdb9d2",
+    marginTop: 4,
+    marginBottom: 4,
+    marginLeft: -16,
+    marginRight: -16,
+  },
   viewAllText: {
     fontFamily: "Poppins_500Medium",
-    fontSize: 16,
-    color: "#0F1E37",
+    fontSize: 21,
+    color: "#000000",
+    marginTop: 16,
   },
   bonusBanner: {
     marginTop: 16,

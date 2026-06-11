@@ -37,6 +37,9 @@ export type ProfileStackParamList = {
   'performance/daily-summary': undefined
   'performance/daily-details': { date: string }
   'support/contact': undefined
+  'support/report-issue': undefined
+  'support/report-submitted': { ticketId?: string }
+  'profile/settings': undefined
 }
 
 export type TabParamList = {

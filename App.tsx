@@ -9,7 +9,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/poppins";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -39,13 +39,17 @@ import { LaundryOtpVerificationScreen } from "@/screens/orders/LaundryOtpVerific
 import { InTransitScreen } from "@/screens/orders/Transit/TransitScreen";
 import { BonusScreen } from "@/screens/performance/Bonus/BonusScreen";
 import { DailyDetailsScreen } from "@/screens/performance/DailyDetails/DailyDetailsScreen";
-import { DailySummaryScreen } from "@/screens/performance/DailySummary/DailySummaryScreen";
+import { DailySummaryScreen } from "@/screens/profile/DailySummary/DailySummaryScreen";
 import { PerformanceScreen } from "@/screens/performance/Performance/PerformanceScreen";
 import { DocumentsScreen } from "@/screens/profile/Documents/DocumentsScreen";
 import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation/PersonalInformationScreen";
 import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
+import { SettingsScreen } from "@/screens/profile/Settings/SettingsScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
 import { ContactSupportScreen } from "@/screens/support/ContactSupport/ContactSupportScreen";
+import { HelpCenterScreen } from "@/screens/support/HelpCenter/HelpCenterScreen";
+import { ReportIssueScreen } from "@/screens/support/ReportIssue/ReportIssueScreen";
+import { ReportSubmittedScreen } from "@/screens/support/ReportIssue/ReportSubmittedScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -117,6 +121,10 @@ function ProfileStackScreen() {
       <ProfileStack.Screen name="performance/daily-summary" component={DailySummaryScreen} />
       <ProfileStack.Screen name="performance/daily-details" component={DailyDetailsScreen} />
       <ProfileStack.Screen name="support/contact" component={ContactSupportScreen} />
+      <ProfileStack.Screen name="support/help-center" component={HelpCenterScreen} />
+      <ProfileStack.Screen name="support/report-issue" component={ReportIssueScreen} />
+      <ProfileStack.Screen name="support/report-submitted" component={ReportSubmittedScreen} />
+      <ProfileStack.Screen name="profile/settings" component={SettingsScreen} />
     </ProfileStack.Navigator>
   );
 }
@@ -127,9 +135,9 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index];
-        const nestedRoute = activeRoute.state?.routes?.[activeRoute.state?.index ?? 0];
+        const routeName = getFocusedRouteNameFromRoute(activeRoute) ?? "index";
 
-        if (nestedRoute && nestedRoute.name !== "index") return null;
+        if (routeName !== "index") return null;
 
         return (
           <BottomTabBar
@@ -200,6 +208,10 @@ const linking = {
               "performance/daily-summary": "performance/daily-summary",
               "performance/daily-details": "performance/daily/:date",
               "support/contact": "support",
+              "support/help-center": "help-center",
+              "support/report-issue": "report-issue",
+              "support/report-submitted": "report-submitted",
+              "profile/settings": "settings",
             },
           },
         },
