@@ -26,7 +26,7 @@ import { EarningsDashboardScreen } from "@/screens/earnings/EarningsDashboard/Ea
 import { EarningsHistoryScreen } from "@/screens/profile/EarningsHistory/EarningsHistoryScreen";
 import { Last7DaysScreen } from "@/screens/earnings/Last7Days/Last7DaysScreen";
 import { WithdrawScreen } from "@/screens/earnings/Withdraw/WithdrawScreen";
-import { BankDetailsScreen } from "@/screens/finance/BankDetails/BankDetailsScreen";
+import { BankDetailsScreen } from "@/screens/profile/finance/BankDetails/BankDetailsScreen";
 import { OrderTrackingScreen } from "@/screens/home/Tracking/TrackingScreen";
 import { CollectClothesScreen } from "@/screens/orders/CollectClothes/CollectClothesScreen";
 import { DeliveredSuccessScreen } from "@/screens/orders/Delivered/DeliveredScreen";
@@ -38,19 +38,20 @@ import { InOrderToTransitScreen } from "@/screens/orders/InOrderToTransit/InOrde
 import { InTransitScreen } from "@/screens/orders/Transit/TransitScreen";
 import { LaundryOtpVerificationScreen } from "@/screens/orders/LaundryOtpVerification/LaundryOtpVerificationScreen";
 import { LaundryTrackingScreen } from "@/screens/orders/LaundryTracking/LaundryTrackingScreen";
-import { BonusScreen } from "@/screens/performance/Bonus/BonusScreen";
-import { DailyDetailsScreen } from "@/screens/performance/DailyDetails/DailyDetailsScreen";
+import { BonusScreen } from "@/screens/profile/performance/Bonus/BonusScreen";
+import { DailyDetailsScreen } from "@/screens/profile/performance/DailyDetails/DailyDetailsScreen";
 import { DailySummaryScreen } from "@/screens/profile/DailySummary/DailySummaryScreen";
-import { PerformanceScreen } from "@/screens/performance/Performance/PerformanceScreen";
+import { PerformanceScreen } from "@/screens/profile/performance/Performance/PerformanceScreen";
 import { DocumentsScreen } from "@/screens/profile/Documents/DocumentsScreen";
 import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation/PersonalInformationScreen";
 import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
 import { SettingsScreen } from "@/screens/profile/Settings/SettingsScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
-import { ContactSupportScreen } from "@/screens/support/ContactSupport/ContactSupportScreen";
-import { HelpCenterScreen } from "@/screens/support/HelpCenter/HelpCenterScreen";
-import { ReportIssueScreen } from "@/screens/support/ReportIssue/ReportIssueScreen";
-import { ReportSubmittedScreen } from "@/screens/support/ReportIssue/ReportSubmittedScreen";
+import { ContactSupportScreen } from "@/screens/profile/support/ContactSupport/ContactSupportScreen";
+import { HelpCenterScreen } from "@/screens/profile/support/HelpCenter/HelpCenterScreen";
+import { ReportIssueScreen } from "@/screens/profile/support/ReportIssue/ReportIssueScreen";
+import { ReportSubmittedScreen } from "@/screens/profile/support/ReportIssue/ReportSubmittedScreen";
+import { ComingSoonScreen } from "@/screens/ComingSoonScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -81,10 +82,18 @@ function HomeStackScreen() {
   );
 }
 
+function OrdersComingSoon() {
+  return <ComingSoonScreen title="Orders" />;
+}
+
+function EarningsComingSoon() {
+  return <ComingSoonScreen title="Earnings" />;
+}
+
 function OrdersStackScreen() {
   return (
     <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
-      <OrdersStack.Screen name="index" component={OrdersListScreen} />
+      <OrdersStack.Screen name="index" component={OrdersComingSoon} />
       <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} />
       <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
       <OrdersStack.Screen name="in-transit" component={InTransitScreen} />
@@ -100,7 +109,7 @@ function OrdersStackScreen() {
 function EarningsStackScreen() {
   return (
     <EarningsStack.Navigator screenOptions={{ headerShown: false }}>
-      <EarningsStack.Screen name="index" component={EarningsDashboardScreen} />
+      <EarningsStack.Screen name="index" component={EarningsComingSoon} />
       <EarningsStack.Screen name="withdraw" component={WithdrawScreen} />
       <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} />
       <EarningsStack.Screen name="earnings-history" component={EarningsHistoryScreen} />
@@ -150,8 +159,8 @@ function MainTabs() {
       }}
     >
       <Tab.Screen name="home" component={HomeStackScreen} />
-      <Tab.Screen name="orders" component={OrdersStackScreen} />
       <Tab.Screen name="earnings" component={EarningsStackScreen} />
+      <Tab.Screen name="orders" component={OrdersStackScreen} />
       <Tab.Screen name="profile" component={ProfileStackScreen} />
     </Tab.Navigator>
   );

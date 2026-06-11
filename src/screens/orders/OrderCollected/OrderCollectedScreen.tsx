@@ -21,6 +21,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Svg, { Path as SvgPath } from 'react-native-svg'
+import { HeaderBackButton } from '@/components/layout/header-back-button'
 
 const AnimatedPath = Animated.createAnimatedComponent(SvgPath)
 
@@ -101,17 +102,9 @@ export function OrderCollectedSuccessScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.headerSide}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons
-            name="arrow-back"
-            size={24}
-            color="#1F1F1F"
-          />
-        </TouchableOpacity>
+        <View style={styles.headerSide}>
+          <HeaderBackButton />
+        </View>
 
         <Text style={styles.headerTitle} pointerEvents="none">
           {orderId}

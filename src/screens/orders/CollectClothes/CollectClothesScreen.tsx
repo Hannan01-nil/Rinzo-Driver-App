@@ -21,6 +21,7 @@ import Animated, {
 import { useOrders } from '@/hooks'
 import { colors, typography } from '@/theme'
 import { BottomTabBar } from '@/components/navigation/BottomTabBar'
+import { HeaderBackButton } from '@/components/layout/header-back-button'
 
 const FALLBACK_ITEMS = [
   { name: 'Wash and Fold', price: '₹200' },
@@ -55,7 +56,39 @@ export function CollectClothesScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <TouchableOpacity
+          <View style={styles.headerSide}>
+            <HeaderBackButton
+              onPress={() => {
+                const fromScreen = (route.params as any)?.fromScreen;
+                if (fromScreen === 'order-tracking') {
+                  const parentNav = navigation.getParent && navigation.getParent();
+                  if (parentNav && typeof parentNav.navigate === 'function') {
+                    parentNav.navigate('home', {
+                      screen: 'order-tracking',
+                      params: { orderId },
+                    });
+                  } else {
+                    navigation.navigate('order-tracking' as any, { orderId } as any);
+                  }
+                } else {
+                  navigation.goBack();
+                }
+              }}
+            />
+          </View>
+          <Text style={styles.headerTitle} pointerEvents="none">Collect Clothes</Text>
+          <View style={styles.headerSide} />
+        </View>
+        <Text style={styles.notFound}>Order not found</Text>
+      </SafeAreaView>
+    )
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <View style={styles.header}>
+        <View style={styles.headerSide}>
+          <HeaderBackButton
             onPress={() => {
               const fromScreen = (route.params as any)?.fromScreen;
               if (fromScreen === 'order-tracking') {
@@ -72,43 +105,8 @@ export function CollectClothesScreen() {
                 navigation.goBack();
               }
             }}
-            style={styles.headerSide}
-          >
-            <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle} pointerEvents="none">Collect Clothes</Text>
-          <View style={styles.headerSide} />
+          />
         </View>
-        <Text style={styles.notFound}>Order not found</Text>
-      </SafeAreaView>
-    )
-  }
-
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            const fromScreen = (route.params as any)?.fromScreen;
-            if (fromScreen === 'order-tracking') {
-              const parentNav = navigation.getParent && navigation.getParent();
-              if (parentNav && typeof parentNav.navigate === 'function') {
-                parentNav.navigate('home', {
-                  screen: 'order-tracking',
-                  params: { orderId },
-                });
-              } else {
-                navigation.navigate('order-tracking' as any, { orderId } as any);
-              }
-            } else {
-              navigation.goBack();
-            }
-          }}
-          style={styles.headerSide}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
-        </TouchableOpacity>
 
         <Text style={styles.headerTitle} pointerEvents="none">
           {order.orderNumber}

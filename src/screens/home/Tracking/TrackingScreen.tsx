@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -55,45 +56,43 @@ export function OrderTrackingScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            if (fromCollected) {
-              const parentNav =
-                (navigation as any).getParent &&
-                (navigation as any).getParent();
-              if (parentNav && typeof parentNav.navigate === "function") {
-                parentNav.navigate("orders", {
-                  screen: "order-collected-success",
-                  params: { orderId },
-                });
-              } else {
-                try {
-                  (navigation as any).navigate("order-collected-success", { orderId });
-                } catch (e) {}
+        <View style={styles.headerSide}>
+          <HeaderBackButton
+            onPress={() => {
+              if (fromCollected) {
+                const parentNav =
+                  (navigation as any).getParent &&
+                  (navigation as any).getParent();
+                if (parentNav && typeof parentNav.navigate === "function") {
+                  parentNav.navigate("orders", {
+                    screen: "order-collected-success",
+                    params: { orderId },
+                  });
+                } else {
+                  try {
+                    (navigation as any).navigate("order-collected-success", { orderId });
+                  } catch (e) {}
+                }
+                return;
               }
-              return;
-            }
-            try {
-              navigation.dispatch(
-                CommonActions.navigate({
-                  name: "(tabs)",
-                  params: { screen: "home", params: { screen: "index" } },
-                }) as any,
-              );
-            } catch (e) {
-              const parentNav =
-                (navigation as any).getParent &&
-                (navigation as any).getParent();
-              if (parentNav && typeof parentNav.navigate === "function") {
-                parentNav.navigate("home", { screen: "index" });
+              try {
+                navigation.dispatch(
+                  CommonActions.navigate({
+                    name: "(tabs)",
+                    params: { screen: "home", params: { screen: "index" } },
+                  }) as any,
+                );
+              } catch (e) {
+                const parentNav =
+                  (navigation as any).getParent &&
+                  (navigation as any).getParent();
+                if (parentNav && typeof parentNav.navigate === "function") {
+                  parentNav.navigate("home", { screen: "index" });
+                }
               }
-            }
-          }}
-          style={styles.headerSide}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="arrow-back" size={24} color="#1F1F1F" />
-        </TouchableOpacity>
+            }}
+          />
+        </View>
         <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
         <View style={styles.headerSide} />
       </View>
