@@ -4,6 +4,7 @@ export interface TDocument {
   id: string
   type: DocumentType
   label: string
+  documentNumber?: string
   fileUrl: string
   fileType: 'image' | 'pdf'
   status: DocumentStatus

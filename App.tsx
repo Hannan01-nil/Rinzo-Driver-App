@@ -2,11 +2,11 @@ import { BottomTabBar } from "@/components/navigation/BottomTabBar";
 import { authStore } from "@/store/auth-store";
 import { colors } from "@/theme";
 import {
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-    useFonts,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+  useFonts,
 } from "@expo-google-fonts/poppins";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,7 +23,7 @@ import { NewPickupRequestScreen } from "@/screens/dashboard/NewPickupRequestScre
 import { DocumentViewScreen } from "@/screens/documents/DocumentView/DocumentViewScreen";
 import { UploadDocumentScreen } from "@/screens/documents/UploadDocument/UploadDocumentScreen";
 import { EarningsDashboardScreen } from "@/screens/earnings/EarningsDashboard/EarningsDashboardScreen";
-import { EarningsHistoryScreen } from "@/screens/earnings/EarningsHistory/EarningsHistoryScreen";
+import { EarningsHistoryScreen } from "@/screens/profile/EarningsHistory/EarningsHistoryScreen";
 import { Last7DaysScreen } from "@/screens/earnings/Last7Days/Last7DaysScreen";
 import { WithdrawScreen } from "@/screens/earnings/Withdraw/WithdrawScreen";
 import { BankDetailsScreen } from "@/screens/finance/BankDetails/BankDetailsScreen";
@@ -34,6 +34,8 @@ import { OrderAtLaundryScreen } from "@/screens/orders/Laundry/LaundryScreen";
 import { OrderAcceptedScreen } from "@/screens/orders/OrderAccepted/OrderAcceptedScreen";
 import { OrderCollectedSuccessScreen } from "@/screens/orders/OrderCollected/OrderCollectedScreen";
 import { OrdersListScreen } from "@/screens/orders/OrdersList/OrdersListScreen";
+import { InOrderToTransitScreen } from "@/screens/orders/InOrderToTransit/InOrderToTransitScreen";
+import { LaundryOtpVerificationScreen } from "@/screens/orders/LaundryOtpVerification/LaundryOtpVerificationScreen";
 import { InTransitScreen } from "@/screens/orders/Transit/TransitScreen";
 import { BonusScreen } from "@/screens/performance/Bonus/BonusScreen";
 import { DailyDetailsScreen } from "@/screens/performance/DailyDetails/DailyDetailsScreen";
@@ -41,7 +43,7 @@ import { DailySummaryScreen } from "@/screens/performance/DailySummary/DailySumm
 import { PerformanceScreen } from "@/screens/performance/Performance/PerformanceScreen";
 import { DocumentsScreen } from "@/screens/profile/Documents/DocumentsScreen";
 import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation/PersonalInformationScreen";
-import { ProfileScreen } from "@/screens/profile/Profile/ProfileScreen";
+import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
 import { ContactSupportScreen } from "@/screens/support/ContactSupport/ContactSupportScreen";
 
@@ -65,182 +67,56 @@ function AuthStack() {
 
 function HomeStackScreen() {
   return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
-      <HomeStack.Screen
-        name="index"
-        component={DashboardScreen}
-        options={{ headerShown: false }}
-      />
-      <HomeStack.Screen
-        name="new-pickup-request"
-        component={NewPickupRequestScreen}
-        options={{ title: "New Pickup Request", headerShown: false }}
-      />
-      <HomeStack.Screen
-        name="order-accepted"
-        component={OrderAcceptedScreen}
-        options={{ title: "Order Accepted", headerShown: false }}
-      />
-      <HomeStack.Screen
-        name="order-tracking"
-        component={OrderTrackingScreen}
-        options={{ headerShown: false }}
-      />
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="index" component={DashboardScreen} />
+      <HomeStack.Screen name="new-pickup-request" component={NewPickupRequestScreen} />
+      <HomeStack.Screen name="order-accepted" component={OrderAcceptedScreen} />
+      <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} />
     </HomeStack.Navigator>
   );
 }
 
 function OrdersStackScreen() {
   return (
-    <OrdersStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
-      <OrdersStack.Screen
-        name="index"
-        component={OrdersListScreen}
-        options={{ headerShown: false }}
-      />
-      <OrdersStack.Screen
-        name="collect-clothes"
-        component={CollectClothesScreen}
-        options={{ title: "Collect Clothes" }}
-      />
-      <OrdersStack.Screen
-        name="order-collected-success"
-        component={OrderCollectedSuccessScreen}
-        options={{ title: "Collected", headerBackVisible: false }}
-      />
-      <OrdersStack.Screen
-        name="in-transit"
-        component={InTransitScreen}
-        options={{ title: "In Transit" }}
-      />
-      <OrdersStack.Screen
-        name="order-at-laundry"
-        component={OrderAtLaundryScreen}
-        options={{ title: "At Laundry" }}
-      />
-      <OrdersStack.Screen
-        name="delivered-success"
-        component={DeliveredSuccessScreen}
-        options={{ title: "Delivered", headerBackVisible: false }}
-      />
+    <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
+      <OrdersStack.Screen name="index" component={OrdersListScreen} />
+      <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} />
+      <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
+      <OrdersStack.Screen name="in-transit" component={InTransitScreen} />
+      <OrdersStack.Screen name="order-in-transit" component={InOrderToTransitScreen} />
+      <OrdersStack.Screen name="laundry-otp" component={LaundryOtpVerificationScreen} />
+      <OrdersStack.Screen name="order-at-laundry" component={OrderAtLaundryScreen} />
+      <OrdersStack.Screen name="delivered-success" component={DeliveredSuccessScreen} />
     </OrdersStack.Navigator>
   );
 }
 
 function EarningsStackScreen() {
   return (
-    <EarningsStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
-      <EarningsStack.Screen
-        name="index"
-        component={EarningsDashboardScreen}
-        options={{ headerShown: false }}
-      />
-      <EarningsStack.Screen
-        name="withdraw"
-        component={WithdrawScreen}
-        options={{ title: "Withdraw" }}
-      />
-      <EarningsStack.Screen
-        name="last-7-days"
-        component={Last7DaysScreen}
-        options={{ title: "Last 7 Days" }}
-      />
-      <EarningsStack.Screen
-        name="earnings-history"
-        component={EarningsHistoryScreen}
-        options={{ title: "Earnings History" }}
-      />
+    <EarningsStack.Navigator screenOptions={{ headerShown: false }}>
+      <EarningsStack.Screen name="index" component={EarningsDashboardScreen} />
+      <EarningsStack.Screen name="withdraw" component={WithdrawScreen} />
+      <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} />
+      <EarningsStack.Screen name="earnings-history" component={EarningsHistoryScreen} />
     </EarningsStack.Navigator>
   );
 }
 
 function ProfileStackScreen() {
   return (
-    <ProfileStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: "600" },
-      }}
-    >
-      <ProfileStack.Screen
-        name="index"
-        component={ProfileScreen}
-        options={{ headerShown: false }}
-      />
-      <ProfileStack.Screen
-        name="personal-information"
-        component={PersonalInformationScreen}
-        options={{ title: "Personal Information" }}
-      />
-      <ProfileStack.Screen
-        name="vehicle-information"
-        component={VehicleInformationScreen}
-        options={{ title: "Vehicle Information" }}
-      />
-      <ProfileStack.Screen
-        name="documents/index"
-        component={DocumentsScreen}
-        options={{ title: "Documents" }}
-      />
-      <ProfileStack.Screen
-        name="documents/upload"
-        component={UploadDocumentScreen}
-        options={{ title: "Upload Document" }}
-      />
-      <ProfileStack.Screen
-        name="documents/[id]"
-        component={DocumentViewScreen}
-        options={{ title: "Document" }}
-      />
-      <ProfileStack.Screen
-        name="finance/bank-details"
-        component={BankDetailsScreen}
-        options={{ title: "Bank Details" }}
-      />
-      <ProfileStack.Screen
-        name="performance/index"
-        component={PerformanceScreen}
-        options={{ title: "Performance" }}
-      />
-      <ProfileStack.Screen
-        name="performance/bonus-incentives"
-        component={BonusScreen}
-        options={{ title: "Bonus & Incentives" }}
-      />
-      <ProfileStack.Screen
-        name="performance/daily-summary"
-        component={DailySummaryScreen}
-        options={{ title: "Daily Summary" }}
-      />
-      <ProfileStack.Screen
-        name="performance/daily-details"
-        component={DailyDetailsScreen}
-        options={{ title: "Daily Details" }}
-      />
-      <ProfileStack.Screen
-        name="support/contact"
-        component={ContactSupportScreen}
-        options={{ title: "Contact Support" }}
-      />
+    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProfileStack.Screen name="index" component={ProfileScreen} />
+      <ProfileStack.Screen name="personal-information" component={PersonalInformationScreen} />
+      <ProfileStack.Screen name="vehicle-information" component={VehicleInformationScreen} />
+      <ProfileStack.Screen name="documents/index" component={DocumentsScreen} />
+      <ProfileStack.Screen name="documents/upload" component={UploadDocumentScreen} />
+      <ProfileStack.Screen name="documents/[id]" component={DocumentViewScreen} />
+      <ProfileStack.Screen name="finance/bank-details" component={BankDetailsScreen} />
+      <ProfileStack.Screen name="performance/index" component={PerformanceScreen} />
+      <ProfileStack.Screen name="performance/bonus-incentives" component={BonusScreen} />
+      <ProfileStack.Screen name="performance/daily-summary" component={DailySummaryScreen} />
+      <ProfileStack.Screen name="performance/daily-details" component={DailyDetailsScreen} />
+      <ProfileStack.Screen name="support/contact" component={ContactSupportScreen} />
     </ProfileStack.Navigator>
   );
 }
@@ -251,12 +127,9 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index];
+        const nestedRoute = activeRoute.state?.routes?.[activeRoute.state?.index ?? 0];
 
-        const nestedRouteName =
-          activeRoute.state?.routes?.[activeRoute.state.index]?.name;
-        const hideFor = ["order-accepted", "order-tracking"];
-
-        if (nestedRouteName && hideFor.includes(nestedRouteName)) return null;
+        if (nestedRoute && nestedRoute.name !== "index") return null;
 
         return (
           <BottomTabBar
@@ -299,6 +172,8 @@ const linking = {
               "collect-clothes": "orders/collect/:orderId",
               "order-collected-success": "orders/collected/:orderId",
               "in-transit": "orders/in-transit/:orderId",
+              "order-in-transit": "orders/in-transit/:orderId",
+              "laundry-otp": "orders/laundry-otp/:orderId",
               "order-at-laundry": "orders/at-laundry/:orderId",
               "delivered-success": "orders/delivered/:orderId",
             },

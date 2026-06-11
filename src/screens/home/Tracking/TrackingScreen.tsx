@@ -37,7 +37,6 @@ export function OrderTrackingScreen() {
             params: { orderId },
           });
         } else {
-          // fallback: try direct navigate
           try {
             (navigation as any).navigate("collect-clothes", { orderId });
           } catch (e) {
@@ -55,7 +54,6 @@ export function OrderTrackingScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => {
-            // Always navigate to dashboard (tabs -> home -> index)
             try {
               navigation.dispatch(
                 CommonActions.navigate({
@@ -64,7 +62,6 @@ export function OrderTrackingScreen() {
                 }) as any,
               );
             } catch (e) {
-              // Fallback: try parent navigate
               const parentNav =
                 (navigation as any).getParent &&
                 (navigation as any).getParent();
@@ -87,48 +84,86 @@ export function OrderTrackingScreen() {
       </View>
 
       <View style={styles.bottomCard}>
-        <Text style={styles.title}>Order Tracking</Text>
-        <View style={styles.driverRow}>
-          <Image
-            source={{ uri: "https://i.pravatar.cc/150?u=driver_tracking" }}
-            style={styles.avatar}
-          />
-          <View style={styles.driverInfo}>
-            <Text style={styles.driverName}>Cameron Williamson</Text>
-            <Text style={styles.driverRole}>Delivery Man</Text>
+        <View style={styles.cardUpper}>
+          <Text style={styles.title}>Order Tracking</Text>
+          <View style={styles.driverRow}>
+            <Image
+              source={{ uri: "https://i.pravatar.cc/150?u=driver_tracking" }}
+              style={styles.avatar}
+            />
+            <View style={styles.driverInfo}>
+              <Text style={styles.driverName}>Cameron Williamson</Text>
+              <Text style={styles.driverRole}>Delivery Man</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.callButton}
+              activeOpacity={0.7}
+              onPress={() => {
+                const parentNav =
+                  (navigation as any).getParent &&
+                  (navigation as any).getParent();
+                if (parentNav && typeof parentNav.navigate === "function") {
+                  parentNav.navigate("orders", {
+                    screen: "order-in-transit",
+                    params: { orderId },
+                  });
+                } else {
+                  try {
+                    (navigation as any).navigate("order-in-transit", {
+                      orderId,
+                    });
+                  } catch (e) {}
+                }
+              }}
+            >
+              <Ionicons name="call-outline" size={20} color="#8259D2" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.callButton} activeOpacity={0.7}>
-            <Ionicons name="call-outline" size={20} color="#8259D2" />
-          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <View style={styles.timelineSection}>
+            <View style={styles.timelineLine} />
+
+            <View style={styles.trackingRow}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="location-outline" size={16} color="#8259D2" />
+              </View>
+              <View style={styles.trackingContent}>
+                <Text style={styles.trackingLabel}>Pickup</Text>
+                <Text style={styles.trackingValue}>
+                  221b baker street, bangalore - 500001
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.trackingRow}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="flag-outline" size={16} color="#8259D2" />
+              </View>
+              <View style={styles.trackingContent}>
+                <Text style={styles.trackingLabel}>Dropoff</Text>
+                <Text style={styles.trackingValue}>03:00PM (Max 20 min)</Text>
+              </View>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.divider} />
-
-        <View style={styles.timelineSection}>
-          <View style={styles.timelineLine} />
-
-          <View style={styles.trackingRow}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="location-outline" size={16} color="#8259D2" />
-            </View>
-            <View style={styles.trackingContent}>
-              <Text style={styles.trackingLabel}>Pickup</Text>
-              <Text style={styles.trackingValue}>
-                221b baker street, bangalore - 500001
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.trackingRow}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="flag-outline" size={16} color="#8259D2" />
-            </View>
-            <View style={styles.trackingContent}>
-              <Text style={styles.trackingLabel}>Dropoff</Text>
-              <Text style={styles.trackingValue}>03:00PM (Max 20 min)</Text>
-            </View>
-          </View>
-        </View>
+        <TouchableOpacity
+          style={styles.reachedButton}
+          activeOpacity={0.7}
+          onPress={() => {
+            const parentNav = (navigation as any).getParent?.();
+            if (parentNav && typeof parentNav.navigate === "function") {
+              parentNav.navigate("orders", {
+                screen: "collect-clothes",
+                params: { orderId },
+              });
+            }
+          }}
+        >
+          <Text style={styles.reachedButtonText}>Reached Pickup Point</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -184,7 +219,7 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     width: "100%",
-    height: SCREEN_HEIGHT * 0.62,
+    height: SCREEN_HEIGHT * 0.58,
     overflow: "hidden",
     backgroundColor: "#F5F5F5",
   },
@@ -197,9 +232,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
-    paddingTop: 20,
+    paddingTop: 16,
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 16,
     marginTop: -92,
     shadowColor: "#000",
     shadowOpacity: 0.06,
@@ -207,17 +242,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -6 },
     elevation: 6,
   },
+  cardUpper: {
+    flex: 1,
+    overflow: "hidden",
+  },
   title: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 18,
     color: "#1F1F1F",
-    marginBottom: 14,
+    marginBottom: 8,
   },
   driverRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 16,
-    marginBottom: 12,
+    marginTop: 6,
+    marginBottom: 6,
   },
   avatar: {
     width: 48,
@@ -258,7 +297,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: "#F1F1F1",
-    marginVertical: 12,
+    marginVertical: 6,
   },
   timelineSection: {
     position: "relative",
@@ -274,7 +313,7 @@ const styles = StyleSheet.create({
   trackingRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   iconContainer: {
     width: 40,
@@ -304,5 +343,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#1F1F1F",
     lineHeight: 20,
+  },
+  reachedButton: {
+    height: 48,
+    backgroundColor: "#8259D2",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 12,
+  },
+  reachedButtonText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 15,
+    color: "#FFFFFF",
   },
 });

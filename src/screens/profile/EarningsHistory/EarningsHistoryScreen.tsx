@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 type Period = "Week" | "Month" | "Year";
 
@@ -46,25 +47,21 @@ const TRANSACTIONS = [
     amount: 45,
     status: "Delivered",
   },
-  {
-    id: "5",
-    order: "Order #1238",
-    date: "22 Apr, 9:00 AM",
-    amount: 80,
-    status: "Delivered",
-  },
 ];
 
-export function EarningsDashboardScreen() {
+export function EarningsHistoryScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [selectedPeriod, setSelectedPeriod] = useState<Period>("Month");
   const [monthIndex, setMonthIndex] = useState(0);
-  const [yearIndex, setYearIndex] = useState(0);
-
-  const currentPeriod = selectedPeriod;
 
   return (
     <SafeAreaView style={styles.safe}>
+      <View style={styles.header}>
+        <HeaderBackButton onPress={() => navigation.navigate("profile")} />
+        <Text style={styles.headerTitle}>Earnings History</Text>
+        <View style={styles.headerRight} />
+      </View>
+      <View style={styles.headerDivider} />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -101,7 +98,7 @@ export function EarningsDashboardScreen() {
             activeOpacity={0.7}
             onPress={() => setMonthIndex((p) => p - 1)}
           >
-            <Ionicons name="chevron-back" size={20} color="#8259D2" />
+            <Ionicons name="chevron-back" size={16} color="#783fec" />
           </TouchableOpacity>
           <Text style={styles.monthText}>April 2024</Text>
           <TouchableOpacity
@@ -109,15 +106,17 @@ export function EarningsDashboardScreen() {
             activeOpacity={0.7}
             onPress={() => setMonthIndex((p) => p + 1)}
           >
-            <Ionicons name="chevron-forward" size={20} color="#8259D2" />
+            <Ionicons name="chevron-forward" size={16} color="#783fec" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.earningsSection}>
           <Text style={styles.earningsLabel}>TOTAL EARNINGS</Text>
-          <Text style={styles.earningsAmount}>₹{TOTAL_EARNINGS.toLocaleString("en-IN")}</Text>
+          <Text style={styles.earningsAmount}>
+            ₹{TOTAL_EARNINGS.toLocaleString("en-IN")}
+          </Text>
           <View style={styles.growthPill}>
-            <Ionicons name="trending-up" size={14} color="#16A34A" />
+            <Ionicons name="trending-up" size={12} color="#16A34A" />
             <Text style={styles.growthText}>+12% vs Mar 2024</Text>
           </View>
         </View>
@@ -125,21 +124,18 @@ export function EarningsDashboardScreen() {
         <View style={styles.transactionCard}>
           <View style={styles.transactionHeader}>
             <Text style={styles.transactionTitle}>Transaction History</Text>
-            <Text style={styles.transactionCount}>{TRANSACTIONS.length} Transactions</Text>
+            <Text style={styles.transactionCount}>
+              {TRANSACTIONS.length} Transactions
+            </Text>
           </View>
-          <View style={styles.transactionDivider} />
 
-          {TRANSACTIONS.map((tx, index) => (
-            <TouchableOpacity
+          {TRANSACTIONS.map((tx) => (
+            <View
               key={tx.id}
-              style={[
-                styles.transactionRow,
-                index < TRANSACTIONS.length - 1 && styles.transactionRowBorder,
-              ]}
-              activeOpacity={0.7}
+              style={styles.transactionRow}
             >
               <View style={styles.txIconWrap}>
-                <Ionicons name="wallet-outline" size={18} color="#8259D2" />
+                <Ionicons name="wallet-outline" size={16} color="#8259D2" />
               </View>
               <View style={styles.txInfo}>
                 <Text style={styles.txOrder}>{tx.order}</Text>
@@ -149,15 +145,10 @@ export function EarningsDashboardScreen() {
                 <Text style={styles.txAmount}>+₹{tx.amount}</Text>
                 <Text style={styles.txStatus}>{tx.status}</Text>
               </View>
-            </TouchableOpacity>
+            </View>
           ))}
 
-          <View style={styles.transactionDivider} />
-          <TouchableOpacity
-            style={styles.viewAllRow}
-            activeOpacity={0.7}
-            onPress={() => navigation.navigate("earnings-history")}
-          >
+          <TouchableOpacity style={styles.viewAllRow} activeOpacity={0.7}>
             <Text style={styles.viewAllText}>View All Transactions</Text>
           </TouchableOpacity>
         </View>
@@ -186,20 +177,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F9FF",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 48,
+    paddingHorizontal: 16,
+    backgroundColor: "#F8F9FF",
+  },
+  headerRight: {
+    width: 38,
+  },
+  headerTitle: {
+    flex: 1,
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 20,
+    color: "#1F2A5A",
+    textAlign: "center",
+  },
+  headerDivider: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 32,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 24,
   },
   segmentedControl: {
     flexDirection: "row",
-    height: 48,
-    backgroundColor: "#EFE7FF",
-    borderRadius: 18,
-    padding: 4,
+    height: 40,
+    backgroundColor: "#EDE4FF",
+    borderRadius: 14,
+    padding: 3,
   },
   segmentTab: {
     flex: 1,
@@ -209,67 +221,69 @@ const styles = StyleSheet.create({
   segmentGradient: {
     width: "100%",
     height: "100%",
-    borderRadius: 14,
+    borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
   },
   segmentTextActive: {
     fontFamily: "Poppins_500Medium",
-    fontSize: 16,
+    fontSize: 14,
     color: "#FFFFFF",
   },
   segmentTextInactive: {
     fontFamily: "Poppins_500Medium",
-    fontSize: 16,
+    fontSize: 14,
     color: "#6F6B7D",
   },
   monthNav: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 24,
-    gap: 16,
+    marginTop: 26,
+    gap: 93,
   },
   navArrow: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#EFE7FF",
+    width: 22,
+    height: 28,
+    borderRadius: 17,
+    backgroundColor: "#EDE4FF",
     alignItems: "center",
     justifyContent: "center",
   },
   monthText: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 22,
-    color: "#10213A",
-    minWidth: 160,
+    color: "#0F1E37",
+    minWidth: 140,
     textAlign: "center",
+    lineHeight: 28,
   },
   earningsSection: {
     alignItems: "center",
-    marginTop: 28,
+    marginTop: 16,
   },
   earningsLabel: {
     fontFamily: "Poppins_500Medium",
-    fontSize: 13,
+    fontSize: 11,
     color: "#6F6B7D",
-    letterSpacing: 1.2,
+    letterSpacing: 3,
   },
   earningsAmount: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 56,
-    color: "#10213A",
-    marginTop: 4,
+    fontFamily: "Poppins_700Bold",
+    fontSize: 44,
+    color: "#0F1E37",
+    marginTop: 2,
   },
   growthPill: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#E6F7E6",
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 999,
-    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 14,
+    marginTop: 8,
     gap: 4,
+    height: 28,
   },
   growthText: {
     fontFamily: "Poppins_500Medium",
@@ -278,121 +292,117 @@ const styles = StyleSheet.create({
   },
   transactionCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    marginTop: 28,
+    borderRadius: 18,
+    marginTop: 16,
     shadowColor: "#000",
     shadowOpacity: 0.04,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   transactionHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 14,
+    marginBottom: 12,
   },
   transactionTitle: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 20,
-    color: "#10213A",
+    color: "#0F1E37",
   },
   transactionCount: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 14,
+    fontFamily: "Poppins_400Regular",
+    fontSize: 13,
     color: "#6F6B7D",
-  },
-  transactionDivider: {
-    height: 1,
-    backgroundColor: "#F0F0F0",
   },
   transactionRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 14,
-  },
-  transactionRowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
+    paddingVertical: 10,
   },
   txIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "#EFE7FF",
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: "#F7F7F7",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 14,
+    marginRight: 12,
   },
   txInfo: {
     flex: 1,
+    flexDirection: "column",
   },
   txOrder: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 16,
-    color: "#10213A",
+    fontSize: 22,
+    color: "#0F1E37",
   },
   txDate: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 13,
+    fontSize: 12,
     color: "#6F6B7D",
-    marginTop: 1,
+    marginTop: 2,
   },
   txRight: {
     alignItems: "flex-end",
   },
   txAmount: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 16,
-    color: "#16A34A",
+    fontSize: 22,
+    color: "#000000",
   },
   txStatus: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 13,
+    fontSize: 14,
     color: "#6F6B7D",
     marginTop: 1,
   },
   viewAllRow: {
     alignItems: "center",
-    paddingVertical: 14,
+    justifyContent: "center",
+    height: 56,
   },
   viewAllText: {
     fontFamily: "Poppins_500Medium",
     fontSize: 16,
-    color: "#10213A",
+    color: "#0F1E37",
   },
   bonusBanner: {
-    marginTop: 24,
-    borderRadius: 24,
-    paddingHorizontal: 24,
-    paddingVertical: 24,
+    marginTop: 16,
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     shadowColor: "#8259D2",
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 4,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
   },
   bonusTitle: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 20,
+    fontSize: 24,
     color: "#FFFFFF",
   },
   bonusDesc: {
     fontFamily: "Poppins_400Regular",
     fontSize: 14,
-    color: "rgba(255,255,255,0.85)",
+    color: "rgba(255,255,255,0.9)",
     lineHeight: 22,
     marginTop: 6,
   },
   bonusBtn: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    borderRadius: 10,
+    height: 40,
+    paddingHorizontal: 20,
+    alignItems: "center",
+    justifyContent: "center",
     alignSelf: "flex-start",
-    marginTop: 16,
+    marginTop: 14,
   },
   bonusBtnText: {
     fontFamily: "Poppins_600SemiBold",
