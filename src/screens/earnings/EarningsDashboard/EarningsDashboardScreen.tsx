@@ -1,402 +1,616 @@
-import { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Period = "Week" | "Month" | "Year";
+const { width } = Dimensions.get("window");
 
-const PERIODS: Period[] = ["Week", "Month", "Year"];
-const TOTAL_EARNINGS = 15800;
+// Hardcoded values from the UI mockup to ensure an exact match
+const TODAY_EARNINGS = 650;
+const WEEK_EARNINGS = "4,250";
+const MONTH_EARNINGS = "15,800";
+const AVAILABLE_WITHDRAW = "2,350";
+
+const CHART_DATA = [
+  { day: "M", height: 35, active: false },
+  { day: "T", height: 50, active: false },
+  { day: "W", height: 85, active: true, value: "820" },
+  { day: "T", height: 45, active: false },
+  { day: "F", height: 55, active: false },
+  { day: "S", height: 30, active: false },
+  { day: "S", height: 40, active: false },
+];
 
 const TRANSACTIONS = [
-  {
-    id: "1",
-    order: "Order #1234",
-    date: "24 Apr, 10:30 AM",
-    amount: 50,
-    status: "Delivered",
-  },
-  {
-    id: "2",
-    order: "Order #1235",
-    date: "24 Apr, 11:00 AM",
-    amount: 75,
-    status: "Delivered",
-  },
-  {
-    id: "3",
-    order: "Order #1236",
-    date: "23 Apr, 2:15 PM",
-    amount: 60,
-    status: "Delivered",
-  },
-  {
-    id: "4",
-    order: "Order #1237",
-    date: "23 Apr, 4:45 PM",
-    amount: 45,
-    status: "Delivered",
-  },
-  {
-    id: "5",
-    order: "Order #1238",
-    date: "22 Apr, 9:00 AM",
-    amount: 80,
-    status: "Delivered",
-  },
+  { id: "1", order: "Order #1234", date: "Today, 2:45 PM", amount: "+₹50" },
+  { id: "2", order: "Order #1234", date: "Today, 2:45 PM", amount: "+₹50" },
+  { id: "3", order: "Order #1234", date: "Today, 2:45 PM", amount: "+₹50" },
 ];
 
 export function EarningsDashboardScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const [selectedPeriod, setSelectedPeriod] = useState<Period>("Month");
-  const [monthIndex, setMonthIndex] = useState(0);
-  const [yearIndex, setYearIndex] = useState(0);
-
-  const currentPeriod = selectedPeriod;
+  const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: Math.max(insets.top, 16), paddingBottom: 110 }, // Reduced bottom padding since button is inline
+        ]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.segmentedControl}>
-          {PERIODS.map((period) => {
-            const isActive = period === selectedPeriod;
-            return (
-              <TouchableOpacity
-                key={period}
-                style={styles.segmentTab}
-                activeOpacity={0.8}
-                onPress={() => setSelectedPeriod(period)}
-              >
-                {isActive ? (
-                  <LinearGradient
-                    colors={["#8259D2", "#8259D2"]}
-                    style={styles.segmentGradient}
-                  >
-                    <Text style={styles.segmentTextActive}>{period}</Text>
-                  </LinearGradient>
-                ) : (
-                  <Text style={styles.segmentTextInactive}>{period}</Text>
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        {/* Today's Earnings Card */}
+        <LinearGradient
+          colors={["#845EF7", "#6A40DF"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.todayCard}
+        >
+          {/* Concentric Circle Shapes Layer (refined single circle right overlay) */}
+          <View style={styles.circleOverlay} />
 
-        <View style={styles.monthNav}>
-          <TouchableOpacity
-            style={styles.navArrow}
-            activeOpacity={0.7}
-            onPress={() => setMonthIndex((p) => p - 1)}
-          >
-            <Ionicons name="chevron-back" size={20} color="#8259D2" />
-          </TouchableOpacity>
-          <Text style={styles.monthText}>April 2024</Text>
-          <TouchableOpacity
-            style={styles.navArrow}
-            activeOpacity={0.7}
-            onPress={() => setMonthIndex((p) => p + 1)}
-          >
-            <Ionicons name="chevron-forward" size={20} color="#8259D2" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.earningsSection}>
-          <Text style={styles.earningsLabel}>TOTAL EARNINGS</Text>
-          <Text style={styles.earningsAmount}>₹{TOTAL_EARNINGS.toLocaleString("en-IN")}</Text>
-          <View style={styles.growthPill}>
-            <Ionicons name="trending-up" size={14} color="#16A34A" />
-            <Text style={styles.growthText}>+12% vs Mar 2024</Text>
+          <View style={styles.todayCardHeader}>
+            <View>
+              <Text style={styles.todayLabel}>Today's Earnings</Text>
+              <Text style={styles.todayAmount}>₹{TODAY_EARNINGS}</Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.transactionCard}>
-          <View style={styles.transactionHeader}>
-            <Text style={styles.transactionTitle}>Transaction History</Text>
-            <Text style={styles.transactionCount}>{TRANSACTIONS.length} Transactions</Text>
-          </View>
-          <View style={styles.transactionDivider} />
-
-          {TRANSACTIONS.map((tx, index) => (
-            <TouchableOpacity
-              key={tx.id}
-              style={[
-                styles.transactionRow,
-                index < TRANSACTIONS.length - 1 && styles.transactionRowBorder,
-              ]}
-              activeOpacity={0.7}
-            >
-              <View style={styles.txIconWrap}>
-                <Ionicons name="wallet-outline" size={18} color="#8259D2" />
+          <View style={styles.todayCardFooter}>
+            <View style={styles.deliveriesContainer}>
+              <Text style={styles.todayDeliveries}>8 Deliveries</Text>
+              <Text style={styles.todayDeliveriesSub}>Completed</Text>
+            </View>
+            <View style={styles.trendPill}>
+              <Ionicons name="trending-up" size={14} color="#FFFFFF" style={styles.trendIcon} />
+              <View style={styles.trendTextContainer}>
+                <Text style={styles.trendText}>+₹120 vs</Text>
+                <Text style={styles.trendText}>Yesterday</Text>
               </View>
-              <View style={styles.txInfo}>
+            </View>
+          </View>
+        </LinearGradient>
+
+        {/* Weekly & Monthly Small Cards */}
+        <View style={styles.statsRow}>
+          <View style={styles.statCard}>
+            <View style={styles.statAccentBar} />
+            <View style={styles.statCardContent}>
+              <Text style={styles.statLabel}>This Week</Text>
+              <Text style={styles.statAmount}>₹{WEEK_EARNINGS}</Text>
+            </View>
+          </View>
+
+          <View style={styles.statCard}>
+            <View style={styles.statAccentBar} />
+            <View style={styles.statCardContent}>
+              <Text style={styles.statLabel}>This Month</Text>
+              <Text style={styles.statAmount}>₹{MONTH_EARNINGS}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Available to Withdraw Card */}
+        <View style={styles.withdrawCard}>
+          <View style={styles.withdrawInfo}>
+            <Text style={styles.withdrawLabel}>Available to Withdraw</Text>
+            <Text style={styles.withdrawAmount}>₹{AVAILABLE_WITHDRAW}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.withdrawBtn}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("withdraw")}
+          >
+            <Text style={styles.withdrawBtnText}>Withdraw</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Last 7 Days Earnings */}
+        <View style={styles.chartCard}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.chartTitle}>Last 7 days Earnnings</Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate("last-7-days")}
+            >
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Bar Chart */}
+          <View style={styles.chartContainer}>
+            {CHART_DATA.map((item, idx) => (
+              <View key={idx} style={styles.chartCol}>
+                <View style={styles.barTrack}>
+                  {item.active && (
+                    <View style={styles.tooltipContainer}>
+                      <View style={styles.tooltipBubble}>
+                        <Text style={styles.tooltipText}>{item.value}</Text>
+                      </View>
+                      <View style={styles.tooltipTriangle} />
+                    </View>
+                  )}
+                  <View
+                    style={[
+                      styles.chartBar,
+                      { height: `${item.height}%` },
+                      item.active ? styles.chartBarActive : styles.chartBarNormal,
+                    ]}
+                  />
+                </View>
+                <Text style={styles.dayLabel}>{item.day}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Earnings Breakdown */}
+        <View style={styles.breakdownContainer}>
+          <Text style={styles.breakdownTitle}>Earnings Breakdown</Text>
+          <View style={styles.divider} />
+
+          <View style={styles.breakdownRow}>
+            <Text style={styles.breakdownLabel}>Base Earnings</Text>
+            <Text style={styles.breakdownVal}>₹500</Text>
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.breakdownRow}>
+            <Text style={styles.breakdownLabel}>Tips</Text>
+            <Text style={styles.breakdownVal}>₹100</Text>
+          </View>
+          <View style={styles.divider} />
+
+          <View style={styles.breakdownRow}>
+            <Text style={[styles.breakdownLabel, styles.purpleText]}>Bonus</Text>
+            <Text style={[styles.breakdownVal, styles.purpleText, styles.boldText]}>50</Text>
+          </View>
+        </View>
+
+        {/* Recent Transactions */}
+        <View style={styles.transactionsSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Transactions</Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate("earnings-history")}
+            >
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          {TRANSACTIONS.map((tx, idx) => (
+            <View key={idx} style={styles.txCard}>
+              <View style={styles.txIconContainer}>
+                <MaterialCommunityIcons
+                  name="washing-machine"
+                  size={20}
+                  color="#FFFFFF"
+                />
+              </View>
+              <View style={styles.txDetails}>
                 <Text style={styles.txOrder}>{tx.order}</Text>
                 <Text style={styles.txDate}>{tx.date}</Text>
               </View>
-              <View style={styles.txRight}>
-                <Text style={styles.txAmount}>+₹{tx.amount}</Text>
-                <Text style={styles.txStatus}>{tx.status}</Text>
-              </View>
-            </TouchableOpacity>
+              <Text style={styles.txAmount}>{tx.amount}</Text>
+            </View>
           ))}
-
-          <View style={styles.transactionDivider} />
-          <TouchableOpacity
-            style={styles.viewAllRow}
-            activeOpacity={0.7}
-            onPress={() => navigation.navigate("earnings-history")}
-          >
-            <Text style={styles.viewAllText}>View All Transactions</Text>
-          </TouchableOpacity>
         </View>
 
-        <LinearGradient
-          colors={["#8259D2", "#6A44B8"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.bonusBanner}
+        {/* Withdraw Action Button (moved inside the ScrollView flow) */}
+        <TouchableOpacity
+          style={styles.inlineWithdrawBtn}
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate("withdraw")}
         >
-          <Text style={styles.bonusTitle}>Weekly Bonus Active</Text>
-          <Text style={styles.bonusDesc}>
-            Complete 10 more deliveries{"\n"}to unlock ₹500 extra.
-          </Text>
-          <TouchableOpacity style={styles.bonusBtn} activeOpacity={0.8}>
-            <Text style={styles.bonusBtnText}>Track Bonus</Text>
-          </TouchableOpacity>
-        </LinearGradient>
+          <LinearGradient
+            colors={["#845EF7", "#7048E8"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.stickyBtnGradient}
+          >
+            <MaterialCommunityIcons name="wallet-outline" size={22} color="#FFFFFF" style={styles.walletIcon} />
+            <Text style={styles.stickyBtnText}>Withdraw  {AVAILABLE_WITHDRAW}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
+  container: {
     flex: 1,
-    backgroundColor: "#F8F9FF",
+    backgroundColor: "#F8F9FC",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 32,
-  },
-  segmentedControl: {
-    flexDirection: "row",
-    height: 48,
-    backgroundColor: "#EFE7FF",
-    borderRadius: 18,
-    padding: 4,
-  },
-  segmentTab: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  segmentGradient: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  segmentTextActive: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 16,
-    color: "#FFFFFF",
-  },
-  segmentTextInactive: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 16,
-    color: "#6F6B7D",
-  },
-  monthNav: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 24,
-    gap: 16,
-  },
-  navArrow: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#EFE7FF",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  monthText: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 22,
-    color: "#10213A",
-    minWidth: 160,
-    textAlign: "center",
-  },
-  earningsSection: {
-    alignItems: "center",
-    marginTop: 28,
-  },
-  earningsLabel: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 13,
-    color: "#6F6B7D",
-    letterSpacing: 1.2,
-  },
-  earningsAmount: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 56,
-    color: "#10213A",
-    marginTop: 4,
-  },
-  growthPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#E6F7E6",
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 999,
-    marginTop: 10,
-    gap: 4,
-  },
-  growthText: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 13,
-    color: "#16A34A",
-  },
-  transactionCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    marginTop: 28,
-    shadowColor: "#000",
-    shadowOpacity: 0.04,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-    paddingVertical: 20,
     paddingHorizontal: 20,
   },
-  transactionHeader: {
+  // Today's Earnings Card
+  todayCard: {
+    borderRadius: 24,
+    padding: 20,
+    marginTop: 8,
+    position: "relative",
+    overflow: "hidden",
+    shadowColor: "#845EF7",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  circleOverlay: {
+    position: "absolute",
+    right: -40,
+    top: -50,
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: "rgba(255, 255, 255, 0.09)",
+  },
+  todayLabel: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 13,
+    color: "rgba(255, 255, 255, 0.8)",
+  },
+  todayAmount: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 48,
+    color: "#FFFFFF",
+    marginTop: 4,
+  },
+  todayCardHeader: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 14,
+    alignItems: "flex-start",
   },
-  transactionTitle: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 20,
-    color: "#10213A",
+  todayCardFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 18,
   },
-  transactionCount: {
+  deliveriesContainer: {
+    flexDirection: "column",
+  },
+  todayDeliveries: {
     fontFamily: "Poppins_500Medium",
     fontSize: 14,
-    color: "#6F6B7D",
+    color: "rgba(255, 255, 255, 0.95)",
+    lineHeight: 18,
   },
-  transactionDivider: {
-    height: 1,
-    backgroundColor: "#F0F0F0",
+  todayDeliveriesSub: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 14,
+    color: "rgba(255, 255, 255, 0.95)",
+    lineHeight: 18,
   },
-  transactionRow: {
+  trendPill: {
     flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.18)",
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  trendIcon: {
+    marginRight: 6,
+  },
+  trendTextContainer: {
+    flexDirection: "column",
+  },
+  trendText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 10,
+    color: "#FFFFFF",
+    lineHeight: 12,
+  },
+  // Weekly & Monthly summary row
+  statsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+  },
+  statCard: {
+    width: (width - 52) / 2,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    flexDirection: "row",
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  statAccentBar: {
+    width: 4,
+    backgroundColor: "#845EF7",
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+  },
+  statCardContent: {
+    padding: 14,
+    flex: 1,
+  },
+  statLabel: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 12,
+    color: "#85859B",
+  },
+  statAmount: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 18,
+    color: "#10213A",
+    marginTop: 6,
+  },
+  // Available to Withdraw card
+  withdrawCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 18,
+    marginTop: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  withdrawInfo: {
+    flex: 1,
+  },
+  withdrawLabel: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 12,
+    color: "#85859B",
+  },
+  withdrawAmount: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 22,
+    color: "#845EF7",
+    marginTop: 4,
+  },
+  withdrawBtn: {
+    backgroundColor: "#845EF7",
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 9,
+    shadowColor: "#845EF7",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  withdrawBtnText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 13,
+    color: "#FFFFFF",
+  },
+  // Last 7 days Earnings card
+  chartCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 18,
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  chartTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#10213A",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  seeAllText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 13,
+    color: "#845EF7",
+  },
+  chartContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    height: 150,
+    paddingTop: 30, // Spacing for tooltip bubble
+    paddingHorizontal: 4,
+  },
+  chartCol: {
+    alignItems: "center",
+    flex: 1,
+  },
+  barTrack: {
+    height: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    width: "100%",
+    position: "relative",
+  },
+  chartBar: {
+    width: 12,
+    borderRadius: 6,
+  },
+  chartBarNormal: {
+    backgroundColor: "#E2E8F0",
+  },
+  chartBarActive: {
+    backgroundColor: "#1E293B",
+  },
+  dayLabel: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 12,
+    color: "#85859B",
+    marginTop: 8,
+  },
+  tooltipContainer: {
+    position: "absolute",
+    bottom: "90%",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  tooltipBubble: {
+    backgroundColor: "#1E293B",
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  tooltipText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 10,
+    color: "#FFFFFF",
+  },
+  tooltipTriangle: {
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderTopWidth: 5,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: "#1E293B",
+    marginTop: -1,
+  },
+  // Earnings Breakdown
+  breakdownContainer: {
+    marginTop: 24,
+  },
+  breakdownTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 16,
+    color: "#10213A",
+    marginBottom: 12,
+  },
+  breakdownRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 14,
   },
-  transactionRowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
+  breakdownLabel: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 14,
+    color: "#85859B",
   },
-  txIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "#EFE7FF",
+  breakdownVal: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 15,
+    color: "#10213A",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#EFEFF4",
+  },
+  purpleText: {
+    color: "#845EF7",
+  },
+  boldText: {
+    fontFamily: "Poppins_700Bold",
+  },
+  // Recent Transactions
+  transactionsSection: {
+    marginTop: 28,
+  },
+  sectionTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 16,
+    color: "#10213A",
+  },
+  txCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 14,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  txIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#845EF7",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 14,
+    marginRight: 12,
   },
-  txInfo: {
+  txDetails: {
     flex: 1,
   },
   txOrder: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 16,
+    fontSize: 14,
     color: "#10213A",
   },
   txDate: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 13,
-    color: "#6F6B7D",
-    marginTop: 1,
-  },
-  txRight: {
-    alignItems: "flex-end",
+    fontSize: 12,
+    color: "#85859B",
+    marginTop: 2,
   },
   txAmount: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 16,
-    color: "#16A34A",
-  },
-  txStatus: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 13,
-    color: "#6F6B7D",
-    marginTop: 1,
-  },
-  viewAllRow: {
-    alignItems: "center",
-    paddingVertical: 14,
-  },
-  viewAllText: {
-    fontFamily: "Poppins_500Medium",
-    fontSize: 16,
+    fontFamily: "Poppins_700Bold",
+    fontSize: 15,
     color: "#10213A",
   },
-  bonusBanner: {
+  // Inline Withdraw Button (in ScrollView flow)
+  inlineWithdrawBtn: {
+    borderRadius: 16,
+    overflow: "hidden",
     marginTop: 24,
-    borderRadius: 24,
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    shadowColor: "#8259D2",
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
+    marginBottom: 10,
+    shadowColor: "#845EF7",
     shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
     elevation: 4,
   },
-  bonusTitle: {
+  stickyBtnGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 15,
+  },
+  walletIcon: {
+    marginRight: 8,
+  },
+  stickyBtnText: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 20,
+    fontSize: 16,
     color: "#FFFFFF",
-  },
-  bonusDesc: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 14,
-    color: "rgba(255,255,255,0.85)",
-    lineHeight: 22,
-    marginTop: 6,
-  },
-  bonusBtn: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    alignSelf: "flex-start",
-    marginTop: 16,
-  },
-  bonusBtnText: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 14,
-    color: "#8259D2",
   },
 });

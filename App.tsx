@@ -109,7 +109,7 @@ function OrdersStackScreen() {
 function EarningsStackScreen() {
   return (
     <EarningsStack.Navigator screenOptions={{ headerShown: false }}>
-      <EarningsStack.Screen name="index" component={EarningsComingSoon} />
+      <EarningsStack.Screen name="index" component={EarningsDashboardScreen} />
       <EarningsStack.Screen name="withdraw" component={WithdrawScreen} />
       <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} />
       <EarningsStack.Screen name="earnings-history" component={EarningsHistoryScreen} />
@@ -148,7 +148,7 @@ function MainTabs() {
         const activeRoute = props.state.routes[props.state.index];
         const routeName = getFocusedRouteNameFromRoute(activeRoute) ?? "index";
 
-        if (routeName !== "index") return null;
+        if (routeName !== "index" && routeName !== "withdraw" && routeName !== "last-7-days") return null;
 
         return (
           <BottomTabBar
