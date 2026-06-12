@@ -11,7 +11,7 @@ import {
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 import { useEarnings } from "@/hooks";
 
 type PaymentMethod = "bank" | "upi";
@@ -42,150 +42,163 @@ export function WithdrawScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: Math.max(insets.top, 36) }]}>
-        <TouchableOpacity
-          style={styles.backBtn}
-          activeOpacity={0.7}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="chevron-back" size={24} color="#1E293B" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Withdraw</Text>
-        <View style={styles.headerSpacer} />
+      <View style={styles.header}>
+        <View style={styles.headerSide}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Ionicons name="chevron-back" size={24} color="#1E293B" />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.headerTitle} pointerEvents="none">
+          Withdraw
+        </Text>
+        <View style={styles.headerSide} />
       </View>
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { flexGrow: 1 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Available Balance Card */}
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Available Balance</Text>
-          <Text style={styles.balanceAmount}>₹2,350</Text>
+        <View style={{ flex: 1 }}>
+          {/* Available Balance Card */}
+          <View style={styles.balanceCard}>
+            <Text style={styles.balanceLabel}>Available Balance</Text>
+            <Text style={styles.balanceAmount}>₹2,350</Text>
+          </View>
+
+          {/* Select Withdrawal Method Section */}
+          <Text style={styles.sectionHeader}>Select Withdrawal Method</Text>
+
+          {/* Bank Account Method */}
+          <TouchableOpacity
+            style={[
+              styles.methodCard,
+              selectedMethod === "bank" ? styles.methodCardSelected : styles.methodCardNormal,
+            ]}
+            activeOpacity={0.8}
+            onPress={() => setSelectedMethod("bank")}
+          >
+            <View style={styles.methodIconContainer}>
+              <MaterialCommunityIcons name="bank-outline" size={22} color="#845EF7" />
+            </View>
+            <View style={styles.methodDetails}>
+              <Text style={styles.methodTitle}>Bank Account</Text>
+              <Text style={styles.methodSubtitle}>XXXX 4321</Text>
+            </View>
+            <View
+              style={[
+                styles.radioButton,
+                selectedMethod === "bank" ? styles.radioButtonActive : styles.radioButtonInactive,
+              ]}
+            >
+              {selectedMethod === "bank" && <View style={styles.radioButtonDot} />}
+            </View>
+          </TouchableOpacity>
+
+          {/* UPI Method */}
+          <TouchableOpacity
+            style={[
+              styles.methodCard,
+              selectedMethod === "upi" ? styles.methodCardSelected : styles.methodCardNormal,
+            ]}
+            activeOpacity={0.8}
+            onPress={() => setSelectedMethod("upi")}
+          >
+            <View style={styles.methodIconContainer}>
+              <MaterialCommunityIcons name="at" size={22} color="#845EF7" />
+            </View>
+            <View style={styles.methodDetails}>
+              <Text style={styles.methodTitle}>UPI</Text>
+              <Text style={styles.methodSubtitle}>rahul@paytm</Text>
+            </View>
+            <View
+              style={[
+                styles.radioButton,
+                selectedMethod === "upi" ? styles.radioButtonActive : styles.radioButtonInactive,
+              ]}
+            >
+              {selectedMethod === "upi" && <View style={styles.radioButtonDot} />}
+            </View>
+          </TouchableOpacity>
+
+          {/* Enter Amount Section */}
+          <Text style={styles.sectionHeader}>Enter Amount</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.currencyPrefix}>₹</Text>
+            <TextInput
+              style={styles.textInput}
+              value={amountText}
+              onChangeText={setAmountText}
+              keyboardType="numeric"
+              placeholder="0"
+              placeholderTextColor="#A0AEC0"
+            />
+          </View>
+          <Text style={styles.helperText}>Available Balance: ₹2,350</Text>
         </View>
 
-        {/* Select Withdrawal Method Section */}
-        <Text style={styles.sectionHeader}>Select Withdrawal Method</Text>
-
-        {/* Bank Account Method */}
-        <TouchableOpacity
-          style={[
-            styles.methodCard,
-            selectedMethod === "bank" ? styles.methodCardSelected : styles.methodCardNormal,
-          ]}
-          activeOpacity={0.8}
-          onPress={() => setSelectedMethod("bank")}
-        >
-          <View style={styles.methodIconContainer}>
-            <MaterialCommunityIcons name="bank-outline" size={22} color="#845EF7" />
-          </View>
-          <View style={styles.methodDetails}>
-            <Text style={styles.methodTitle}>Bank Account</Text>
-            <Text style={styles.methodSubtitle}>XXXX 4321</Text>
-          </View>
-          <View
-            style={[
-              styles.radioButton,
-              selectedMethod === "bank" ? styles.radioButtonActive : styles.radioButtonInactive,
-            ]}
+        <View style={styles.bottomSection}>
+          {/* Withdraw Action Button */}
+          <TouchableOpacity
+            style={styles.withdrawActionBtn}
+            activeOpacity={0.9}
+            onPress={handleWithdraw}
+            disabled={isLoading}
           >
-            {selectedMethod === "bank" && <View style={styles.radioButtonDot} />}
-          </View>
-        </TouchableOpacity>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text style={styles.withdrawActionBtnText}>Withdraw</Text>
+            )}
+          </TouchableOpacity>
 
-        {/* UPI Method */}
-        <TouchableOpacity
-          style={[
-            styles.methodCard,
-            selectedMethod === "upi" ? styles.methodCardSelected : styles.methodCardNormal,
-          ]}
-          activeOpacity={0.8}
-          onPress={() => setSelectedMethod("upi")}
-        >
-          <View style={styles.methodIconContainer}>
-            <MaterialCommunityIcons name="at" size={22} color="#845EF7" />
+          {/* Notice Info Row */}
+          <View style={styles.noticeRow}>
+            <Ionicons name="time-outline" size={18} color="#8E8E9F" style={styles.noticeIcon} />
+            <Text style={styles.noticeText}>
+              Withdrawal will be transferred within 24 hours
+            </Text>
           </View>
-          <View style={styles.methodDetails}>
-            <Text style={styles.methodTitle}>UPI</Text>
-            <Text style={styles.methodSubtitle}>rahul@paytm</Text>
-          </View>
-          <View
-            style={[
-              styles.radioButton,
-              selectedMethod === "upi" ? styles.radioButtonActive : styles.radioButtonInactive,
-            ]}
-          >
-            {selectedMethod === "upi" && <View style={styles.radioButtonDot} />}
-          </View>
-        </TouchableOpacity>
-
-        {/* Enter Amount Section */}
-        <Text style={styles.sectionHeader}>Enter Amount</Text>
-        <View style={styles.inputContainer}>
-          <Text style={styles.currencyPrefix}>₹</Text>
-          <TextInput
-            style={styles.textInput}
-            value={amountText}
-            onChangeText={setAmountText}
-            keyboardType="numeric"
-            placeholder="0"
-            placeholderTextColor="#A0AEC0"
-          />
-        </View>
-        <Text style={styles.helperText}>Available Balance: ₹2,350</Text>
-
-        {/* Withdraw Action Button */}
-        <TouchableOpacity
-          style={styles.withdrawActionBtn}
-          activeOpacity={0.9}
-          onPress={handleWithdraw}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-          ) : (
-            <Text style={styles.withdrawActionBtnText}>Withdraw</Text>
-          )}
-        </TouchableOpacity>
-
-        {/* Notice Info Row */}
-        <View style={styles.noticeRow}>
-          <Ionicons name="time-outline" size={18} color="#8E8E9F" style={styles.noticeIcon} />
-          <Text style={styles.noticeText}>
-            Withdrawal will be transferred within 24 hours
-          </Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF", // Matches the white background of the mockup
+    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    height: 60,
+    paddingHorizontal: 20,
+    height: 56,
     backgroundColor: "#FFFFFF",
   },
-  backBtn: {
-    padding: 4,
+  headerSide: {
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    zIndex: 10,
   },
   headerTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
     fontFamily: "Poppins_600SemiBold",
     fontSize: 18,
     color: "#10213A",
-  },
-  headerSpacer: {
-    width: 32, // Balances the back button size
+    textAlign: "center",
   },
   scrollView: {
     flex: 1,
@@ -193,7 +206,11 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: 180, // Spacing for bottom tab bar overlay
+    paddingBottom: 110, // Adjusted to position the notice row beautifully above the floating tab bar
+  },
+  bottomSection: {
+    marginTop: 24,
+    marginBottom: 10,
   },
   // Available Balance Card
   balanceCard: {
@@ -324,7 +341,7 @@ const styles = StyleSheet.create({
     height: 54,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 16,
     shadowColor: "#845EF7",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.2,

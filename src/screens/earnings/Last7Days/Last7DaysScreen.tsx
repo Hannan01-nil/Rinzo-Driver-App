@@ -9,7 +9,7 @@ import {
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -38,18 +38,22 @@ export function Last7DaysScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: Math.max(insets.top, 36) }]}>
-        <TouchableOpacity
-          style={styles.backBtn}
-          activeOpacity={0.7}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="chevron-back" size={24} color="#1E293B" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Last 7 Days Earnings</Text>
-        <View style={styles.headerSpacer} />
+      <View style={styles.header}>
+        <View style={styles.headerSide}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Ionicons name="chevron-back" size={24} color="#1E293B" />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.headerTitle} pointerEvents="none">
+          Last 7 Days Earnings
+        </Text>
+        <View style={styles.headerSide} />
       </View>
 
       <ScrollView
@@ -108,33 +112,38 @@ export function Last7DaysScreen() {
           ))}
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#F8F9FC", // Off-white clean layout background
+    backgroundColor: "#F8F9FC",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    height: 60,
+    paddingHorizontal: 20,
+    height: 56,
     backgroundColor: "#F8F9FC",
   },
-  backBtn: {
-    padding: 4,
+  headerSide: {
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    zIndex: 10,
   },
   headerTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
     fontFamily: "Poppins_600SemiBold",
     fontSize: 18,
     color: "#10213A",
-  },
-  headerSpacer: {
-    width: 32, // Balances back button size
+    textAlign: "center",
   },
   scrollView: {
     flex: 1,

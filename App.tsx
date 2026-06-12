@@ -19,7 +19,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { LoginScreen } from "@/screens/auth/Login/LoginScreen";
 import { DashboardScreen } from "@/screens/dashboard/DashboardScreen";
-import { NewPickupRequestScreen } from "@/screens/dashboard/NewPickupRequestScreen";
 import { DocumentViewScreen } from "@/screens/documents/DocumentView/DocumentViewScreen";
 import { UploadDocumentScreen } from "@/screens/documents/UploadDocument/UploadDocumentScreen";
 import { EarningsDashboardScreen } from "@/screens/earnings/EarningsDashboard/EarningsDashboardScreen";
@@ -75,7 +74,6 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="index" component={DashboardScreen} />
-      <HomeStack.Screen name="new-pickup-request" component={NewPickupRequestScreen} />
       <HomeStack.Screen name="order-accepted" component={OrderAcceptedScreen} />
       <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} />
     </HomeStack.Navigator>
@@ -180,7 +178,6 @@ const linking = {
           home: {
             screens: {
               index: "home",
-              "new-pickup-request": "home/new-pickup",
               "order-accepted": "home/order-accepted/:orderId",
               "order-tracking": "home/tracking/:orderId",
             },

@@ -20,7 +20,6 @@ const AnimatedPath = Animated.createAnimatedComponent(SvgPath);
 
 type HomeStackParamList = {
   index: undefined;
-  "new-pickup-request": undefined;
   "order-accepted": { orderId: string };
   "order-tracking": { orderId: string };
 };
