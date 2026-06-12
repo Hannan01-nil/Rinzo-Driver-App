@@ -11,8 +11,9 @@ import {
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 import { useEarnings } from "@/hooks";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 type PaymentMethod = "bank" | "upi";
 
@@ -42,18 +43,16 @@ export function WithdrawScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: Math.max(insets.top, 36) }]}>
-        <TouchableOpacity
-          style={styles.backBtn}
-          activeOpacity={0.7}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="chevron-back" size={24} color="#1E293B" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Withdraw</Text>
-        <View style={styles.headerSpacer} />
+      <View style={styles.header}>
+        <View style={styles.headerSide}>
+          <HeaderBackButton />
+        </View>
+        <Text style={styles.headerTitle} pointerEvents="none">
+          Withdraw
+        </Text>
+        <View style={styles.headerSide} />
       </View>
 
       <ScrollView
@@ -159,33 +158,38 @@ export function WithdrawScreen() {
           </Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF", // Matches the white background of the mockup
+    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    height: 60,
+    paddingHorizontal: 20,
+    height: 56,
     backgroundColor: "#FFFFFF",
   },
-  backBtn: {
-    padding: 4,
+  headerSide: {
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    zIndex: 10,
   },
   headerTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
     fontFamily: "Poppins_600SemiBold",
     fontSize: 18,
     color: "#10213A",
-  },
-  headerSpacer: {
-    width: 32, // Balances the back button size
+    textAlign: "center",
   },
   scrollView: {
     flex: 1,
