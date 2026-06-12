@@ -50,7 +50,7 @@ export function OrderAcceptedScreen() {
   const outerScale = useRef(new Animated.Value(0.7)).current;
   const innerScale = useRef(new Animated.Value(0.8)).current;
   const circleScale = useRef(new Animated.Value(0.6)).current;
-  const checkmarkOffset = useRef(new Animated.Value(90)).current;
+  const checkmarkOffset = useRef(new Animated.Value(80)).current;
   const confettiOpacity = useRef(new Animated.Value(0)).current;
   const confettiValues = useRef(
     CONFETTI_CONFIG.map(() => ({
@@ -61,19 +61,20 @@ export function OrderAcceptedScreen() {
   ).current;
 
   useEffect(() => {
-    const animation = Animated.sequence([
+    const animation = Animated.parallel([
       Animated.timing(ringsOpacity, {
         toValue: 0.3,
         duration: 200,
         useNativeDriver: true,
       }),
-      Animated.parallel([
-        Animated.spring(outerScale, {
-          toValue: 1,
-          friction: 6,
-          tension: 80,
-          useNativeDriver: true,
-        }),
+      Animated.spring(outerScale, {
+        toValue: 1,
+        friction: 6,
+        tension: 80,
+        useNativeDriver: true,
+      }),
+      Animated.sequence([
+        Animated.delay(100),
         Animated.spring(innerScale, {
           toValue: 1,
           friction: 6,
@@ -81,54 +82,63 @@ export function OrderAcceptedScreen() {
           useNativeDriver: true,
         }),
       ]),
-      Animated.spring(circleScale, {
-        toValue: 1,
-        friction: 5,
-        tension: 50,
-        useNativeDriver: true,
-      }),
-      Animated.timing(checkmarkOffset, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: false,
-      }),
-      Animated.parallel([
-        Animated.timing(confettiOpacity, {
+      Animated.sequence([
+        Animated.delay(200),
+        Animated.spring(circleScale, {
           toValue: 1,
-          duration: 100,
+          friction: 5,
+          tension: 50,
           useNativeDriver: true,
         }),
-        Animated.parallel(
-          CONFETTI_CONFIG.map((config, i) =>
-            Animated.parallel([
-              Animated.spring(confettiValues[i].x, {
-                toValue:
-                  Math.cos((config.angle * Math.PI) / 180) * config.distance,
-                friction: 6,
-                useNativeDriver: true,
-              }),
-              Animated.spring(confettiValues[i].y, {
-                toValue:
-                  Math.sin((config.angle * Math.PI) / 180) * config.distance,
-                friction: 6,
-                useNativeDriver: true,
-              }),
-              Animated.sequence([
-                Animated.timing(confettiValues[i].opacity, {
-                  toValue: 1,
-                  duration: 100,
+      ]),
+      Animated.sequence([
+        Animated.delay(350),
+        Animated.timing(checkmarkOffset, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: false,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.delay(450),
+        Animated.parallel([
+          Animated.timing(confettiOpacity, {
+            toValue: 1,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.parallel(
+            CONFETTI_CONFIG.map((config, i) =>
+              Animated.parallel([
+                Animated.spring(confettiValues[i].x, {
+                  toValue:
+                    Math.cos((config.angle * Math.PI) / 180) * config.distance,
+                  friction: 6,
                   useNativeDriver: true,
                 }),
-                Animated.delay(500),
-                Animated.timing(confettiValues[i].opacity, {
-                  toValue: 0,
-                  duration: 300,
+                Animated.spring(confettiValues[i].y, {
+                  toValue:
+                    Math.sin((config.angle * Math.PI) / 180) * config.distance,
+                  friction: 6,
                   useNativeDriver: true,
                 }),
+                Animated.sequence([
+                  Animated.timing(confettiValues[i].opacity, {
+                    toValue: 1,
+                    duration: 100,
+                    useNativeDriver: true,
+                  }),
+                  Animated.delay(500),
+                  Animated.timing(confettiValues[i].opacity, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                  }),
+                ]),
               ]),
-            ]),
+            ),
           ),
-        ),
+        ]),
       ]),
     ]);
 
@@ -204,19 +214,19 @@ export function OrderAcceptedScreen() {
               ]}
             >
               <Svg
-                width={80}
-                height={80}
-                viewBox="0 0 120 110"
+                width={110}
+                height={110}
+                viewBox="0 0 120 120"
                 style={{ alignSelf: "center" }}
               >
                 <AnimatedPath
-                  d="M 30 55 L 48 73 L 90 30"
+                  d="M 35 55 L 50 70 L 85 35"
                   stroke="#FFFFFF"
                   strokeWidth={10}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   fill="none"
-                  strokeDasharray={120}
+                  strokeDasharray={80}
                   strokeDashoffset={checkmarkOffset as any}
                 />
               </Svg>

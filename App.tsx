@@ -93,7 +93,7 @@ function EarningsComingSoon() {
 function OrdersStackScreen() {
   return (
     <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
-      <OrdersStack.Screen name="index" component={OrdersComingSoon} />
+      <OrdersStack.Screen name="index" component={OrdersListScreen} />
       <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} />
       <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
       <OrdersStack.Screen name="in-transit" component={InTransitScreen} />

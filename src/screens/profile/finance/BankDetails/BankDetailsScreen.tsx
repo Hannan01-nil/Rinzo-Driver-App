@@ -16,8 +16,8 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
 import { mockBankAccount } from "@/data/finance";
+import SbiLogo from "@/assets/images/DriverAppImages/SBI_logo.png";
 
-const SBI_LOGO = require("@/assets/images/DriverAppImages/SBI_logo.png") as number;
 const BANK_ILLUSTRATION = require("@/assets/images/DriverAppImages/bank_details_img.png") as number;
 
 export function BankDetailsScreen() {
@@ -81,7 +81,7 @@ export function BankDetailsScreen() {
           <Text style={styles.detailLabel}>BANK NAME</Text>
           <View style={[styles.detailRow, { justifyContent: "flex-start" }]}>
             <Image
-              source={SBI_LOGO}
+              source={SbiLogo}
               style={styles.bankLogo}
               resizeMode="contain"
             />

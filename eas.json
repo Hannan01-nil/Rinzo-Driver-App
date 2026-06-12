@@ -6,7 +6,10 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "image": "ubuntu-26.04-jdk-17-ndk-r27b"
+      }
     },
     "preview": {
       "distribution": "internal",
@@ -14,11 +17,15 @@
         "simulator": true
       },
       "android": {
+        "image": "ubuntu-26.04-jdk-17-ndk-r27b",
         "buildType": "apk"
       }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "image": "ubuntu-26.04-jdk-17-ndk-r27b"
+      }
     }
   },
   "submit": {
