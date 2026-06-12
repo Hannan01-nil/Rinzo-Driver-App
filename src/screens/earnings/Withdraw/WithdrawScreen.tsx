@@ -13,7 +13,6 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 import { useEarnings } from "@/hooks";
-import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 type PaymentMethod = "bank" | "upi";
 

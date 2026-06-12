@@ -10,7 +10,6 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
-import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -43,7 +42,13 @@ export function Last7DaysScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerSide}>
-          <HeaderBackButton />
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Ionicons name="chevron-back" size={24} color="#1E293B" />
+          </TouchableOpacity>
         </View>
         <Text style={styles.headerTitle} pointerEvents="none">
           Last 7 Days Earnings
