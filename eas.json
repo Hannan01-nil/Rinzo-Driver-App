@@ -13,6 +13,9 @@
     },
     "preview": {
       "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
       "android": {
         "image": "ubuntu-26.04-jdk-17-ndk-r27b",
         "buildType": "apk"

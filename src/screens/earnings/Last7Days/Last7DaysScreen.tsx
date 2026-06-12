@@ -1,56 +1,250 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import { ScreenWrapper } from '@/components/layout/screen-wrapper'
-import { Header } from '@/components/layout/header'
-import { Card } from '@/components/ui'
-import { BarChart } from '@/components/charts/bar-chart'
-import { useEarnings } from '@/hooks'
-import { colors, typography, spacing } from '@/theme'
-import { formatCurrency } from '@/utils'
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from "react-native";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const { height: screenHeight } = Dimensions.get("window");
+
+// Mockup data values to match the screenshot exactly
+const CHART_DATA = [
+  { day: "Mon", amount: "₹420", val: 420, max: 880 },
+  { day: "Tue", amount: "₹500", val: 500, max: 880 },
+  { day: "Wed", amount: "₹200", val: 200, max: 880 },
+  { day: "Thu", amount: "₹450", val: 450, max: 880 },
+  { day: "Fri", amount: "₹720", val: 720, max: 880 },
+  { day: "Sat", amount: "₹880", val: 880, max: 880 },
+  { day: "Sun", amount: "₹650", val: 650, max: 880 },
+];
+
+const TOTAL_EARNINGS = "4,250";
+const DELIVERIES_COUNT = "32 Deliveries";
+
+const BREAKDOWN_DATA = [
+  { label: "Base Earnings", value: "₹3,300" },
+  { label: "Tips", value: "₹700" },
+  { label: "Bonuses", value: "₹250" },
+];
 
 export function Last7DaysScreen() {
-  const { summary, weekly } = useEarnings()
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const insets = useSafeAreaInsets();
 
   return (
-    <ScreenWrapper>
-      <Header title="Last 7 Days" />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Card>
-          <Text style={styles.totalLabel}>Week Total</Text>
-          <Text style={styles.totalAmount}>{formatCurrency(summary?.thisWeek ?? 0)}</Text>
-        </Card>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, 36) }]}>
+        <TouchableOpacity
+          style={styles.backBtn}
+          activeOpacity={0.7}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="chevron-back" size={24} color="#1E293B" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Last 7 Days Earnings</Text>
+        <View style={styles.headerSpacer} />
+      </View>
 
-        <Card style={{ marginTop: spacing.lg }}>
-          <BarChart
-            data={weekly.map(w => ({ label: w.day.slice(0, 3), value: w.amount }))}
-            barColor={colors.primary}
-          />
-        </Card>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Custom Bar Chart */}
+        <View style={styles.chartContainer}>
+          {CHART_DATA.map((item, idx) => {
+            const barHeightPercentage = (item.val / item.max) * 100;
+            return (
+              <View key={idx} style={styles.chartCol}>
+                <Text style={styles.chartValue}>{item.amount}</Text>
+                <View style={styles.barTrack}>
+                  <View
+                    style={[
+                      styles.chartBar,
+                      { height: `${barHeightPercentage}%` },
+                    ]}
+                  />
+                </View>
+                <Text style={styles.dayLabel}>{item.day}</Text>
+              </View>
+            );
+          })}
+        </View>
 
-        {weekly.map((day, index) => (
-          <View key={index} style={styles.dayRow}>
-            <View>
-              <Text style={styles.dayName}>{day.day}</Text>
-              <Text style={styles.dayDeliveries}>{day.deliveries} deliveries</Text>
-            </View>
-            <View style={styles.dayEarnings}>
-              <Text style={styles.dayAmount}>{formatCurrency(day.amount)}</Text>
-              {day.tips > 0 && <Text style={styles.dayTips}>+{formatCurrency(day.tips)} tips</Text>}
+        {/* Total Earnings Card */}
+        <View style={styles.card}>
+          <Text style={styles.totalLabel}>Total Earnings</Text>
+          <Text style={styles.totalAmount}>₹{TOTAL_EARNINGS}</Text>
+          <View style={styles.badgeContainer}>
+            <View style={styles.deliveriesBadge}>
+              <MaterialCommunityIcons
+                name="shopping-outline"
+                size={14}
+                color="#85859B"
+                style={styles.badgeIcon}
+              />
+              <Text style={styles.deliveriesBadgeText}>{DELIVERIES_COUNT}</Text>
             </View>
           </View>
-        ))}
+        </View>
+
+        {/* Earnings Breakdown Card */}
+        <View style={styles.card}>
+          {BREAKDOWN_DATA.map((item, idx) => (
+            <View key={idx}>
+              <View style={styles.breakdownRow}>
+                <Text style={styles.breakdownLabel}>{item.label}</Text>
+                <Text style={styles.breakdownValue}>{item.value}</Text>
+              </View>
+              {idx < BREAKDOWN_DATA.length - 1 && <View style={styles.divider} />}
+            </View>
+          ))}
+        </View>
       </ScrollView>
-    </ScreenWrapper>
-  )
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingBottom: spacing.xxl },
-  totalLabel: { ...typography.bodySmall, color: colors.textSecondary },
-  totalAmount: { ...typography.h2, color: colors.text, marginTop: spacing.xs },
-  dayRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.divider },
-  dayName: { ...typography.body, color: colors.text, fontWeight: '500' },
-  dayDeliveries: { ...typography.caption, color: colors.textTertiary },
-  dayEarnings: { alignItems: 'flex-end' },
-  dayAmount: { ...typography.body, color: colors.success, fontWeight: '600' },
-  dayTips: { ...typography.caption, color: colors.textTertiary },
-})
+  container: {
+    flex: 1,
+    backgroundColor: "#F8F9FC", // Off-white clean layout background
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    height: 60,
+    backgroundColor: "#F8F9FC",
+  },
+  backBtn: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#10213A",
+  },
+  headerSpacer: {
+    width: 32, // Balances back button size
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 180, // Tab bar overlay offset
+  },
+  // Custom Bar Chart
+  chartContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    height: 200,
+    paddingBottom: 8,
+    marginTop: 16,
+    marginBottom: 20,
+  },
+  chartCol: {
+    alignItems: "center",
+    flex: 1,
+    height: "100%",
+    justifyContent: "flex-end",
+  },
+  chartValue: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 10,
+    color: "#10213A",
+    marginBottom: 6,
+  },
+  barTrack: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  chartBar: {
+    width: 14,
+    backgroundColor: "#845EF7", // Purple color matching mockup
+    borderRadius: 7, // Rounded pill shape at top and bottom
+  },
+  dayLabel: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 11,
+    color: "#85859B",
+    marginTop: 8,
+  },
+  // Total Earnings Card
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.02,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  totalLabel: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 13,
+    color: "#85859B",
+  },
+  totalAmount: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 32,
+    color: "#10213A",
+    marginTop: 6,
+  },
+  badgeContainer: {
+    flexDirection: "row",
+    marginTop: 12,
+  },
+  deliveriesBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F1F3F9", // Light gray background
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  badgeIcon: {
+    marginRight: 6,
+  },
+  deliveriesBadgeText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 12,
+    color: "#85859B",
+  },
+  // Breakdown row
+  breakdownRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+  },
+  breakdownLabel: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 14,
+    color: "#85859B",
+  },
+  breakdownValue: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 15,
+    color: "#10213A",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#F1F3F9",
+  },
+});
