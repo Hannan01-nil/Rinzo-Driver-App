@@ -101,8 +101,7 @@ export function DashboardScreen() {
             address={req.address}
             customer={req.customer}
             distance={req.distance}
-            onViewDetails={() => navigation.navigate("new-pickup-request")}
-            onAccept={() =>
+            onPress={() =>
               navigation.navigate("order-accepted", {
                 orderId: req.orderNumber,
               })
@@ -120,8 +119,7 @@ export function DashboardScreen() {
             address={item.address}
             customer={item.customer}
             distance={item.distance}
-            onViewDetails={() => {}}
-            onAccept={() =>
+            onPress={() =>
               navigation.navigate("order-accepted", {
                 orderId: item.orderNumber,
               })

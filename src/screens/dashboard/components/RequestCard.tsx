@@ -6,8 +6,7 @@ interface RequestCardProps {
   address: string
   customer: string
   distance: string
-  onViewDetails: () => void
-  onAccept: () => void
+  onPress?: () => void
 }
 
 export function RequestCard({
@@ -16,11 +15,10 @@ export function RequestCard({
   address,
   customer,
   distance,
-  onViewDetails,
-  onAccept,
+  onPress,
 }: RequestCardProps) {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <View style={styles.topRow}>
         <Text style={styles.orderNumber}>{orderNumber}</Text>
         <View style={styles.badge}>
@@ -31,15 +29,7 @@ export function RequestCard({
       <Text style={styles.address}>{address}</Text>
       <Text style={styles.customer}>{customer}</Text>
       <Text style={styles.distance}>{distance}</Text>
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.outlineButton} onPress={onViewDetails} activeOpacity={0.7}>
-          <Text style={styles.outlineButtonText}>View Details</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filledButton} onPress={onAccept} activeOpacity={0.7}>
-          <Text style={styles.filledButtonText}>Accept</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -103,38 +93,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#8E8E93',
     marginTop: 4,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 12,
-  },
-  outlineButton: {
-    height: 44,
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#8259D2',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  outlineButtonText: {
-    fontFamily: 'Poppins_500Medium',
-    color: '#8259D2',
-    fontSize: 14,
-  },
-  filledButton: {
-    height: 44,
-    flex: 1,
-    backgroundColor: '#8259D2',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  filledButtonText: {
-    fontFamily: 'Poppins_500Medium',
-    color: '#FFFFFF',
-    fontSize: 14,
   },
 })

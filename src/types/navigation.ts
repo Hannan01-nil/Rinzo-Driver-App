@@ -4,7 +4,6 @@ export type AuthStackParamList = {
 
 export type HomeStackParamList = {
   index: undefined
-  'new-pickup-request': undefined
   'order-tracking': { orderId: string }
 }
 
