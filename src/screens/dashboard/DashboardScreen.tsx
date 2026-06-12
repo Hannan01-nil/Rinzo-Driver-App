@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -71,10 +72,15 @@ export function DashboardScreen() {
       >
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Image
-              source={{ uri: "https://i.pravatar.cc/150?u=driver001" }}
-              style={styles.avatar}
-            />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("profile")}
+              activeOpacity={0.7}
+            >
+              <Image
+                source={{ uri: "https://i.pravatar.cc/150?u=driver001" }}
+                style={styles.avatar}
+              />
+            </TouchableOpacity>
             <View style={styles.headerInfo}>
               <Text style={styles.driverName}>Rahul Verma</Text>
               <Text style={styles.onlineStatus}>Online</Text>

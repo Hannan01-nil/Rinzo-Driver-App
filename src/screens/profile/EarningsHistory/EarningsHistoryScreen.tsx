@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
+import OrderIcon from "@/assets/images/DriverAppImages/order_icon.png";
 
 type Period = "Week" | "Month" | "Year";
 
@@ -135,7 +136,7 @@ export function EarningsHistoryScreen() {
             <View key={tx.id} style={styles.transactionRow}>
               <View style={styles.txIconWrap}>
                 <Image
-                  source={require("@/assets/images/DriverAppImages/order_icon.png")}
+                  source={OrderIcon}
                   style={styles.txIcon}
                 />
               </View>

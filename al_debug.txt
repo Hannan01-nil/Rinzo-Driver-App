@@ -1,0 +1,22 @@
+﻿node : expo-modules-autolinking failed: Error: Couldn't find "package.json" up from path "R:\"
+At line:1 char:21
++ ... tion "R:\"; node --no-warnings --eval "require('expo/bin/autolinking' ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (expo-modules-au...from path "R:\":String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    at findPackageJsonPathAsync 
+[90m(R:\n[39mode_modules\[4mexpo-modules-autolinking[24m\build\commands\autolinkingOptions.js:127:11[90m)[39m
+    at getPackageJsonPath 
+[90m(R:\n[39mode_modules\[4mexpo-modules-autolinking[24m\build\commands\autolinkingOptions.js:138:58[90m)[39m
+    at getPackageJson 
+[90m(R:\n[39mode_modules\[4mexpo-modules-autolinking[24m\build\commands\autolinkingOptions.js:141:101[90m)[39m
+    at Object.getPlatformOptions 
+[90m(R:\n[39mode_modules\[4mexpo-modules-autolinking[24m\build\commands\autolinkingOptions.js:147:39[90m)[39m
+    at Command.<anonymous> [90m(R:\n[39mode_modules\[4mexpo-modules-autolinking[24m\build\commands\reactNativeConfi
+gCommand.js:23:64[90m)[39m
+    at Command.listener [as _actionHandler] [90m(R:\n[39mode_modules\[4mcommander[24m\index.js:922:31[90m)[39m
+    at Command._parseCommand [90m(R:\n[39mode_modules\[4mcommander[24m\index.js:1503:14[90m)[39m
+    at Command._dispatchSubcommand [90m(R:\n[39mode_modules\[4mcommander[24m\index.js:1443:18[90m)[39m
+    at Command._parseCommand [90m(R:\n[39mode_modules\[4mcommander[24m\index.js:1460:12[90m)[39m
+    at Command.parse [90m(R:\n[39mode_modules\[4mcommander[24m\index.js:1292:10[90m)[39m
