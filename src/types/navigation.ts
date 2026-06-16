@@ -1,5 +1,6 @@
 export type AuthStackParamList = {
   login: undefined
+  register: undefined
 }
 
 export type HomeStackParamList = {
@@ -39,6 +40,11 @@ export type ProfileStackParamList = {
   'support/report-issue': undefined
   'support/report-submitted': { ticketId?: string }
   'profile/settings': undefined
+  'profile/settings/notifications': undefined
+  'profile/settings/language': undefined
+  'profile/settings/terms': undefined
+  'profile/settings/privacy': undefined
+  'profile/earnings-history': undefined
 }
 
 export type TabParamList = {

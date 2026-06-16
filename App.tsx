@@ -18,6 +18,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { LoginScreen } from "@/screens/auth/Login/LoginScreen";
+import { SignUpScreen } from "@/screens/auth/SignUp/SignUpScreen";
 import { DashboardScreen } from "@/screens/dashboard/DashboardScreen";
 import { DocumentViewScreen } from "@/screens/documents/DocumentView/DocumentViewScreen";
 import { UploadDocumentScreen } from "@/screens/documents/UploadDocument/UploadDocumentScreen";
@@ -45,6 +46,10 @@ import { DocumentsScreen } from "@/screens/profile/Documents/DocumentsScreen";
 import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation/PersonalInformationScreen";
 import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
 import { SettingsScreen } from "@/screens/profile/Settings/SettingsScreen";
+import { NotificationSettingsScreen } from "@/screens/profile/Settings/NotificationSettingsScreen";
+import { LanguageSettingsScreen } from "@/screens/profile/Settings/LanguageSettingsScreen";
+import { TermsSettingsScreen } from "@/screens/profile/Settings/TermsSettingsScreen";
+import { PrivacySettingsScreen } from "@/screens/profile/Settings/PrivacySettingsScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
 import { ContactSupportScreen } from "@/screens/profile/support/ContactSupport/ContactSupportScreen";
 import { HelpCenterScreen } from "@/screens/profile/support/HelpCenter/HelpCenterScreen";
@@ -64,15 +69,16 @@ const Tab = createBottomTabNavigator();
 
 function AuthStack() {
   return (
-    <AuthNavigator.Navigator screenOptions={{ headerShown: false }}>
+    <AuthNavigator.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <AuthNavigator.Screen name="login" component={LoginScreen} />
+      <AuthNavigator.Screen name="register" component={SignUpScreen} />
     </AuthNavigator.Navigator>
   );
 }
 
 function HomeStackScreen() {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+    <HomeStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <HomeStack.Screen name="index" component={DashboardScreen} />
       <HomeStack.Screen name="order-accepted" component={OrderAcceptedScreen} />
       <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} />
@@ -90,7 +96,7 @@ function EarningsComingSoon() {
 
 function OrdersStackScreen() {
   return (
-    <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
+    <OrdersStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <OrdersStack.Screen name="index" component={OrdersListScreen} />
       <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} />
       <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
@@ -106,7 +112,7 @@ function OrdersStackScreen() {
 
 function EarningsStackScreen() {
   return (
-    <EarningsStack.Navigator screenOptions={{ headerShown: false }}>
+    <EarningsStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <EarningsStack.Screen name="index" component={EarningsDashboardScreen} />
       <EarningsStack.Screen name="withdraw" component={WithdrawScreen} />
       <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} />
@@ -117,7 +123,7 @@ function EarningsStackScreen() {
 
 function ProfileStackScreen() {
   return (
-    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+    <ProfileStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <ProfileStack.Screen name="index" component={ProfileScreen} />
       <ProfileStack.Screen name="personal-information" component={PersonalInformationScreen} />
       <ProfileStack.Screen name="vehicle-information" component={VehicleInformationScreen} />
@@ -134,6 +140,11 @@ function ProfileStackScreen() {
       <ProfileStack.Screen name="support/report-issue" component={ReportIssueScreen} />
       <ProfileStack.Screen name="support/report-submitted" component={ReportSubmittedScreen} />
       <ProfileStack.Screen name="profile/settings" component={SettingsScreen} />
+      <ProfileStack.Screen name="profile/settings/notifications" component={NotificationSettingsScreen} />
+      <ProfileStack.Screen name="profile/settings/language" component={LanguageSettingsScreen} />
+      <ProfileStack.Screen name="profile/settings/terms" component={TermsSettingsScreen} />
+      <ProfileStack.Screen name="profile/settings/privacy" component={PrivacySettingsScreen} />
+      <ProfileStack.Screen name="profile/earnings-history" component={EarningsHistoryScreen} />
     </ProfileStack.Navigator>
   );
 }
@@ -144,14 +155,29 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index];
-        const routeName = getFocusedRouteNameFromRoute(activeRoute) ?? "index";
+        const focusedRouteName = getFocusedRouteNameFromRoute(activeRoute);
 
-        if (routeName !== "index" && routeName !== "withdraw" && routeName !== "last-7-days") return null;
+        const hideOnScreens = [
+          "collect-clothes",
+          "order-collected-success",
+          "in-transit",
+          "order-in-transit",
+          "laundry-otp",
+          "laundry-tracking",
+          "order-at-laundry",
+          "delivered-success",
+          "order-accepted",
+          "order-tracking",
+        ];
+
+        if (focusedRouteName && hideOnScreens.includes(focusedRouteName)) {
+          return null;
+        }
 
         return (
           <BottomTabBar
             activeTab={activeRoute.name}
-            onTabPress={(key) => props.navigation.navigate(key as never)}
+            onTabPress={(key) => props.navigation.navigate(key as any, { screen: "index" } as any)}
           />
         );
       }}
@@ -171,6 +197,7 @@ const linking = {
       "(auth)": {
         screens: {
           login: "login",
+          register: "register",
         },
       },
       "(tabs)": {
@@ -221,6 +248,11 @@ const linking = {
               "support/report-issue": "report-issue",
               "support/report-submitted": "report-submitted",
               "profile/settings": "settings",
+              "profile/settings/notifications": "settings/notifications",
+              "profile/settings/language": "settings/language",
+              "profile/settings/terms": "settings/terms",
+              "profile/settings/privacy": "settings/privacy",
+              "profile/earnings-history": "profile/earnings-history",
             },
           },
         },
@@ -234,7 +266,7 @@ function RootNavigator() {
 
   return (
     <RootStack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, animation: "fade" }}
       initialRouteName={isAuthenticated ? "(tabs)" : "(auth)"}
     >
       <RootStack.Screen name="(auth)" component={AuthStack} />

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Image,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,6 +15,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
 import OrderIcon from "@/assets/images/DriverAppImages/order_icon.png";
+import EarningsCardBg from "@/assets/images/earnings_history_card_bg.png";
 
 type Period = "Week" | "Month" | "Year";
 
@@ -59,7 +61,7 @@ export function EarningsHistoryScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
-        <HeaderBackButton onPress={() => navigation.navigate("profile")} />
+        <HeaderBackButton />
         <Text style={styles.headerTitle}>Earnings History</Text>
         <View style={styles.headerRight} />
       </View>
@@ -157,20 +159,28 @@ export function EarningsHistoryScreen() {
           </TouchableOpacity>
         </View>
 
-        <LinearGradient
-          colors={["#8259D2", "#6A44B8"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+        <ImageBackground
+          source={EarningsCardBg}
           style={styles.bonusBanner}
+          imageStyle={{ borderRadius: 20 }}
+          resizeMode="cover"
         >
-          <Text style={styles.bonusTitle}>Weekly Bonus Active</Text>
-          <Text style={styles.bonusDesc}>
-            Complete 10 more deliveries{"\n"}to unlock ₹500 extra.
-          </Text>
-          <TouchableOpacity style={styles.bonusBtn} activeOpacity={0.8}>
-            <Text style={styles.bonusBtnText}>Track Bonus</Text>
-          </TouchableOpacity>
-        </LinearGradient>
+          <LinearGradient
+            colors={["rgba(130, 89, 210, 0.95)", "rgba(106, 68, 184, 0.6)", "rgba(106, 68, 184, 0.05)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View>
+            <Text style={styles.bonusTitle}>Weekly Bonus Active</Text>
+            <Text style={styles.bonusDesc}>
+              Complete 10 more deliveries{"\n"}to unlock ₹500 extra.
+            </Text>
+            <TouchableOpacity style={styles.bonusBtn} activeOpacity={0.8}>
+              <Text style={styles.bonusBtnText}>Track Bonus</Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
       </ScrollView>
     </SafeAreaView>
   );
@@ -208,7 +218,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: 120,
   },
   segmentedControl: {
     flexDirection: "row",
@@ -413,6 +423,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 3,
+    overflow: "hidden",
   },
   bonusTitle: {
     fontFamily: "Poppins_600SemiBold",

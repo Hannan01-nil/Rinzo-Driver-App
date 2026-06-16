@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   chartBar: {
     width: 14,
-    backgroundColor: "#845EF7", // Purple color matching mockup
+    backgroundColor: "#8259D2", // Purple color matching mockup
     borderRadius: 7, // Rounded pill shape at top and bottom
   },
   dayLabel: {

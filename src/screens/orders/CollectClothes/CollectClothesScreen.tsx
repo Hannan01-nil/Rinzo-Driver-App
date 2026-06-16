@@ -20,7 +20,6 @@ import Animated, {
 
 import { useOrders } from '@/hooks'
 import { colors, typography } from '@/theme'
-import { BottomTabBar } from '@/components/navigation/BottomTabBar'
 import { HeaderBackButton } from '@/components/layout/header-back-button'
 
 const FALLBACK_ITEMS = [
@@ -198,8 +197,6 @@ export function CollectClothesScreen() {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
-
-      <BottomTabBar activeTab="home" onTabPress={() => {}} />
     </SafeAreaView>
   )
 }

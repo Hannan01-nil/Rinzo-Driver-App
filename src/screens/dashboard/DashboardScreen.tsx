@@ -1,9 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useEffect } from "react";
 import {
-  BackHandler,
   Image,
   ScrollView,
   StyleSheet,
@@ -46,23 +44,6 @@ const MOCK_SCHEDULE = [
 export function DashboardScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  useEffect(() => {
-    const onBackPress = () => {
-      navigation.dispatch(
-        CommonActions.navigate({
-          name: "(tabs)",
-          params: { screen: "home", params: { screen: "index" } },
-        }) as any,
-      );
-      return true;
-    };
-    const subscription = BackHandler.addEventListener(
-      "hardwareBackPress",
-      onBackPress,
-    );
-    return () => subscription.remove();
-  }, [navigation]);
-
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <ScrollView
@@ -82,7 +63,7 @@ export function DashboardScreen() {
               />
             </TouchableOpacity>
             <View style={styles.headerInfo}>
-              <Text style={styles.driverName}>Rahul Verma</Text>
+              <Text style={styles.driverName}>Rahul Sharma</Text>
               <Text style={styles.onlineStatus}>Online</Text>
             </View>
           </View>

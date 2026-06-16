@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     width: 32,
   },
   scroll: {
-    paddingBottom: spacing.xxl,
+    paddingBottom: 120,
   },
   content: {
     paddingHorizontal: 20,
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
   saveButton: {
     height: 56,
     borderRadius: 20,
+    marginTop: 5,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#7C5CE5",

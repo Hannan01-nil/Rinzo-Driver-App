@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
     width: 32,
   },
   scroll: {
-    paddingBottom: 52,
+    paddingBottom: 120,
   },
   avatarWrap: {
     alignItems: "center",

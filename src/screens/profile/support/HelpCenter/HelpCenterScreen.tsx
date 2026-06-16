@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 120,
   },
   subheaderText: {
     fontFamily: "Poppins_500Medium",
