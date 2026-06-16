@@ -7,14 +7,17 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/hooks";
 
 export function SettingsScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const route = useRoute<any>();
   const { logout } = useAuth();
+
+  const selectedLanguage = route.params?.selectedLanguage ?? "English";
 
   const handleLogout = () => {
     Alert.alert(
@@ -82,16 +85,20 @@ export function SettingsScreen() {
           <View style={styles.rowDivider} />
 
           {/* Language Option */}
-          <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            activeOpacity={0.6}
+            onPress={() => navigation.navigate("profile/settings/language")}
+          >
             <View style={styles.iconContainer}>
               <Ionicons name="globe-outline" size={22} color="#8259D2" />
             </View>
             <Text style={styles.rowLabel}>Language</Text>
             <View style={styles.rowRightContainer}>
-              <Text style={styles.rowValue}>English</Text>
+              <Text style={styles.rowValue}>{selectedLanguage}</Text>
               <Ionicons name="chevron-forward" size={16} color="#C7C7CC" style={{ marginLeft: 4 }} />
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Section 2: Privacy, Terms & Version */}
