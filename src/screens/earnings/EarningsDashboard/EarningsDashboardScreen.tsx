@@ -52,7 +52,7 @@ export function EarningsDashboardScreen() {
       >
         {/* Today's Earnings Card */}
         <LinearGradient
-          colors={["#845EF7", "#6A40DF"]}
+          colors={["#8259D2", "#6A44B8"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.todayCard}
@@ -215,7 +215,7 @@ export function EarningsDashboardScreen() {
           onPress={() => navigation.navigate("withdraw")}
         >
           <LinearGradient
-            colors={["#845EF7", "#7048E8"]}
+            colors={["#8259D2", "#6A44B8"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.stickyBtnGradient}
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     position: "relative",
     overflow: "hidden",
-    shadowColor: "#845EF7",
+    shadowColor: "#8259D2",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
     shadowRadius: 16,
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   },
   statAccentBar: {
     width: 4,
-    backgroundColor: "#845EF7",
+    backgroundColor: "#8259D2",
     borderTopLeftRadius: 16,
     borderBottomLeftRadius: 16,
   },
@@ -384,15 +384,15 @@ const styles = StyleSheet.create({
   withdrawAmount: {
     fontFamily: "Poppins_700Bold",
     fontSize: 22,
-    color: "#845EF7",
+    color: "#8259D2",
     marginTop: 4,
   },
   withdrawBtn: {
-    backgroundColor: "#845EF7",
+    backgroundColor: "#8259D2",
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 9,
-    shadowColor: "#845EF7",
+    shadowColor: "#8259D2",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontFamily: "Poppins_500Medium",
     fontSize: 13,
-    color: "#845EF7",
+    color: "#8259D2",
   },
   chartContainer: {
     flexDirection: "row",
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#EFEFF4",
   },
   purpleText: {
-    color: "#845EF7",
+    color: "#8259D2",
   },
   boldText: {
     fontFamily: "Poppins_700Bold",
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#845EF7",
+    backgroundColor: "#8259D2",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: 24,
     marginBottom: 10,
-    shadowColor: "#845EF7",
+    shadowColor: "#8259D2",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 10,

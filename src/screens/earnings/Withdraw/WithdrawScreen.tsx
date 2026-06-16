@@ -85,7 +85,7 @@ export function WithdrawScreen() {
             onPress={() => setSelectedMethod("bank")}
           >
             <View style={styles.methodIconContainer}>
-              <MaterialCommunityIcons name="bank-outline" size={22} color="#845EF7" />
+              <MaterialCommunityIcons name="bank-outline" size={22} color="#8259D2" />
             </View>
             <View style={styles.methodDetails}>
               <Text style={styles.methodTitle}>Bank Account</Text>
@@ -111,7 +111,7 @@ export function WithdrawScreen() {
             onPress={() => setSelectedMethod("upi")}
           >
             <View style={styles.methodIconContainer}>
-              <MaterialCommunityIcons name="at" size={22} color="#845EF7" />
+              <MaterialCommunityIcons name="at" size={22} color="#8259D2" />
             </View>
             <View style={styles.methodDetails}>
               <Text style={styles.methodTitle}>UPI</Text>
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   },
   methodCardSelected: {
     borderWidth: 1.5,
-    borderColor: "#845EF7", // Purple selection border
+    borderColor: "#8259D2", // Purple selection border
   },
   methodIconContainer: {
     width: 44,
@@ -336,13 +336,13 @@ const styles = StyleSheet.create({
   },
   // Withdraw Button
   withdrawActionBtn: {
-    backgroundColor: "#845EF7",
+    backgroundColor: "#8259D2",
     borderRadius: 16,
     height: 54,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 16,
-    shadowColor: "#845EF7",
+    shadowColor: "#8259D2",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.2,
     shadowRadius: 10,

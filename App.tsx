@@ -18,6 +18,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { LoginScreen } from "@/screens/auth/Login/LoginScreen";
+import { SignUpScreen } from "@/screens/auth/SignUp/SignUpScreen";
 import { DashboardScreen } from "@/screens/dashboard/DashboardScreen";
 import { DocumentViewScreen } from "@/screens/documents/DocumentView/DocumentViewScreen";
 import { UploadDocumentScreen } from "@/screens/documents/UploadDocument/UploadDocumentScreen";
@@ -68,15 +69,16 @@ const Tab = createBottomTabNavigator();
 
 function AuthStack() {
   return (
-    <AuthNavigator.Navigator screenOptions={{ headerShown: false }}>
+    <AuthNavigator.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <AuthNavigator.Screen name="login" component={LoginScreen} />
+      <AuthNavigator.Screen name="register" component={SignUpScreen} />
     </AuthNavigator.Navigator>
   );
 }
 
 function HomeStackScreen() {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+    <HomeStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <HomeStack.Screen name="index" component={DashboardScreen} />
       <HomeStack.Screen name="order-accepted" component={OrderAcceptedScreen} />
       <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} />
@@ -94,7 +96,7 @@ function EarningsComingSoon() {
 
 function OrdersStackScreen() {
   return (
-    <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
+    <OrdersStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <OrdersStack.Screen name="index" component={OrdersListScreen} />
       <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} />
       <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
@@ -110,7 +112,7 @@ function OrdersStackScreen() {
 
 function EarningsStackScreen() {
   return (
-    <EarningsStack.Navigator screenOptions={{ headerShown: false }}>
+    <EarningsStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <EarningsStack.Screen name="index" component={EarningsDashboardScreen} />
       <EarningsStack.Screen name="withdraw" component={WithdrawScreen} />
       <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} />
@@ -121,7 +123,7 @@ function EarningsStackScreen() {
 
 function ProfileStackScreen() {
   return (
-    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+    <ProfileStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
       <ProfileStack.Screen name="index" component={ProfileScreen} />
       <ProfileStack.Screen name="personal-information" component={PersonalInformationScreen} />
       <ProfileStack.Screen name="vehicle-information" component={VehicleInformationScreen} />
@@ -142,6 +144,7 @@ function ProfileStackScreen() {
       <ProfileStack.Screen name="profile/settings/language" component={LanguageSettingsScreen} />
       <ProfileStack.Screen name="profile/settings/terms" component={TermsSettingsScreen} />
       <ProfileStack.Screen name="profile/settings/privacy" component={PrivacySettingsScreen} />
+      <ProfileStack.Screen name="profile/earnings-history" component={EarningsHistoryScreen} />
     </ProfileStack.Navigator>
   );
 }
@@ -152,6 +155,25 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index];
+        const focusedRouteName = getFocusedRouteNameFromRoute(activeRoute);
+
+        const hideOnScreens = [
+          "collect-clothes",
+          "order-collected-success",
+          "in-transit",
+          "order-in-transit",
+          "laundry-otp",
+          "laundry-tracking",
+          "order-at-laundry",
+          "delivered-success",
+          "order-accepted",
+          "order-tracking",
+        ];
+
+        if (focusedRouteName && hideOnScreens.includes(focusedRouteName)) {
+          return null;
+        }
+
         return (
           <BottomTabBar
             activeTab={activeRoute.name}
@@ -175,6 +197,7 @@ const linking = {
       "(auth)": {
         screens: {
           login: "login",
+          register: "register",
         },
       },
       "(tabs)": {
@@ -229,6 +252,7 @@ const linking = {
               "profile/settings/language": "settings/language",
               "profile/settings/terms": "settings/terms",
               "profile/settings/privacy": "settings/privacy",
+              "profile/earnings-history": "profile/earnings-history",
             },
           },
         },
@@ -242,7 +266,7 @@ function RootNavigator() {
 
   return (
     <RootStack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, animation: "fade" }}
       initialRouteName={isAuthenticated ? "(tabs)" : "(auth)"}
     >
       <RootStack.Screen name="(auth)" component={AuthStack} />

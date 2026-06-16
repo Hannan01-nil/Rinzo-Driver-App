@@ -134,7 +134,7 @@ export function OrderAtLaundryScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     height: 56,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "#FFFFFF",
   },
   headerSide: {
     width: 48,

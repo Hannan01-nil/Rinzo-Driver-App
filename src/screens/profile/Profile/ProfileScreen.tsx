@@ -3,15 +3,16 @@ import { spacing } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useState } from "react";
 import {
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  Platform,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,6 +20,7 @@ const ProfileScreen: React.FC = () => {
   const navigation: any = useNavigation();
   const { profile } = useProfile();
   const { logout } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const MENU_SECTIONS = [
     {
@@ -41,7 +43,7 @@ const ProfileScreen: React.FC = () => {
       title: "FINANCE",
       items: [
         { label: "Bank Details", route: "finance/bank-details", icon: "card" },
-        { label: "Earnings History", route: "earnings-history", icon: "time" },
+        { label: "Earnings History", route: "profile/earnings-history", icon: "time" },
       ],
     },
     {
@@ -72,11 +74,7 @@ const ProfileScreen: React.FC = () => {
   function MenuRow({ icon, label, route, danger }: any) {
     const handlePress = () => {
       if (route) {
-        if (route === "earnings-history") {
-          navigation.navigate("earnings", { screen: "earnings-history" });
-        } else {
-          navigation.dispatch(CommonActions.navigate({ name: route as string }));
-        }
+        navigation.dispatch(CommonActions.navigate({ name: route as string }));
       }
     };
 
@@ -210,34 +208,7 @@ const ProfileScreen: React.FC = () => {
             <TouchableOpacity
               style={styles.logoutRow}
               activeOpacity={0.7}
-              onPress={() => {
-                Alert.alert(
-                  "Logout",
-                  "Are you sure you want to log out of your account?",
-                  [
-                    { text: "Cancel", style: "cancel" },
-                    {
-                      text: "Logout",
-                      style: "destructive",
-                      onPress: () => {
-                        logout();
-                        const rootNavigation = navigation.getParent()?.getParent();
-                        if (rootNavigation && typeof rootNavigation.reset === "function") {
-                          rootNavigation.reset({
-                            index: 0,
-                            routes: [{ name: "(auth)" }],
-                          });
-                        } else {
-                          navigation.reset({
-                            index: 0,
-                            routes: [{ name: "(auth)" }],
-                          });
-                        }
-                      },
-                    },
-                  ]
-                );
-              }}
+              onPress={() => setShowLogoutModal(true)}
             >
               <View style={styles.leftIconLogout}>
                 <Ionicons name="log-out-outline" size={20} color="#FF4D4F" />
@@ -250,6 +221,56 @@ const ProfileScreen: React.FC = () => {
 
         <View style={{ height: 120 }} />
       </ScrollView>
+
+      <Modal
+        visible={showLogoutModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLogoutModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalIconBg}>
+              <Ionicons name="log-out-outline" size={28} color="#FF4D4F" />
+            </View>
+            <Text style={styles.modalTitle}>Logout</Text>
+            <Text style={styles.modalMessage}>
+              Are you sure you want to log out of your account?
+            </Text>
+            <View style={styles.modalButtonsRow}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalCancelBtn]}
+                activeOpacity={0.8}
+                onPress={() => setShowLogoutModal(false)}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalLogoutBtn]}
+                activeOpacity={0.85}
+                onPress={() => {
+                  setShowLogoutModal(false);
+                  logout();
+                  const rootNavigation = navigation.getParent()?.getParent();
+                  if (rootNavigation && typeof rootNavigation.reset === "function") {
+                    rootNavigation.reset({
+                      index: 0,
+                      routes: [{ name: "(auth)" }],
+                    });
+                  } else {
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: "(auth)" }],
+                    });
+                  }
+                }}
+              >
+                <Text style={styles.modalLogoutText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -438,6 +459,78 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   settingsBtn: { padding: 8 },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "85%",
+    maxWidth: 320,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 24,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalIconBg: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "#FFF1F0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#1F1F1F",
+    marginBottom: 8,
+  },
+  modalMessage: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 14,
+    color: "#8E8E93",
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  modalButtonsRow: {
+    flexDirection: "row",
+    width: "100%",
+    gap: 12,
+  },
+  modalButton: {
+    flex: 1,
+    height: 46,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalCancelBtn: {
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    backgroundColor: "#FFFFFF",
+  },
+  modalCancelText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 14,
+    color: "#6B7280",
+  },
+  modalLogoutBtn: {
+    backgroundColor: "#FF4D4F",
+  },
+  modalLogoutText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 14,
+    color: "#FFFFFF",
+  },
 });
 
 export default ProfileScreen;
