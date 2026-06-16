@@ -47,7 +47,6 @@ import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation
 import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
 import { SettingsScreen } from "@/screens/profile/Settings/SettingsScreen";
 import { NotificationSettingsScreen } from "@/screens/profile/Settings/NotificationSettingsScreen";
-import { LanguageSettingsScreen } from "@/screens/profile/Settings/LanguageSettingsScreen";
 import { TermsSettingsScreen } from "@/screens/profile/Settings/TermsSettingsScreen";
 import { PrivacySettingsScreen } from "@/screens/profile/Settings/PrivacySettingsScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
@@ -82,6 +81,14 @@ function HomeStackScreen() {
       <HomeStack.Screen name="index" component={DashboardScreen} />
       <HomeStack.Screen name="order-accepted" component={OrderAcceptedScreen} />
       <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} />
+      <HomeStack.Screen name="collect-clothes" component={CollectClothesScreen} />
+      <HomeStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
+      <HomeStack.Screen name="in-transit" component={InTransitScreen} />
+      <HomeStack.Screen name="order-in-transit" component={InOrderToTransitScreen} />
+      <HomeStack.Screen name="laundry-otp" component={LaundryOtpVerificationScreen} />
+      <HomeStack.Screen name="laundry-tracking" component={LaundryTrackingScreen} />
+      <HomeStack.Screen name="order-at-laundry" component={OrderAtLaundryScreen} />
+      <HomeStack.Screen name="delivered-success" component={DeliveredSuccessScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -141,7 +148,6 @@ function ProfileStackScreen() {
       <ProfileStack.Screen name="support/report-submitted" component={ReportSubmittedScreen} />
       <ProfileStack.Screen name="profile/settings" component={SettingsScreen} />
       <ProfileStack.Screen name="profile/settings/notifications" component={NotificationSettingsScreen} />
-      <ProfileStack.Screen name="profile/settings/language" component={LanguageSettingsScreen} />
       <ProfileStack.Screen name="profile/settings/terms" component={TermsSettingsScreen} />
       <ProfileStack.Screen name="profile/settings/privacy" component={PrivacySettingsScreen} />
       <ProfileStack.Screen name="profile/earnings-history" component={EarningsHistoryScreen} />
@@ -157,18 +163,7 @@ function MainTabs() {
         const activeRoute = props.state.routes[props.state.index];
         const focusedRouteName = getFocusedRouteNameFromRoute(activeRoute);
 
-        const hideOnScreens = [
-          "collect-clothes",
-          "order-collected-success",
-          "in-transit",
-          "order-in-transit",
-          "laundry-otp",
-          "laundry-tracking",
-          "order-at-laundry",
-          "delivered-success",
-          "order-accepted",
-          "order-tracking",
-        ];
+        const hideOnScreens: string[] = [];
 
         if (focusedRouteName && hideOnScreens.includes(focusedRouteName)) {
           return null;

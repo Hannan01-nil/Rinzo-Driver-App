@@ -133,7 +133,26 @@ export function DeliveredSuccessScreen() {
   }));
 
   const handleDismiss = () => {
-    navigation.dispatch(StackActions.popToTop());
+    try {
+      navigation.dispatch(StackActions.popToTop());
+    } catch (e) {
+      // Ignore if pop is not supported
+    }
+
+    try {
+      navigation.navigate("orders", {
+        screen: "index",
+        params: { filter: "completed" },
+      });
+    } catch (e) {
+      const parent = navigation.getParent();
+      if (parent && typeof parent.navigate === "function") {
+        parent.navigate("orders", {
+          screen: "index",
+          params: { filter: "completed" },
+        });
+      }
+    }
   };
 
   return (
@@ -259,6 +278,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 28,
+    paddingBottom: 110,
   },
   animationWrapper: {
     width: 260,

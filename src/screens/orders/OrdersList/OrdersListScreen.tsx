@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { HeaderBackButton } from '@/components/layout/header-back-button'
@@ -20,8 +20,18 @@ const FILTERS: { label: string; value: ActiveFilterType }[] = [
 
 export function OrdersListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
+  const route = useRoute()
   const { orders } = useOrders()
-  const [activeFilter, setActiveFilter] = useState<ActiveFilterType>('all')
+  
+  const initialFilter = (route.params as any)?.filter as ActiveFilterType ?? 'all'
+  const [activeFilter, setActiveFilter] = useState<ActiveFilterType>(initialFilter)
+
+  useEffect(() => {
+    const filterParam = (route.params as any)?.filter as ActiveFilterType;
+    if (filterParam) {
+      setActiveFilter(filterParam);
+    }
+  }, [(route.params as any)?.filter]);
 
   const filtered = orders.filter(o => {
     if (activeFilter === 'all') return true

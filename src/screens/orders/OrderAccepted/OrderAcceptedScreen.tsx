@@ -253,15 +253,17 @@ export function OrderAcceptedScreen() {
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => {
-            const parentNav =
-              (navigation as any).getParent && (navigation as any).getParent();
-            if (parentNav && typeof parentNav.navigate === "function") {
-              parentNav.navigate("home", {
-                screen: "order-tracking",
-                params: { orderId },
-              });
-            } else {
-              navigation.navigate("order-tracking", { orderId });
+            try {
+              (navigation as any).navigate("order-tracking", { orderId });
+            } catch (e) {
+              const parentNav =
+                (navigation as any).getParent && (navigation as any).getParent();
+              if (parentNav && typeof parentNav.navigate === "function") {
+                parentNav.navigate("home", {
+                  screen: "order-tracking",
+                  params: { orderId },
+                });
+              }
             }
           }}
           activeOpacity={0.7}
@@ -455,6 +457,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   bottomSpacer: {
-    height: 24,
+    height: 110,
   },
 });

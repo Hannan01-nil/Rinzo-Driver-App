@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -58,14 +59,16 @@ export function InOrderToTransitScreen() {
           <HeaderBackButton
             onPress={() => {
               if (fromHomeTrack) {
-                const parentNav = navigation.getParent && navigation.getParent();
-                if (parentNav && typeof parentNav.navigate === "function") {
-                  parentNav.navigate("home", {
-                    screen: "order-tracking",
-                    params: { orderId },
-                  });
-                } else {
+                try {
                   navigation.navigate("order-tracking" as any, { orderId } as any);
+                } catch (e) {
+                  const parentNav = navigation.getParent && navigation.getParent();
+                  if (parentNav && typeof parentNav.navigate === "function") {
+                    parentNav.navigate("home", {
+                      screen: "order-tracking",
+                      params: { orderId },
+                    });
+                  }
                 }
               } else {
                 navigation.goBack();
@@ -79,97 +82,106 @@ export function InOrderToTransitScreen() {
         </View>
       </View>
 
-      <Animated.View
-        entering={FadeInUp.delay(100).duration(400)}
-        style={styles.mapContainer}
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        <Image source={mapImage} style={styles.mapImage} resizeMode="cover" />
-      </Animated.View>
+        <Animated.View
+          entering={FadeInUp.delay(100).duration(400)}
+          style={styles.mapContainer}
+        >
+          <Image source={mapImage} style={styles.mapImage} resizeMode="cover" />
+        </Animated.View>
 
-      <View style={styles.bottomCard}>
-        <View style={styles.cardInner}>
-          
+        <View style={styles.bottomCard}>
+          <View style={styles.cardInner}>
+            
 
-          <Animated.View
-            entering={FadeInUp.delay(500).duration(400).springify()}
-            style={styles.laundryCard}
-          >
-            <View style={styles.laundryRow}>
-              <View style={styles.laundryLeft}>
-                <Text style={styles.laundryLine1}>Laundry Hub</Text>
-                <Text style={styles.laundryLine2}>{distance}</Text>
-                <Text style={styles.laundryLine3}>ETA: {eta}</Text>
-              </View>
-              <Ionicons name="pencil-outline" size={24} color="#1F1F1F" />
-            </View>
-          </Animated.View>
-
-          <Animated.View
-            entering={FadeInUp.delay(600).duration(400).springify()}
-          >
-            <TouchableOpacity
-              style={styles.callRow}
-              onPress={handleCall}
-              activeOpacity={0.7}
+            <Animated.View
+              entering={FadeInUp.delay(500).duration(400).springify()}
+              style={styles.laundryCard}
             >
-              <Ionicons name="call-outline" size={18} color="#8259D2" />
-              <Text style={styles.callText}>Call Laundry</Text>
-            </TouchableOpacity>
-          </Animated.View>
+              <View style={styles.laundryRow}>
+                <View style={styles.laundryLeft}>
+                  <Text style={styles.laundryLine1}>Laundry Hub</Text>
+                  <Text style={styles.laundryLine2}>{distance}</Text>
+                  <Text style={styles.laundryLine3}>ETA: {eta}</Text>
+                </View>
+                <Ionicons name="pencil-outline" size={24} color="#1F1F1F" />
+              </View>
+            </Animated.View>
 
-          <Animated.View
-            entering={FadeInUp.delay(700).duration(400).springify()}
-          >
-            <Animated.View style={reachedStyle}>
+            <Animated.View
+              entering={FadeInUp.delay(600).duration(400).springify()}
+            >
               <TouchableOpacity
-                style={styles.reachedButton}
-                activeOpacity={0.95}
-                onPressIn={() => {
-                  reachedScale.value = withSpring(0.97, {
-                    damping: 15,
-                    stiffness: 200,
-                  });
-                }}
-                onPressOut={() => {
-                  reachedScale.value = withSpring(1, {
-                    damping: 10,
-                    stiffness: 150,
-                  });
-                }}
-                onPress={handleReached}
+                style={styles.callRow}
+                onPress={handleCall}
+                activeOpacity={0.7}
               >
-                <Text style={styles.reachedText}>Reached Laundry</Text>
+                <Ionicons name="call-outline" size={18} color="#8259D2" />
+                <Text style={styles.callText}>Call Laundry</Text>
               </TouchableOpacity>
             </Animated.View>
-          </Animated.View>
 
-          <Animated.View
-            entering={FadeInUp.delay(800).duration(400).springify()}
-          >
-            <Animated.View style={helpStyle}>
-              <TouchableOpacity
-                style={styles.helpButton}
-                activeOpacity={0.95}
-                onPressIn={() => {
-                  helpScale.value = withSpring(0.97, {
-                    damping: 15,
-                    stiffness: 200,
-                  });
-                }}
-                onPressOut={() => {
-                  helpScale.value = withSpring(1, {
-                    damping: 10,
-                    stiffness: 150,
-                  });
-                }}
-                onPress={handleHelp}
+            {/* Buttons placed inside the flow of the card */}
+            <View style={styles.buttonContainer}>
+              <Animated.View
+                entering={FadeInUp.delay(700).duration(400).springify()}
               >
-                <Text style={styles.helpText}>Need Help?</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </Animated.View>
+                <Animated.View style={reachedStyle}>
+                  <TouchableOpacity
+                    style={styles.reachedButton}
+                    activeOpacity={0.95}
+                    onPressIn={() => {
+                      reachedScale.value = withSpring(0.97, {
+                        damping: 15,
+                        stiffness: 200,
+                      });
+                    }}
+                    onPressOut={() => {
+                      reachedScale.value = withSpring(1, {
+                        damping: 10,
+                        stiffness: 150,
+                      });
+                    }}
+                    onPress={handleReached}
+                  >
+                    <Text style={styles.reachedText}>Reached Laundry</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              </Animated.View>
+
+              <Animated.View
+                entering={FadeInUp.delay(800).duration(400).springify()}
+              >
+                <Animated.View style={helpStyle}>
+                  <TouchableOpacity
+                    style={styles.helpButton}
+                    activeOpacity={0.95}
+                    onPressIn={() => {
+                      helpScale.value = withSpring(0.97, {
+                        damping: 15,
+                        stiffness: 200,
+                      });
+                    }}
+                    onPressOut={() => {
+                      helpScale.value = withSpring(1, {
+                        damping: 10,
+                        stiffness: 150,
+                      });
+                    }}
+                    onPress={handleHelp}
+                  >
+                    <Text style={styles.helpText}>Need Help?</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              </Animated.View>
+            </View>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -224,19 +236,29 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  bottomCard: {
+  scrollContainer: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  bottomCard: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     paddingTop: 16,
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 120,
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: -6 },
     elevation: 6,
+  },
+  buttonContainer: {
+    marginTop: 24,
+    backgroundColor: "transparent",
   },
   cardInner: {
     flexGrow: 1,

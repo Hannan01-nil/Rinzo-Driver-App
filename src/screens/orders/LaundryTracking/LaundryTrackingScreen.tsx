@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
@@ -34,12 +35,16 @@ export function LaundryTrackingScreen() {
         <View style={styles.headerSide} />
       </View>
 
-      <View style={styles.mapContainer}>
-        <Image source={mapImage} style={styles.mapImage} resizeMode="cover" />
-      </View>
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.mapContainer}>
+          <Image source={mapImage} style={styles.mapImage} resizeMode="cover" />
+        </View>
 
-      <View style={styles.bottomCard}>
-        <View style={styles.cardUpper}>
+        <View style={styles.bottomCard}>
           <Text style={styles.title}>Laundry Tracking</Text>
           <View style={styles.driverRow}>
             <Image
@@ -87,7 +92,9 @@ export function LaundryTrackingScreen() {
             </View>
           </View>
         </View>
+      </ScrollView>
 
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.reachedButton}
           activeOpacity={0.75}
@@ -138,14 +145,20 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  bottomCard: {
+  scrollContainer: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  bottomCard: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     paddingTop: 16,
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 180,
     marginTop: -92,
     shadowColor: "#000",
     shadowOpacity: 0.06,
@@ -153,9 +166,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -6 },
     elevation: 6,
   },
-  cardUpper: {
-    flex: 1,
-    overflow: "hidden",
+  buttonContainer: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: 110,
+    backgroundColor: "transparent",
+    zIndex: 999,
   },
   title: {
     fontFamily: "Poppins_600SemiBold",

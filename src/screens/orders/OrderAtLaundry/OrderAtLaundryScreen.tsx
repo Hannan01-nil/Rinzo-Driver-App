@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingHorizontal: 28,
+    paddingBottom: 110,
   },
   illustration: {
     width: 320,

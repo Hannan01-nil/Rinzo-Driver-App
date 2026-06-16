@@ -1,12 +1,13 @@
 import { HeaderBackButton } from "@/components/layout/header-back-button";
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ScreenWrapper } from "@/components/layout/screen-wrapper";
 import { Card } from "@/components/ui/card";
-import { mockPersonalInfo } from "@/data/profile";
+import { mockPersonalInfo, mockProfile } from "@/data/profile";
 import { useProfile } from "@/hooks";
 import { spacing } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Image,
@@ -17,6 +18,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  TextInput,
 } from "react-native";
 
 const AVATAR_SIZE = 110;
@@ -91,6 +93,9 @@ function CalendarGrid({
   }
   for (let d = 1; d <= daysInMonth; d++) {
     days.push(d);
+  }
+  while (days.length < 42) {
+    days.push(null);
   }
 
   const goToPrevMonth = () => {
@@ -273,23 +278,160 @@ const calendarStyles = StyleSheet.create({
 });
 
 export function PersonalInformationScreen() {
-  const { profile } = useProfile();
+  const { profile, updateAvatar } = useProfile();
   const navigation = useNavigation();
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
+  const handleCameraLaunch = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        alert("Camera permission is required to capture a photo.");
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        await updateAvatar(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Camera launching error:", error);
+    } finally {
+      setShowUploadModal(false);
+    }
+  };
+
+  const handleGalleryLaunch = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Gallery permission is required to select a photo.");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        await updateAvatar(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Gallery launching error:", error);
+    } finally {
+      setShowUploadModal(false);
+    }
+  };
 
   const initialDate = parseDate(mockPersonalInfo.dateOfBirth);
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
+
+  // Helper to format Date to DD/MM/YYYY
+  const formatDateToInput = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Helper to parse DD/MM/YYYY string to Date
+  const parseInputToDate = (input: string): Date | null => {
+    const parts = input.split("/");
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const year = parseInt(parts[2], 10);
+      if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+        const parsedDate = new Date(year, month, day);
+        if (
+          parsedDate.getFullYear() === year &&
+          parsedDate.getMonth() === month &&
+          parsedDate.getDate() === day
+        ) {
+          return parsedDate;
+        }
+      }
+    }
+    return null;
+  };
+
+  const [dobText, setDobText] = useState(formatDateToInput(selectedDate));
+
+  const handleDobTextChange = (text: string) => {
+    let cleaned = text.replace(/[^0-9]/g, "");
+    if (cleaned.length > 8) {
+      cleaned = cleaned.substring(0, 8);
+    }
+    let formatted = cleaned;
+    if (cleaned.length > 2) {
+      formatted = `${cleaned.substring(0, 2)}/${cleaned.substring(2)}`;
+    }
+    if (cleaned.length > 4) {
+      formatted = `${cleaned.substring(0, 2)}/${cleaned.substring(2, 4)}/${cleaned.substring(4)}`;
+    }
+    setDobText(formatted);
+
+    if (formatted.length === 10) {
+      const parsed = parseInputToDate(formatted);
+      if (parsed) {
+        setSelectedDate(parsed);
+      }
+    }
+  };
+
   const [selectedGender, setSelectedGender] = useState(mockPersonalInfo.gender);
   const [showGenderPicker, setShowGenderPicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const data = {
-    fullName:
-      profile?.name ??
-      `${mockPersonalInfo.firstName} ${mockPersonalInfo.lastName}`,
-    phone: profile?.phone ?? mockPersonalInfo.phone,
-    email: profile?.email ?? mockPersonalInfo.email,
-    emergency: mockPersonalInfo.emergencyContact,
-    address: mockPersonalInfo.address,
+  const initialFullName = profile?.name ?? `${mockPersonalInfo.firstName} ${mockPersonalInfo.lastName}`;
+  const [fullName, setFullName] = useState(initialFullName);
+  const [phone, setPhone] = useState(profile?.phone ?? mockPersonalInfo.phone);
+  const [email, setEmail] = useState(profile?.email ?? mockPersonalInfo.email);
+  const [emergencyName, setEmergencyName] = useState(mockPersonalInfo.emergencyContact.name);
+  const [emergencyPhone, setEmergencyPhone] = useState(mockPersonalInfo.emergencyContact.phone);
+  const [address, setAddress] = useState(mockPersonalInfo.address);
+
+  const fullNameRef = useRef<TextInput>(null);
+  const phoneRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const emergencyNameRef = useRef<TextInput>(null);
+  const addressRef = useRef<TextInput>(null);
+
+  const handleSaveChanges = () => {
+    mockPersonalInfo.firstName = fullName.split(" ")[0] || "";
+    mockPersonalInfo.lastName = fullName.split(" ").slice(1).join(" ") || "";
+    mockPersonalInfo.phone = phone;
+    mockPersonalInfo.email = email;
+    mockPersonalInfo.gender = selectedGender;
+    
+    const parsed = parseInputToDate(dobText);
+    if (!parsed) {
+      alert("Please enter a valid Date of Birth (DD/MM/YYYY).");
+      return;
+    }
+    
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, "0");
+    const day = String(parsed.getDate()).padStart(2, "0");
+    mockPersonalInfo.dateOfBirth = `${year}-${month}-${day}`;
+    
+    mockPersonalInfo.emergencyContact.name = emergencyName;
+    mockPersonalInfo.emergencyContact.phone = emergencyPhone;
+    mockPersonalInfo.address = address;
+
+    mockProfile.name = fullName;
+    mockProfile.phone = phone;
+    mockProfile.email = email;
+
+    navigation.goBack();
   };
 
   return (
@@ -306,45 +448,114 @@ export function PersonalInformationScreen() {
       >
         <View style={styles.avatarWrap}>
           <Image source={{ uri: profile?.avatar }} style={styles.avatar} />
-          <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.cameraBtn}
+            activeOpacity={0.8}
+            onPress={() => setShowUploadModal(true)}
+          >
             <View style={styles.cameraOuter}>
-              <Ionicons name="camera-outline" size={17} color="#8B5CF6" />
+              <Ionicons name="camera-outline" size={17} color="#8259D2" />
             </View>
           </TouchableOpacity>
         </View>
 
         <View style={styles.content}>
           <Card style={styles.fieldCard}>
-            <Text style={styles.label}>Full Name</Text>
-            <Text style={styles.value}>{data.fullName}</Text>
-          </Card>
-
-          <Card style={styles.fieldCard}>
-            <Text style={styles.label}>Phone Number</Text>
-            <Text style={styles.value}>{data.phone}</Text>
-          </Card>
-
-          <Card style={styles.fieldCard}>
-            <Text style={styles.label}>Email</Text>
-            <Text style={styles.value}>{data.email}</Text>
-          </Card>
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Card style={styles.fieldCard}>
-              <View style={styles.rowBetween}>
-                <View>
-                  <Text style={styles.label}>Date of Birth</Text>
-                  <Text style={styles.value}>{formatDate(selectedDate)}</Text>
-                </View>
-                <View style={styles.iconBox}>
-                  <Ionicons name="calendar-outline" size={16} color="#A0A3BD" />
-                </View>
+            <View style={styles.rowBetween}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Full Name</Text>
+                <TextInput
+                  ref={fullNameRef}
+                  style={styles.inputField}
+                  value={fullName}
+                  onChangeText={setFullName}
+                  placeholder="Full Name"
+                  placeholderTextColor="#A0A3BD"
+                />
               </View>
-            </Card>
-          </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => fullNameRef.current?.focus()}
+                style={styles.iconBox}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="pencil" size={16} color="#8259D2" />
+              </TouchableOpacity>
+            </View>
+          </Card>
+
+          <Card style={styles.fieldCard}>
+            <View style={styles.rowBetween}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Phone Number</Text>
+                <TextInput
+                  ref={phoneRef}
+                  style={styles.inputField}
+                  value={phone}
+                  onChangeText={setPhone}
+                  placeholder="Phone Number"
+                  placeholderTextColor="#A0A3BD"
+                  keyboardType="phone-pad"
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => phoneRef.current?.focus()}
+                style={styles.iconBox}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="pencil" size={16} color="#8259D2" />
+              </TouchableOpacity>
+            </View>
+          </Card>
+
+          <Card style={styles.fieldCard}>
+            <View style={styles.rowBetween}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput
+                  ref={emailRef}
+                  style={styles.inputField}
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="Email"
+                  placeholderTextColor="#A0A3BD"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => emailRef.current?.focus()}
+                style={styles.iconBox}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="pencil" size={16} color="#8259D2" />
+              </TouchableOpacity>
+            </View>
+          </Card>
+
+          <Card style={styles.fieldCard}>
+            <View style={styles.rowBetween}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Date of Birth (DD/MM/YYYY)</Text>
+                <TextInput
+                  style={styles.inputField}
+                  value={dobText}
+                  onChangeText={handleDobTextChange}
+                  placeholder="DD/MM/YYYY"
+                  placeholderTextColor="#A0A3BD"
+                  keyboardType="numeric"
+                  maxLength={10}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowDatePicker(true)}
+                style={styles.iconBox}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="calendar-outline" size={18} color="#8259D2" />
+              </TouchableOpacity>
+            </View>
+          </Card>
 
           <TouchableOpacity
             activeOpacity={0.7}
@@ -364,23 +575,67 @@ export function PersonalInformationScreen() {
           </TouchableOpacity>
 
           <Card style={styles.fieldCard}>
-            <Text style={styles.label}>Emergency Contact</Text>
-            <Text style={styles.value}>
-              {data.emergency?.name} - {data.emergency?.phone}
-            </Text>
+            <View style={styles.rowBetween}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Emergency Contact</Text>
+                <View style={styles.contactRow}>
+                  <TextInput
+                    ref={emergencyNameRef}
+                    style={[styles.inputField, { flex: 1 }]}
+                    value={emergencyName}
+                    onChangeText={setEmergencyName}
+                    placeholder="Name"
+                    placeholderTextColor="#A0A3BD"
+                  />
+                  <Text style={[styles.contactSeparator]}>-</Text>
+                  <TextInput
+                    style={[styles.inputField, { flex: 1.5 }]}
+                    value={emergencyPhone}
+                    onChangeText={setEmergencyPhone}
+                    placeholder="Phone"
+                    placeholderTextColor="#A0A3BD"
+                    keyboardType="phone-pad"
+                  />
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => emergencyNameRef.current?.focus()}
+                style={styles.iconBox}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="pencil" size={16} color="#8259D2" />
+              </TouchableOpacity>
+            </View>
           </Card>
 
           <Card style={styles.fieldCard}>
-            <Text style={styles.label}>Address</Text>
-            <Text style={[styles.value, styles.addressValue]}>
-              {data.address}
-            </Text>
+            <View style={styles.rowBetween}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Address</Text>
+                <TextInput
+                  ref={addressRef}
+                  style={[styles.inputField, styles.addressInputField]}
+                  value={address}
+                  onChangeText={setAddress}
+                  placeholder="Address"
+                  placeholderTextColor="#A0A3BD"
+                  multiline
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => addressRef.current?.focus()}
+                style={styles.iconBox}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="pencil" size={16} color="#8259D2" />
+              </TouchableOpacity>
+            </View>
           </Card>
 
           <TouchableOpacity
             activeOpacity={0.9}
             style={styles.saveWrap}
-            onPress={() => navigation.goBack()}
+            onPress={handleSaveChanges}
           >
             <LinearGradient
               colors={["#8259D2", "#8259D2"]}
@@ -451,6 +706,67 @@ export function PersonalInformationScreen() {
               onSelectDate={setSelectedDate}
               onClose={() => setShowDatePicker(false)}
             />
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Upload Image Selection Modal */}
+      <Modal
+        visible={showUploadModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowUploadModal(false)}
+      >
+        <Pressable
+          style={styles.overlay}
+          onPress={() => setShowUploadModal(false)}
+        >
+          <Pressable style={styles.genderSheet}>
+            <Text style={styles.genderSheetTitle}>Upload Photo</Text>
+            
+            <TouchableOpacity
+              style={[styles.genderOption, { backgroundColor: "#F5F0FF", marginBottom: 12 }]}
+              activeOpacity={0.85}
+              onPress={handleCameraLaunch}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+                <Ionicons name="camera" size={20} color="#8259D2" />
+                <Text style={[styles.genderOptionText, { fontFamily: "Poppins_600SemiBold", color: "#8259D2" }]}>
+                  Take Photo
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#8259D2" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.genderOption, { backgroundColor: "#F5F0FF", marginBottom: 12 }]}
+              activeOpacity={0.85}
+              onPress={handleGalleryLaunch}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+                <Ionicons name="images" size={20} color="#8259D2" />
+                <Text style={[styles.genderOptionText, { fontFamily: "Poppins_600SemiBold", color: "#8259D2" }]}>
+                  Choose from Gallery
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#8259D2" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.genderOption,
+                {
+                  backgroundColor: "#FFFFFF",
+                  borderWidth: 1,
+                  borderColor: "rgba(230,232,240,0.8)",
+                  justifyContent: "center",
+                },
+              ]}
+              activeOpacity={0.8}
+              onPress={() => setShowUploadModal(false)}
+            >
+              <Text style={[styles.genderOptionText, { color: "#6B7280" }]}>Cancel</Text>
+            </TouchableOpacity>
           </Pressable>
         </Pressable>
       </Modal>
@@ -623,4 +939,25 @@ const styles = StyleSheet.create({
     color: "#8259D2",
   },
   dateSheetWrap: {},
+  inputField: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#1F2A5A",
+    padding: 0,
+    marginTop: 2,
+  },
+  addressInputField: {
+    minHeight: 44,
+    textAlignVertical: "top",
+  },
+  contactRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  contactSeparator: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    color: "#1F2A5A",
+    marginHorizontal: 8,
+  },
 });
