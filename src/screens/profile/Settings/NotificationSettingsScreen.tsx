@@ -244,9 +244,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ECEAF3",
+    backgroundColor: "#F6F8FC",
   },
   backButton: {
     width: 32,
