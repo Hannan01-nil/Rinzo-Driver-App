@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 8,
+    paddingBottom: 110,
   },
   status: { ...typography.h3, color: colors.text, textAlign: 'center', marginBottom: spacing.md },
   info: { ...typography.body, color: colors.textSecondary, textAlign: 'center' },

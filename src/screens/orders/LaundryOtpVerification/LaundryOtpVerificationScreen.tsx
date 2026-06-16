@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ScrollView,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -102,129 +103,136 @@ export function LaundryOtpVerificationScreen() {
         </View>
       </Animated.View>
 
-      <View style={styles.topSection}>
-        <Animated.View
-          entering={FadeInUp.delay(200).duration(500).springify()}
-          style={styles.iconCircle}
-        >
-          <MaterialCommunityIcons name="truck" size={42} color="#FFFFFF" />
-        </Animated.View>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.topSection}>
+          <Animated.View
+            entering={FadeInUp.delay(200).duration(500).springify()}
+            style={styles.iconCircle}
+          >
+            <MaterialCommunityIcons name="truck" size={42} color="#FFFFFF" />
+          </Animated.View>
 
-        <Animated.Text
-          entering={FadeInUp.delay(300).duration(400).springify()}
-          style={styles.title}
-        >
-          Enter OTP
-        </Animated.Text>
+          <Animated.Text
+            entering={FadeInUp.delay(300).duration(400).springify()}
+            style={styles.title}
+          >
+            Enter OTP
+          </Animated.Text>
 
-        <Animated.Text
-          entering={FadeInUp.delay(400).duration(400).springify()}
-          style={styles.description}
-        >
-          Please ask the customer for the 4-digit verification code sent to their phone.
-        </Animated.Text>
+          <Animated.Text
+            entering={FadeInUp.delay(400).duration(400).springify()}
+            style={styles.description}
+          >
+            Please ask the customer for the 4-digit verification code sent to their phone.
+          </Animated.Text>
 
-        <Animated.View
-          entering={FadeInUp.delay(500).duration(400).springify()}
-          style={styles.otpRow}
-        >
-          {Array.from({ length: OTP_LENGTH }).map((_, index) => {
-            const filled = otp[index] !== "";
-            return (
-              <TouchableOpacity
-                key={`otp-${index}`}
-                style={[
-                  styles.otpBox,
-                  filled && styles.otpBoxFilled,
-                ]}
-                onPress={() => setKeypadVisible(true)}
-                activeOpacity={0.7}
-              >
-                <Text
+          <Animated.View
+            entering={FadeInUp.delay(500).duration(400).springify()}
+            style={styles.otpRow}
+          >
+            {Array.from({ length: OTP_LENGTH }).map((_, index) => {
+              const filled = otp[index] !== "";
+              return (
+                <TouchableOpacity
+                  key={`otp-${index}`}
                   style={[
-                    styles.otpDigit,
-                    filled && styles.otpDigitFilled,
+                    styles.otpBox,
+                    filled && styles.otpBoxFilled,
                   ]}
+                  onPress={() => setKeypadVisible(true)}
+                  activeOpacity={0.7}
                 >
-                  {filled ? otp[index] : ""}
+                  <Text
+                    style={[
+                      styles.otpDigit,
+                      filled && styles.otpDigitFilled,
+                    ]}
+                  >
+                    {filled ? otp[index] : ""}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </Animated.View>
+
+          <Animated.View
+            entering={FadeInUp.delay(600).duration(400).springify()}
+            style={styles.countdownRow}
+          >
+            <Ionicons name="time-outline" size={14} color="#8E8E93" />
+            <Text style={styles.countdownText}>Resend code in 29 s</Text>
+          </Animated.View>
+
+          <Animated.View
+            entering={FadeInUp.delay(700).duration(400).springify()}
+            style={styles.orderCard}
+          >
+            <View style={styles.bagIconContainer}>
+              <Image
+                source={orderTickImage}
+                style={styles.orderCardImage}
+                resizeMode="contain"
+              />
+            </View>
+
+            <View style={styles.orderInfo}>
+              <Text style={styles.orderLabelText}>ORDER {orderId}</Text>
+              <Text
+                style={styles.customerName}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {customerName}
+              </Text>
+            </View>
+
+            <View style={styles.statusContainer}>
+              <Text style={styles.statusLabelText}>Status</Text>
+              <View style={styles.statusBadge}>
+                <Text style={styles.statusText}>{status}</Text>
+              </View>
+            </View>
+          </Animated.View>
+
+          <Animated.View
+            entering={FadeInUp.delay(800).duration(400).springify()}
+            style={styles.verifyWrapper}
+          >
+            <Animated.View style={verifyAnimatedStyle}>
+              <TouchableOpacity
+                style={[
+                  styles.verifyButton,
+                  !isComplete && styles.verifyButtonDisabled,
+                ]}
+                activeOpacity={0.95}
+                onPressIn={() => {
+                  verifyScale.value = withSpring(0.97, {
+                    damping: 15,
+                    stiffness: 200,
+                  });
+                }}
+                onPressOut={() => {
+                  verifyScale.value = withSpring(1, {
+                    damping: 10,
+                    stiffness: 150,
+                  });
+                }}
+                onPress={handleVerify}
+                disabled={!isComplete}
+              >
+                <Text style={styles.verifyText}>
+                  Verify & Complete Delivery
                 </Text>
               </TouchableOpacity>
-            );
-          })}
-        </Animated.View>
-
-        <Animated.View
-          entering={FadeInUp.delay(600).duration(400).springify()}
-          style={styles.countdownRow}
-        >
-          <Ionicons name="time-outline" size={14} color="#8E8E93" />
-          <Text style={styles.countdownText}>Resend code in 29 s</Text>
-        </Animated.View>
-
-        <Animated.View
-          entering={FadeInUp.delay(700).duration(400).springify()}
-          style={styles.orderCard}
-        >
-          <View style={styles.bagIconContainer}>
-            <Image
-              source={orderTickImage}
-              style={styles.orderCardImage}
-              resizeMode="contain"
-            />
-          </View>
-
-          <View style={styles.orderInfo}>
-            <Text style={styles.orderLabelText}>ORDER {orderId}</Text>
-            <Text
-              style={styles.customerName}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {customerName}
-            </Text>
-          </View>
-
-          <View style={styles.statusContainer}>
-            <Text style={styles.statusLabelText}>Status</Text>
-            <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>{status}</Text>
-            </View>
-          </View>
-        </Animated.View>
-
-        <Animated.View
-          entering={FadeInUp.delay(800).duration(400).springify()}
-          style={styles.verifyWrapper}
-        >
-          <Animated.View style={verifyAnimatedStyle}>
-            <TouchableOpacity
-              style={[
-                styles.verifyButton,
-                !isComplete && styles.verifyButtonDisabled,
-              ]}
-              activeOpacity={0.95}
-              onPressIn={() => {
-                verifyScale.value = withSpring(0.97, {
-                  damping: 15,
-                  stiffness: 200,
-                });
-              }}
-              onPressOut={() => {
-                verifyScale.value = withSpring(1, {
-                  damping: 10,
-                  stiffness: 150,
-                });
-              }}
-              onPress={handleVerify}
-              disabled={!isComplete}
-            >
-              <Text style={styles.verifyText}>
-                Verify & Complete Delivery
-              </Text>
-            </TouchableOpacity>
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-      </View>
+        </View>
+      </ScrollView>
 
       {keypadVisible && (
         <Animated.View
@@ -278,12 +286,19 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#5D9C74",
   },
-  topSection: {
+  scrollView: {
     flex: 1,
-    alignItems: "center",
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: "center",
+  },
+  topSection: {
+    alignItems: "center",
+    width: "100%",
     paddingHorizontal: 28,
-    paddingBottom: 8,
+    paddingTop: 20,
+    paddingBottom: 110,
   },
   iconCircle: {
     width: 100,

@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 24,
     paddingTop: 4,
-    paddingBottom: 24,
+    paddingBottom: 120,
   },
   stepIndicator: {
     fontFamily: "Poppins_500Medium",

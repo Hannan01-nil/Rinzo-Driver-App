@@ -44,7 +44,7 @@ export function DailyDetailsScreen() {
       >
         {/* Earnings Card */}
         <LinearGradient
-          colors={["#8B5CF6", "#7C4DFF"]}
+          colors={["#8259D2", "#8259D2"]}
           style={styles.earningsCard}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -85,7 +85,7 @@ export function DailyDetailsScreen() {
               <Ionicons
                 name="timer-outline"
                 size={16}
-                color="#8B5CF6"
+                color="#8259D2"
                 style={{ marginRight: 6 }}
               />
               <Text style={styles.cardLabel}>Avg. Delivery</Text>
@@ -112,7 +112,7 @@ export function DailyDetailsScreen() {
               <Ionicons
                 name="pause-circle-outline"
                 size={16}
-                color="#8B5CF6"
+                color="#8259D2"
                 style={{ marginRight: 6 }}
               />
               <Text style={styles.cardLabel}>Idle Time</Text>
@@ -161,7 +161,7 @@ export function DailyDetailsScreen() {
                   <MaterialCommunityIcons
                     name="truck"
                     size={20}
-                    color="#8B5CF6"
+                    color="#8259D2"
                   />
                 </View>
               </View>
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 120,
   },
   earningsCard: {
     height: 180,
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 13,
-    color: "#8B5CF6",
+    color: "#8259D2",
   },
   cardBody: {
     justifyContent: "flex-end",
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   viewReceiptText: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 14,
-    color: "#8B5CF6",
+    color: "#8259D2",
   },
   timelineContainer: {
     position: "relative",
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     borderWidth: 2,
-    borderColor: "#8B5CF6",
+    borderColor: "#8259D2",
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   },
   orderCard: {
     flex: 1,
-    height: 128,
+    height: 148,
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     borderWidth: 1,
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   orderAmount: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 18,
-    color: "#8B5CF6",
+    color: "#8259D2",
     textAlign: "right",
   },
   cardInnerDivider: {
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   },
   achievementCard: {
     height: 90,
-    backgroundColor: "#EEF4FF",
+    backgroundColor: "#E5EEFF",
     borderRadius: 16,
     padding: 16,
     marginHorizontal: 16,

@@ -13,6 +13,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
@@ -30,21 +31,19 @@ export function OrderTrackingScreen() {
     };
     if (redirectToCollect) {
       const t = setTimeout(() => {
-        const parentNav =
-          (navigation as any).getParent && (navigation as any).getParent();
-        if (parentNav && typeof parentNav.navigate === "function") {
-          parentNav.navigate("orders", {
-            screen: "collect-clothes",
-            params: { orderId, fromScreen: "order-tracking" },
+        try {
+          (navigation as any).navigate("collect-clothes", {
+            orderId,
+            fromScreen: "order-tracking",
           });
-        } else {
-          try {
-            (navigation as any).navigate("collect-clothes", {
-              orderId,
-              fromScreen: "order-tracking",
+        } catch (e) {
+          const parentNav =
+            (navigation as any).getParent && (navigation as any).getParent();
+          if (parentNav && typeof parentNav.navigate === "function") {
+            parentNav.navigate("orders", {
+              screen: "collect-clothes",
+              params: { orderId, fromScreen: "order-tracking" },
             });
-          } catch (e) {
-            // no-op if navigation fails
           }
         }
       }, 200);
@@ -60,18 +59,18 @@ export function OrderTrackingScreen() {
           <HeaderBackButton
             onPress={() => {
               if (fromCollected) {
-                const parentNav =
-                  (navigation as any).getParent &&
-                  (navigation as any).getParent();
-                if (parentNav && typeof parentNav.navigate === "function") {
-                  parentNav.navigate("orders", {
-                    screen: "order-collected-success",
-                    params: { orderId },
-                  });
-                } else {
-                  try {
-                    (navigation as any).navigate("order-collected-success", { orderId });
-                  } catch (e) {}
+                try {
+                  (navigation as any).navigate("order-collected-success", { orderId });
+                } catch (e) {
+                  const parentNav =
+                    (navigation as any).getParent &&
+                    (navigation as any).getParent();
+                  if (parentNav && typeof parentNav.navigate === "function") {
+                    parentNav.navigate("orders", {
+                      screen: "order-collected-success",
+                      params: { orderId },
+                    });
+                  }
                 }
                 return;
               }
@@ -97,12 +96,16 @@ export function OrderTrackingScreen() {
         <View style={styles.headerSide} />
       </View>
 
-      <View style={styles.mapContainer}>
-        <Image source={mapImage} style={styles.mapImage} resizeMode="cover" />
-      </View>
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.mapContainer}>
+          <Image source={mapImage} style={styles.mapImage} resizeMode="cover" />
+        </View>
 
-      <View style={styles.bottomCard}>
-        <View style={styles.cardUpper}>
+        <View style={styles.bottomCard}>
           <Text style={styles.title}>Order Tracking</Text>
           <View style={styles.driverRow}>
             <Image
@@ -116,24 +119,24 @@ export function OrderTrackingScreen() {
             <TouchableOpacity
               style={styles.callButton}
               activeOpacity={0.7}
-            onPress={() => {
-              const parentNav =
-                (navigation as any).getParent &&
-                (navigation as any).getParent();
-              if (parentNav && typeof parentNav.navigate === "function") {
-                parentNav.navigate("orders", {
-                  screen: "order-in-transit",
-                  params: { orderId, fromHomeTrack: true },
-                });
-              } else {
+              onPress={() => {
                 try {
                   (navigation as any).navigate("order-in-transit", {
                     orderId,
                     fromHomeTrack: true,
                   });
-                } catch (e) {}
-              }
-            }}
+                } catch (e) {
+                  const parentNav =
+                    (navigation as any).getParent &&
+                    (navigation as any).getParent();
+                  if (parentNav && typeof parentNav.navigate === "function") {
+                    parentNav.navigate("orders", {
+                      screen: "order-in-transit",
+                      params: { orderId, fromHomeTrack: true },
+                    });
+                  }
+                }
+              }}
             >
               <Ionicons name="call-outline" size={20} color="#8259D2" />
             </TouchableOpacity>
@@ -167,17 +170,26 @@ export function OrderTrackingScreen() {
             </View>
           </View>
         </View>
+      </ScrollView>
 
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.reachedButton}
           activeOpacity={0.7}
           onPress={() => {
-            const parentNav = (navigation as any).getParent?.();
-            if (parentNav && typeof parentNav.navigate === "function") {
-              parentNav.navigate("orders", {
-                screen: "collect-clothes",
-                params: { orderId, fromScreen: "order-tracking" },
+            try {
+              (navigation as any).navigate("collect-clothes", {
+                orderId,
+                fromScreen: "order-tracking",
               });
+            } catch (e) {
+              const parentNav = (navigation as any).getParent?.();
+              if (parentNav && typeof parentNav.navigate === "function") {
+                parentNav.navigate("orders", {
+                  screen: "collect-clothes",
+                  params: { orderId, fromScreen: "order-tracking" },
+                });
+              }
             }
           }}
         >
@@ -247,14 +259,20 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  bottomCard: {
+  scrollContainer: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  bottomCard: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     paddingTop: 16,
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 180,
     marginTop: -92,
     shadowColor: "#000",
     shadowOpacity: 0.06,
@@ -262,9 +280,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -6 },
     elevation: 6,
   },
-  cardUpper: {
-    flex: 1,
-    overflow: "hidden",
+  buttonContainer: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: 110,
+    backgroundColor: "transparent",
+    zIndex: 999,
   },
   title: {
     fontFamily: "Poppins_600SemiBold",

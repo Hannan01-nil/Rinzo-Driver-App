@@ -72,7 +72,7 @@ export function ReportSubmittedScreen() {
             activeOpacity={0.85}
             onPress={() => navigation.navigate("profile", { screen: "index" })}
           >
-            <Text style={styles.homeButtonText}>Back to Home</Text>
+            <Text style={styles.homeButtonText}>Back to Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
