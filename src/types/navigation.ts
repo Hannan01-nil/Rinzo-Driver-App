@@ -41,6 +41,8 @@ export type ProfileStackParamList = {
   'profile/settings': undefined
   'profile/settings/notifications': undefined
   'profile/settings/language': undefined
+  'profile/settings/terms': undefined
+  'profile/settings/privacy': undefined
 }
 
 export type TabParamList = {

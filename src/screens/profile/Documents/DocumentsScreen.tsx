@@ -88,23 +88,20 @@ export function DocumentsScreen() {
                 </TouchableOpacity>
               );
             })}
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate("documents/upload")}
+            >
+              <LinearGradient
+                colors={["#8259D2", "#8259D2"]}
+                style={styles.uploadButton}
+              >
+                <Ionicons name="cloud-upload-outline" size={18} color="#FFFFFF" />
+                <Text style={styles.uploadText}>Upload New Document</Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </ScrollView>
-
-        <View style={styles.bottomSection}>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => navigation.navigate("documents/upload")}
-          >
-            <LinearGradient
-              colors={["#8259D2", "#8259D2"]}
-              style={[styles.uploadButton, { marginBottom: insets.bottom + 16 }]}
-            >
-              <Ionicons name="cloud-upload-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.uploadText}>Upload New Document</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
       </View>
     </ScreenWrapper>
   );
@@ -143,7 +140,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scroll: {
-    paddingBottom: 100,
+    paddingBottom: 120,
   },
   content: {
     paddingHorizontal: 24,
@@ -217,26 +214,23 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   uploadButton: {
-    height:56,
+    height: 56,
     borderRadius: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
     shadowColor: "#7C5CE5",
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 2,
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
+    marginTop: 20,
+    marginBottom: 10,
   },
   uploadText: {
     fontFamily: "Poppins_600SemiBold",
     color: "#FFFFFF",
     fontSize: 16,
-  },
-  bottomSection: {
-    paddingHorizontal: 24,
-    paddingTop: 8,
-    backgroundColor: "#FAFAFA",
   },
 });

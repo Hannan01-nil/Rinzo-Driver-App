@@ -104,24 +104,32 @@ export function SettingsScreen() {
         {/* Section 2: Privacy, Terms & Version */}
         <View style={styles.cardWrap}>
           {/* Privacy Policy */}
-          <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            activeOpacity={0.6}
+            onPress={() => navigation.navigate("profile/settings/privacy")}
+          >
             <View style={styles.iconContainer}>
               <Ionicons name="shield-outline" size={22} color="#8259D2" />
             </View>
             <Text style={styles.rowLabel}>Privacy Policy</Text>
             <Ionicons name="chevron-forward" size={18} color="#C7C7CC" />
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.rowDivider} />
 
           {/* Terms & Conditions */}
-          <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            activeOpacity={0.6}
+            onPress={() => navigation.navigate("profile/settings/terms")}
+          >
             <View style={styles.iconContainer}>
               <Ionicons name="document-text-outline" size={22} color="#8259D2" />
             </View>
             <Text style={styles.rowLabel}>Terms & Conditions</Text>
             <Ionicons name="chevron-forward" size={18} color="#C7C7CC" />
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.rowDivider} />
 
@@ -184,7 +192,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingTop: 24,
-    paddingBottom: 32,
+    paddingBottom: 120,
     paddingHorizontal: 16,
   },
   cardWrap: {

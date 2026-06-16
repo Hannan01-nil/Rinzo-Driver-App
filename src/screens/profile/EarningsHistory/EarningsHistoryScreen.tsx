@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: 120,
   },
   segmentedControl: {
     flexDirection: "row",

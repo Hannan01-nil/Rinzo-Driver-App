@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 4,
-    paddingBottom: 32,
+    paddingBottom: 120,
   },
   verifiedCard: {
     backgroundColor: "#EFF4FF",

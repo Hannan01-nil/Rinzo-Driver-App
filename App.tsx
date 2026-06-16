@@ -47,6 +47,8 @@ import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
 import { SettingsScreen } from "@/screens/profile/Settings/SettingsScreen";
 import { NotificationSettingsScreen } from "@/screens/profile/Settings/NotificationSettingsScreen";
 import { LanguageSettingsScreen } from "@/screens/profile/Settings/LanguageSettingsScreen";
+import { TermsSettingsScreen } from "@/screens/profile/Settings/TermsSettingsScreen";
+import { PrivacySettingsScreen } from "@/screens/profile/Settings/PrivacySettingsScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
 import { ContactSupportScreen } from "@/screens/profile/support/ContactSupport/ContactSupportScreen";
 import { HelpCenterScreen } from "@/screens/profile/support/HelpCenter/HelpCenterScreen";
@@ -138,6 +140,8 @@ function ProfileStackScreen() {
       <ProfileStack.Screen name="profile/settings" component={SettingsScreen} />
       <ProfileStack.Screen name="profile/settings/notifications" component={NotificationSettingsScreen} />
       <ProfileStack.Screen name="profile/settings/language" component={LanguageSettingsScreen} />
+      <ProfileStack.Screen name="profile/settings/terms" component={TermsSettingsScreen} />
+      <ProfileStack.Screen name="profile/settings/privacy" component={PrivacySettingsScreen} />
     </ProfileStack.Navigator>
   );
 }
@@ -148,14 +152,10 @@ function MainTabs() {
       screenOptions={{ headerShown: false }}
       tabBar={(props) => {
         const activeRoute = props.state.routes[props.state.index];
-        const routeName = getFocusedRouteNameFromRoute(activeRoute) ?? "index";
-
-        if (routeName !== "index" && routeName !== "withdraw" && routeName !== "last-7-days") return null;
-
         return (
           <BottomTabBar
             activeTab={activeRoute.name}
-            onTabPress={(key) => props.navigation.navigate(key as never)}
+            onTabPress={(key) => props.navigation.navigate(key as any, { screen: "index" } as any)}
           />
         );
       }}
@@ -227,6 +227,8 @@ const linking = {
               "profile/settings": "settings",
               "profile/settings/notifications": "settings/notifications",
               "profile/settings/language": "settings/language",
+              "profile/settings/terms": "settings/terms",
+              "profile/settings/privacy": "settings/privacy",
             },
           },
         },

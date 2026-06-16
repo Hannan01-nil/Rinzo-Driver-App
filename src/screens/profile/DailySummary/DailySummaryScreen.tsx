@@ -304,10 +304,7 @@ export function DailySummaryScreen() {
             </Text>
           </View>
         </ImageBackground>
-      </ScrollView>
 
-      {/* Bottom Action Area */}
-      <View style={styles.bottomArea}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() =>
@@ -328,7 +325,7 @@ export function DailySummaryScreen() {
             </View>
           </LinearGradient>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       {/* Custom Calendar Modal */}
       <Modal
@@ -384,7 +381,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 120,
   },
   dateCard: {
     backgroundColor: "#FFFFFF",
@@ -531,16 +528,17 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 2,
   },
-  bottomArea: {
-    backgroundColor: "#FFFFFF",
-    borderTopWidth: 1,
-    borderTopColor: "#E9E7F2",
-    padding: 16,
-  },
   button: {
-    height: 52,
-    borderRadius: 16,
+    height: 56,
+    borderRadius: 20,
     justifyContent: "center",
+    marginTop: 20,
+    marginBottom: 10,
+    shadowColor: "#8259D2",
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
   },
   buttonInner: {
     flexDirection: "row",

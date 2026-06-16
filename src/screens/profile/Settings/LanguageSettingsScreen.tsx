@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 24,
     paddingTop: 8,
-    paddingBottom: 32,
+    paddingBottom: 120,
   },
   globeContainer: {
     width: 80,
