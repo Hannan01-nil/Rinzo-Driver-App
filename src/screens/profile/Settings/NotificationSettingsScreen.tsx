@@ -245,6 +245,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     backgroundColor: "#F6F8FC",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ECEAF3",
   },
   backButton: {
     width: 32,
