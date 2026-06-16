@@ -39,6 +39,7 @@ export type ProfileStackParamList = {
   'support/report-issue': undefined
   'support/report-submitted': { ticketId?: string }
   'profile/settings': undefined
+  'profile/settings/notifications': undefined
 }
 
 export type TabParamList = {

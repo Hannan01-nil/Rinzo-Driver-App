@@ -45,6 +45,7 @@ import { DocumentsScreen } from "@/screens/profile/Documents/DocumentsScreen";
 import { PersonalInformationScreen } from "@/screens/profile/PersonalInformation/PersonalInformationScreen";
 import ProfileScreen from "@/screens/profile/Profile/ProfileScreen";
 import { SettingsScreen } from "@/screens/profile/Settings/SettingsScreen";
+import { NotificationSettingsScreen } from "@/screens/profile/Settings/NotificationSettingsScreen";
 import { VehicleInformationScreen } from "@/screens/profile/VehicleInformation/VehicleInformationScreen";
 import { ContactSupportScreen } from "@/screens/profile/support/ContactSupport/ContactSupportScreen";
 import { HelpCenterScreen } from "@/screens/profile/support/HelpCenter/HelpCenterScreen";
@@ -134,6 +135,7 @@ function ProfileStackScreen() {
       <ProfileStack.Screen name="support/report-issue" component={ReportIssueScreen} />
       <ProfileStack.Screen name="support/report-submitted" component={ReportSubmittedScreen} />
       <ProfileStack.Screen name="profile/settings" component={SettingsScreen} />
+      <ProfileStack.Screen name="profile/settings/notifications" component={NotificationSettingsScreen} />
     </ProfileStack.Navigator>
   );
 }
@@ -221,6 +223,7 @@ const linking = {
               "support/report-issue": "report-issue",
               "support/report-submitted": "report-submitted",
               "profile/settings": "settings",
+              "profile/settings/notifications": "settings/notifications",
             },
           },
         },

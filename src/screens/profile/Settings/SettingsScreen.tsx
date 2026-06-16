@@ -67,13 +67,17 @@ export function SettingsScreen() {
         {/* Section 1: Notifications & Language */}
         <View style={styles.cardWrap}>
           {/* Notifications Option */}
-          <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            activeOpacity={0.6}
+            onPress={() => navigation.navigate("profile/settings/notifications")}
+          >
             <View style={styles.iconContainer}>
               <Ionicons name="notifications-outline" size={22} color="#8259D2" />
             </View>
             <Text style={styles.rowLabel}>Notifications</Text>
             <Ionicons name="chevron-forward" size={18} color="#C7C7CC" />
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.rowDivider} />
 
