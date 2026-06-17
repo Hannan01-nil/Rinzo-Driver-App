@@ -33,9 +33,19 @@ const OTP_GAP = 12;
 export function CustomerOtpVerificationScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const orderId = (route.params as any)?.orderId ?? "#DRV-8821";
-  const customerName = (route.params as any)?.customerName ?? "Rahul Sharma";
-  const status = "At Doorstep";
+  const {
+    orderId = "#DRV-8821",
+    customerName = "Rahul Sharma",
+    flowType = "customer_pickup",
+    status = "pickup",
+    statusLabel = "At Doorstep"
+  } = (route.params || {}) as {
+    orderId: string;
+    customerName?: string;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'franchise_delivery_transit' | 'reroute_to_service' | 'service_return' | 'service_return_transit';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+    statusLabel?: string;
+  };
 
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [keypadVisible, setKeypadVisible] = useState(false);
@@ -60,7 +70,8 @@ export function CustomerOtpVerificationScreen() {
       if (isNowComplete) {
         setKeypadVisible(false);
         setTimeout(() => {
-          (navigation as any).navigate("order-collected-success", { orderId });
+          const nextScreen = flowType === 'franchise_delivery_transit' ? 'delivered-success' : 'order-collected-success';
+          (navigation as any).navigate(nextScreen, { orderId, flowType, status });
         }, 300);
       }
 
@@ -84,8 +95,26 @@ export function CustomerOtpVerificationScreen() {
 
   const handleVerify = () => {
     if (!isComplete) return;
-    (navigation as any).navigate("order-collected-success", { orderId });
+    const nextScreen = flowType === 'franchise_delivery_transit' ? 'delivered-success' : 'order-collected-success';
+    (navigation as any).navigate(nextScreen, { orderId, flowType, status });
   };
+
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
+
+  // Dynamic label for verification button
+  const buttonLabel = {
+    customer_pickup: "Verify & Confirm Collection",
+    franchise_delivery: "Verify & Confirm Delivery",
+    franchise_delivery_transit: "Verify & Confirm Delivery",
+    reroute_to_service: "Verify & Confirm Transfer",
+    service_return: "Verify & Confirm Return",
+    service_return_transit: "Verify & Confirm Return",
+  }[flowType] || "Verify & Confirm Collection";
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
@@ -99,8 +128,8 @@ export function CustomerOtpVerificationScreen() {
         <Text style={styles.headerTitle} pointerEvents="none">
           {orderId}
         </Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </Animated.View>
 
@@ -190,7 +219,7 @@ export function CustomerOtpVerificationScreen() {
             <View style={styles.statusContainer}>
               <Text style={styles.statusLabelText}>Status</Text>
               <View style={styles.statusBadge}>
-                <Text style={styles.statusText}>{status}</Text>
+                <Text style={styles.statusText}>{statusLabel}</Text>
               </View>
             </View>
           </Animated.View>
@@ -222,7 +251,7 @@ export function CustomerOtpVerificationScreen() {
                 disabled={!isComplete}
               >
                 <Text style={styles.verifyText}>
-                  Verify & Confirm Collection
+                  {buttonLabel}
                 </Text>
               </TouchableOpacity>
             </Animated.View>

@@ -20,15 +20,79 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export function LaundryTrackingScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { orderId } = (route.params || {}) as { orderId: string };
+  const { orderId, flowType = 'customer_pickup', status = 'pickup' } = (route.params || {}) as {
+    orderId: string;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'reroute_to_service' | 'service_return';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+  };
 
   const handleTransitNavigate = () => {
-    (navigation as any).navigate("order-in-transit", { orderId });
+    (navigation as any).navigate("order-in-transit", { orderId, flowType, status });
   };
 
   const handleCall = () => {
     Linking.openURL("tel:+919999999999");
   };
+
+  // Dynamic config based on flowType
+  const flowConfig = {
+    customer_pickup: {
+      title: "Laundry Tracking",
+      partnerName: "Rinzo Laundry Hub",
+      partnerRole: "Laundry Partner",
+      loc1Label: "Pickup Location (Completed)",
+      loc1Value: "Clothes collected from customer",
+      loc2Label: "Laundry Dropoff",
+      loc2Value: "Rinzo Hub, Koramangala (ETA: 20 min)",
+      buttonText: "Start Transit to Laundry",
+    },
+    franchise_delivery: {
+      title: "Laundry Tracking",
+      partnerName: "Rinzo Laundry Hub",
+      partnerRole: "Laundry Partner",
+      loc1Label: "Pickup Location (Completed)",
+      loc1Value: "Clothes collected from customer",
+      loc2Label: "Laundry Dropoff",
+      loc2Value: "Rinzo Hub, Koramangala (ETA: 20 min)",
+      buttonText: "Start Transit to Laundry",
+    },
+    reroute_to_service: {
+      title: "Reroute Tracking",
+      partnerName: "Service Franchise Hub",
+      partnerRole: "Premium Service Partner",
+      loc1Label: "Franchise Pickup (Completed)",
+      loc1Value: "Clothes collected from Franchise Hub",
+      loc2Label: "Premium Service Hub Dropoff",
+      loc2Value: "Service Franchise, Koramangala (ETA: 20 min)",
+      buttonText: "Start Transit to Premium Hub",
+    },
+    service_return: {
+      title: "Return Tracking",
+      partnerName: "Franchise Hub A",
+      partnerRole: "Franchise Partner",
+      loc1Label: "Service Hub Pickup (Completed)",
+      loc1Value: "Clothes collected from Premium Hub",
+      loc2Label: "Franchise Dropoff",
+      loc2Value: "Franchise Hub A (ETA: 25 min)",
+      buttonText: "Start Transit to Franchise",
+    },
+  }[flowType] || {
+    title: "Laundry Tracking",
+    partnerName: "Rinzo Laundry Hub",
+    partnerRole: "Laundry Partner",
+    loc1Label: "Pickup Location (Completed)",
+    loc1Value: "Clothes collected from customer",
+    loc2Label: "Laundry Dropoff",
+    loc2Value: "Rinzo Hub, Koramangala (ETA: 20 min)",
+    buttonText: "Start Transit to Laundry",
+  };
+
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -37,7 +101,9 @@ export function LaundryTrackingScreen() {
           <HeaderBackButton />
         </View>
         <Text style={styles.headerTitle} pointerEvents="none">{orderId ?? "Laundry Tracking"}</Text>
-        <View style={styles.headerSide} />
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
+        </View>
       </View>
 
       <ScrollView
@@ -50,15 +116,15 @@ export function LaundryTrackingScreen() {
         </View>
 
         <View style={styles.bottomCard}>
-          <Text style={styles.title}>Laundry Tracking</Text>
+          <Text style={styles.title}>{flowConfig.title}</Text>
           <View style={styles.driverRow}>
             <Image
               source={laundryHubImage}
               style={styles.avatar}
             />
             <View style={styles.driverInfo}>
-              <Text style={styles.driverName}>Rinzo Laundry Hub</Text>
-              <Text style={styles.driverRole}>Laundry Partner</Text>
+              <Text style={styles.driverName}>{flowConfig.partnerName}</Text>
+              <Text style={styles.driverRole}>{flowConfig.partnerRole}</Text>
             </View>
             <TouchableOpacity
               style={styles.callButton}
@@ -79,9 +145,9 @@ export function LaundryTrackingScreen() {
                 <Ionicons name="location-outline" size={16} color="#8259D2" />
               </View>
               <View style={styles.trackingContent}>
-                <Text style={styles.trackingLabel}>Pickup Location (Completed)</Text>
+                <Text style={styles.trackingLabel}>{flowConfig.loc1Label}</Text>
                 <Text style={styles.trackingValue}>
-                  Clothes collected from customer
+                  {flowConfig.loc1Value}
                 </Text>
               </View>
             </View>
@@ -91,8 +157,8 @@ export function LaundryTrackingScreen() {
                 <Ionicons name="flag-outline" size={16} color="#8259D2" />
               </View>
               <View style={styles.trackingContent}>
-                <Text style={styles.trackingLabel}>Laundry Dropoff</Text>
-                <Text style={styles.trackingValue}>Rinzo Hub, Koramangala (ETA: 20 min)</Text>
+                <Text style={styles.trackingLabel}>{flowConfig.loc2Label}</Text>
+                <Text style={styles.trackingValue}>{flowConfig.loc2Value}</Text>
               </View>
             </View>
           </View>
@@ -105,7 +171,7 @@ export function LaundryTrackingScreen() {
           activeOpacity={0.75}
           onPress={handleTransitNavigate}
         >
-          <Text style={styles.reachedButtonText}>Start Transit to Laundry</Text>
+          <Text style={styles.reachedButtonText}>{flowConfig.buttonText}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -120,7 +186,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     height: 56,
   },
@@ -139,6 +205,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#1F1F1F",
     textAlign: "center",
+  },
+  badge: {
+    height: 32,
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  badgeText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 13,
   },
   mapContainer: {
     width: "100%",

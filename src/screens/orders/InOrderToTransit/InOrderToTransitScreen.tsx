@@ -25,11 +25,21 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export function InOrderToTransitScreen() {
   const navigation = useNavigation<any>();
   const route = useRoute();
-  const orderId = (route.params as any)?.orderId ?? "#129348393";
-  const distance =
-    (route.params as any)?.distance ?? "2.8 km away";
-  const eta = (route.params as any)?.eta ?? "20 mins";
-  const fromHomeTrack = (route.params as any)?.fromHomeTrack;
+  const {
+    orderId = "#129348393",
+    distance = "2.8 km away",
+    eta = "20 mins",
+    fromHomeTrack,
+    flowType = "customer_pickup",
+    status = "pickup"
+  } = (route.params || {}) as {
+    orderId: string;
+    distance?: string;
+    eta?: string;
+    fromHomeTrack?: boolean;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'reroute_to_service' | 'service_return' | 'service_return_transit';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+  };
 
   const reachedScale = useSharedValue(1);
   const helpScale = useSharedValue(1);
@@ -42,8 +52,47 @@ export function InOrderToTransitScreen() {
     transform: [{ scale: helpScale.value }],
   }));
 
+  // Dynamic config based on flowType
+  const transitConfig = {
+    customer_pickup: {
+      destName: "Rinzo Laundry Hub",
+      btnText: "Reached Laundry",
+      nextRoute: "laundry-otp",
+      nextParams: { flowType: "customer_pickup", status: "pickup" },
+    },
+    franchise_delivery: {
+      destName: "Rinzo Laundry Hub",
+      btnText: "Reached Laundry",
+      nextRoute: "collect-clothes",
+      nextParams: { flowType: "franchise_delivery", status: "delivery" },
+    },
+    reroute_to_service: {
+      destName: "Premium Service Hub",
+      btnText: "Reached Premium Hub",
+      nextRoute: "laundry-otp",
+      nextParams: { flowType: "reroute_to_service_drop", status: "rerouting" },
+    },
+    service_return: {
+      destName: "Premium Service Hub",
+      btnText: "Reached Premium Hub",
+      nextRoute: "collect-clothes",
+      nextParams: { flowType: "service_return", status: "rerouting" },
+    },
+    service_return_transit: {
+      destName: "Franchise Hub A",
+      btnText: "Reached Franchise Hub",
+      nextRoute: "laundry-otp",
+      nextParams: { flowType: "service_return_drop", status: "rerouting" },
+    },
+  }[flowType] || {
+    destName: "Rinzo Laundry Hub",
+    btnText: "Reached Laundry",
+    nextRoute: "laundry-otp",
+    nextParams: { flowType: "customer_pickup", status: "pickup" },
+  };
+
   const handleReached = () => {
-    (navigation as any).navigate("laundry-otp", { orderId });
+    (navigation as any).navigate(transitConfig.nextRoute, { orderId, ...transitConfig.nextParams });
   };
 
   const handleCall = () => {
@@ -51,6 +100,13 @@ export function InOrderToTransitScreen() {
   };
 
   const handleHelp = () => {};
+
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
@@ -60,13 +116,13 @@ export function InOrderToTransitScreen() {
             onPress={() => {
               if (fromHomeTrack) {
                 try {
-                  navigation.navigate("order-tracking" as any, { orderId } as any);
+                  navigation.navigate("order-tracking" as any, { orderId, flowType, status } as any);
                 } catch (e) {
                   const parentNav = navigation.getParent && navigation.getParent();
                   if (parentNav && typeof parentNav.navigate === "function") {
                     parentNav.navigate("home", {
                       screen: "order-tracking",
-                      params: { orderId },
+                      params: { orderId, flowType, status },
                     });
                   }
                 }
@@ -77,8 +133,8 @@ export function InOrderToTransitScreen() {
           />
         </View>
         <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </View>
 
@@ -104,7 +160,7 @@ export function InOrderToTransitScreen() {
             >
               <View style={styles.laundryRow}>
                 <View style={styles.laundryLeft}>
-                  <Text style={styles.laundryLine1}>Laundry Hub</Text>
+                  <Text style={styles.laundryLine1}>{transitConfig.destName}</Text>
                   <Text style={styles.laundryLine2}>{distance}</Text>
                   <Text style={styles.laundryLine3}>ETA: {eta}</Text>
                 </View>
@@ -148,7 +204,7 @@ export function InOrderToTransitScreen() {
                     }}
                     onPress={handleReached}
                   >
-                    <Text style={styles.reachedText}>Reached Laundry</Text>
+                    <Text style={styles.reachedText}>{transitConfig.btnText}</Text>
                   </TouchableOpacity>
                 </Animated.View>
               </Animated.View>

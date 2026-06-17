@@ -22,8 +22,18 @@ import storeImage from "@/assets/images/DriverAppImages/order.png";
 export function OrderAtLaundryScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const orderId = (route.params as any)?.orderId ?? "#123454797";
-  const customerName = (route.params as any)?.customerName ?? "Mira Sharma";
+  
+  const {
+    orderId = "#123454797",
+    customerName = "Mira Sharma",
+    flowType = "customer_pickup",
+    status = "pickup"
+  } = (route.params || {}) as {
+    orderId: string;
+    customerName?: string;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'reroute_to_service' | 'service_return';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+  };
 
   const [isLoading, setIsLoading] = useState(false);
   const buttonScale = useSharedValue(1);
@@ -57,9 +67,46 @@ export function OrderAtLaundryScreen() {
       (navigation as any).navigate("delivered-success", { 
         orderId, 
         customerName,
-        deliveryTime
+        deliveryTime,
+        flowType,
+        status,
       });
     }, 850);
+  };
+
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
+
+  // Dynamic content based on flowType
+  const flowConfig = {
+    customer_pickup: {
+      title: "Order at Laundry",
+      subtitle: "Drop the order at the franchise laundry and update the status",
+      buttonText: "Confirm Dropped",
+    },
+    franchise_delivery: {
+      title: "Order Delivered",
+      subtitle: "Deliver the order to the customer and update the status",
+      buttonText: "Confirm Delivered",
+    },
+    reroute_to_service: {
+      title: "Order at Premium Hub",
+      subtitle: "Drop the rerouted clothes at the premium service hub",
+      buttonText: "Confirm Dropped",
+    },
+    service_return: {
+      title: "Order at Franchise",
+      subtitle: "Drop the returned clothes at the franchise hub",
+      buttonText: "Confirm Returned",
+    },
+  }[flowType] || {
+    title: "Order at Laundry",
+    subtitle: "Drop the order at the franchise laundry and update the status",
+    buttonText: "Confirm Dropped",
   };
 
   return (
@@ -73,8 +120,8 @@ export function OrderAtLaundryScreen() {
           {orderId}
         </Text>
 
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </View>
 
@@ -85,10 +132,10 @@ export function OrderAtLaundryScreen() {
           resizeMode="contain"
         />
 
-        <Text style={styles.title}>Order at laundry</Text>
+        <Text style={styles.title}>{flowConfig.title}</Text>
         
         <Text style={styles.subtitle}>
-          Drop the order at laundry and update the status
+          {flowConfig.subtitle}
         </Text>
 
         <View style={styles.buttonWrap}>
@@ -121,7 +168,7 @@ export function OrderAtLaundryScreen() {
                   <Text style={styles.confirmText}>Updating Status...</Text>
                 </View>
               ) : (
-                <Text style={styles.confirmText}>Confirm Dropped</Text>
+                <Text style={styles.confirmText}>{flowConfig.buttonText}</Text>
               )}
             </TouchableOpacity>
           </Animated.View>

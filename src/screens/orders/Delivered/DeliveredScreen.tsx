@@ -27,8 +27,59 @@ export function DeliveredSuccessScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const route = useRoute();
 
-  const orderId = (route.params as any)?.orderId ?? '#129348393';
-  const deliveryTime = (route.params as any)?.deliveryTime ?? '4:25 Pm . 12 may 2026';
+  const {
+    orderId = '#129348393',
+    deliveryTime = '4:25 Pm . 12 may 2026',
+    flowType = 'customer_pickup',
+    status = 'pickup'
+  } = (route.params || {}) as {
+    orderId: string;
+    deliveryTime?: string;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'franchise_delivery_transit' | 'reroute_to_service' | 'reroute_to_service_drop' | 'service_return' | 'service_return_drop';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+  };
+
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
+
+  // Dynamic text content based on flowType
+  const flowContent = {
+    customer_pickup: {
+      title: "Dropped at Laundry",
+      subtitle: "The clothes have been dropped at the laundry successfully.",
+    },
+    franchise_delivery: {
+      title: "Delivered Successfully",
+      subtitle: "The order has been delivered to the customer.",
+    },
+    franchise_delivery_transit: {
+      title: "Delivered Successfully",
+      subtitle: "The order has been delivered to the customer.",
+    },
+    reroute_to_service: {
+      title: "Rerouted Successfully",
+      subtitle: "The clothes have been dropped at the premium service hub.",
+    },
+    reroute_to_service_drop: {
+      title: "Rerouted Successfully",
+      subtitle: "The clothes have been dropped at the premium service hub.",
+    },
+    service_return: {
+      title: "Returned Successfully",
+      subtitle: "The clothes have been returned to the franchise.",
+    },
+    service_return_drop: {
+      title: "Returned Successfully",
+      subtitle: "The clothes have been returned to the franchise.",
+    },
+  }[flowType] || {
+    title: "Delivered Successfully",
+    subtitle: "The order has been delivered.",
+  };
 
   // Animation values
   const circleScale = useSharedValue(0);
@@ -167,8 +218,8 @@ export function DeliveredSuccessScreen() {
           {orderId}
         </Text>
 
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </View>
 
@@ -199,10 +250,10 @@ export function DeliveredSuccessScreen() {
 
         {/* Text descriptions */}
         <Animated.Text style={[styles.title, titleStyle]}>
-          Delivered Successfully
+          {flowContent.title}
         </Animated.Text>
         <Animated.Text style={[styles.subtitle, subtitleStyle]}>
-          The order has been delivered
+          {flowContent.subtitle}
         </Animated.Text>
 
         {/* Delivery Card */}
