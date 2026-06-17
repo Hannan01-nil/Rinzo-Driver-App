@@ -11,7 +11,9 @@ const BASE_HEIGHT = 812;
  * Ideal for: component width, margins, paddings, icon dimensions.
  */
 export const scale = (size: number): number => {
-  return (SCREEN_WIDTH / BASE_WIDTH) * size;
+  const ratio = SCREEN_WIDTH / BASE_WIDTH;
+  const clampedRatio = Math.max(0.85, Math.min(1.15, ratio));
+  return clampedRatio * size;
 };
 
 /**
@@ -19,7 +21,9 @@ export const scale = (size: number): number => {
  * Ideal for: component height, vertical paddings, vertical margins.
  */
 export const verticalScale = (size: number): number => {
-  return (SCREEN_HEIGHT / BASE_HEIGHT) * size;
+  const ratio = SCREEN_HEIGHT / BASE_HEIGHT;
+  const clampedRatio = Math.max(0.85, Math.min(1.15, ratio));
+  return clampedRatio * size;
 };
 
 /**

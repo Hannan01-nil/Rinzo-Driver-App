@@ -100,7 +100,7 @@ export function BankDetailsScreen() {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Ionicons
-                name={showAccountNumber ? "eye-off-outline" : "eye-outline"}
+                name={showAccountNumber ? "eye-outline" : "eye-off-outline"}
                 size={20}
                 color="#9CA3AF"
               />

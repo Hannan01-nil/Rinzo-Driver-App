@@ -33,7 +33,6 @@ export function ReportIssueScreen() {
 
   const handleSubmit = () => {
     const ticketId = `#REP-${Math.floor(10000 + Math.random() * 90000)}-ZV`;
-    console.log("handleSubmit: Navigating with ticketId", ticketId);
     try {
       navigation.navigate("support/report-submitted", { ticketId });
     } catch (error: any) {

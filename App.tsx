@@ -16,6 +16,18 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Text, TextInput } from "react-native";
+
+// Configure default font scaling bounds globally
+if ((Text as any).defaultProps == null) {
+  (Text as any).defaultProps = {};
+}
+(Text as any).defaultProps.maxFontSizeMultiplier = 1.15;
+
+if ((TextInput as any).defaultProps == null) {
+  (TextInput as any).defaultProps = {};
+}
+(TextInput as any).defaultProps.maxFontSizeMultiplier = 1.15;
 
 import { LoginScreen } from "@/screens/auth/Login/LoginScreen";
 import { SignUpScreen } from "@/screens/auth/SignUp/SignUpScreen";
@@ -37,6 +49,7 @@ import { OrdersListScreen } from "@/screens/orders/OrdersList/OrdersListScreen";
 import { InOrderToTransitScreen } from "@/screens/orders/InOrderToTransit/InOrderToTransitScreen";
 import { InTransitScreen } from "@/screens/orders/Transit/TransitScreen";
 import { LaundryOtpVerificationScreen } from "@/screens/orders/LaundryOtpVerification/LaundryOtpVerificationScreen";
+import { CustomerOtpVerificationScreen } from "@/screens/orders/CustomerOtpVerification/CustomerOtpVerificationScreen";
 import { LaundryTrackingScreen } from "@/screens/orders/LaundryTracking/LaundryTrackingScreen";
 import { BonusScreen } from "@/screens/profile/performance/Bonus/BonusScreen";
 import { DailyDetailsScreen } from "@/screens/profile/performance/DailyDetails/DailyDetailsScreen";
@@ -83,6 +96,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="order-tracking" component={OrderTrackingScreen} />
       <HomeStack.Screen name="collect-clothes" component={CollectClothesScreen} />
       <HomeStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
+      <HomeStack.Screen name="customer-otp" component={CustomerOtpVerificationScreen} />
       <HomeStack.Screen name="in-transit" component={InTransitScreen} />
       <HomeStack.Screen name="order-in-transit" component={InOrderToTransitScreen} />
       <HomeStack.Screen name="laundry-otp" component={LaundryOtpVerificationScreen} />
@@ -107,6 +121,7 @@ function OrdersStackScreen() {
       <OrdersStack.Screen name="index" component={OrdersListScreen} />
       <OrdersStack.Screen name="collect-clothes" component={CollectClothesScreen} />
       <OrdersStack.Screen name="order-collected-success" component={OrderCollectedSuccessScreen} />
+      <OrdersStack.Screen name="customer-otp" component={CustomerOtpVerificationScreen} />
       <OrdersStack.Screen name="in-transit" component={InTransitScreen} />
       <OrdersStack.Screen name="order-in-transit" component={InOrderToTransitScreen} />
       <OrdersStack.Screen name="laundry-otp" component={LaundryOtpVerificationScreen} />
@@ -163,7 +178,7 @@ function MainTabs() {
         const activeRoute = props.state.routes[props.state.index];
         const focusedRouteName = getFocusedRouteNameFromRoute(activeRoute);
 
-        const hideOnScreens: string[] = [];
+        const hideOnScreens = ["customer-otp", "laundry-otp"];
 
         if (focusedRouteName && hideOnScreens.includes(focusedRouteName)) {
           return null;
@@ -212,6 +227,7 @@ const linking = {
               "in-transit": "orders/in-transit/:orderId",
               "order-in-transit": "orders/in-transit/:orderId",
               "laundry-otp": "orders/laundry-otp/:orderId",
+              "customer-otp": "orders/customer-otp/:orderId",
               "laundry-tracking": "orders/laundry-tracking/:orderId",
               "order-at-laundry": "orders/at-laundry/:orderId",
               "delivered-success": "orders/delivered/:orderId",
