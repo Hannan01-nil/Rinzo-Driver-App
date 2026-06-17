@@ -29,7 +29,11 @@ export function OrderCollectedSuccessScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const route = useRoute()
 
-  const orderId = (route.params as any)?.orderId ?? '#129348393'
+  const { orderId = '#129348393', flowType = 'customer_pickup', status = 'pickup' } = (route.params || {}) as {
+    orderId: string;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'reroute_to_service' | 'service_return';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+  };
 
   const outerRingScale = useSharedValue(0)
   const ringOpacity = useSharedValue(0)
@@ -37,6 +41,46 @@ export function OrderCollectedSuccessScreen() {
   const circleScale = useSharedValue(0)
   const checkmarkProgress = useSharedValue(0)
   const buttonScale = useSharedValue(1)
+
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
+
+  // Dynamic text content based on flowType
+  const flowContent = {
+    customer_pickup: {
+      title: "Order Collected!",
+      subtitle: "The clothes have been picked up successfully and are ready to be transported to the laundry.",
+      statusLabel: "Pickup Status",
+      nextStep: "Deliver to Laundry",
+    },
+    franchise_delivery: {
+      title: "Order Picked Up!",
+      subtitle: "The washed clothes have been picked up from the franchise and are ready to be delivered to the customer.",
+      statusLabel: "Pickup Status",
+      nextStep: "Deliver to Customer",
+    },
+    reroute_to_service: {
+      title: "Reroute Collected!",
+      subtitle: "The clothes have been picked up from the franchise and are ready to be rerouted to the premium service hub.",
+      statusLabel: "Reroute Status",
+      nextStep: "Deliver to Service Hub",
+    },
+    service_return: {
+      title: "Return Collected!",
+      subtitle: "The washed clothes have been picked up from the premium hub and are ready to be returned to the franchise.",
+      statusLabel: "Return Status",
+      nextStep: "Return to Franchise",
+    },
+  }[flowType] || {
+    title: "Order Collected!",
+    subtitle: "The clothes have been picked up successfully and are ready to be transported to the laundry.",
+    statusLabel: "Pickup Status",
+    nextStep: "Deliver to Laundry",
+  };
 
   useEffect(() => {
     outerRingScale.value = withSpring(1, {
@@ -110,8 +154,8 @@ export function OrderCollectedSuccessScreen() {
           {orderId}
         </Text>
 
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </View>
 
@@ -149,12 +193,11 @@ export function OrderCollectedSuccessScreen() {
           </View>
 
           <Text style={styles.successTitle}>
-            Order Collected!
+            {flowContent.title}
           </Text>
 
           <Text style={styles.successSubtitle}>
-            The clothes have been picked up successfully and are ready to be
-            transported to the laundry.
+            {flowContent.subtitle}
           </Text>
         </View>
 
@@ -170,7 +213,7 @@ export function OrderCollectedSuccessScreen() {
           <View style={styles.cardDivider} />
 
           <View style={styles.cardRow}>
-            <Text style={styles.cardLabel}>Pickup Status</Text>
+            <Text style={styles.cardLabel}>{flowContent.statusLabel}</Text>
             <Text style={styles.cardValue}>Completed</Text>
           </View>
 
@@ -179,7 +222,7 @@ export function OrderCollectedSuccessScreen() {
           <View style={styles.cardRow}>
             <Text style={styles.cardLabel}>Next Step</Text>
             <Text style={styles.cardValue}>
-              Deliver to Laundry
+              {flowContent.nextStep}
             </Text>
           </View>
 
@@ -218,7 +261,7 @@ export function OrderCollectedSuccessScreen() {
                 })
               }}
               onPress={() => {
-                navigation.navigate("laundry-tracking", { orderId });
+                navigation.navigate("laundry-tracking", { orderId, flowType, status });
               }}
             >
               <Text style={styles.continueButtonText}>

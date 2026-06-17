@@ -20,8 +20,21 @@ const AnimatedPath = Animated.createAnimatedComponent(SvgPath);
 
 type HomeStackParamList = {
   index: undefined;
-  "order-accepted": { orderId: string };
-  "order-tracking": { orderId: string };
+  "order-accepted": {
+    orderId: string;
+    flowType?: string;
+    status?: string;
+  };
+  "order-tracking": {
+    orderId: string;
+    flowType?: string;
+    status?: string;
+  };
+  "laundry-tracking": {
+    orderId: string;
+    flowType?: string;
+    status?: string;
+  };
 };
 
 type OrderAcceptedRouteProp = RouteProp<HomeStackParamList, "order-accepted">;
@@ -43,7 +56,7 @@ export function OrderAcceptedScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
   const route = useRoute<OrderAcceptedRouteProp>();
-  const { orderId } = route.params;
+  const { orderId, flowType = 'customer_pickup', status = 'pickup' } = route.params;
 
   const ringsOpacity = useRef(new Animated.Value(0)).current;
   const outerScale = useRef(new Animated.Value(0.7)).current;
@@ -144,6 +157,73 @@ export function OrderAcceptedScreen() {
     animation.start();
   }, []);
 
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
+
+  // Dynamic content based on flowType
+  const flowContent = {
+    customer_pickup: {
+      title: 'Pickup Accepted!',
+      subtitle: 'You have accepted the customer pickup request successfully',
+      timeLabel: 'Pickup Time',
+    },
+    franchise_delivery: {
+      title: 'Delivery Accepted!',
+      subtitle: 'You have accepted the franchise delivery request successfully',
+      timeLabel: 'Delivery Time',
+    },
+    franchise_delivery_transit: {
+      title: 'Clothes Collected!',
+      subtitle: 'You have collected the washed clothes from the laundry successfully',
+      timeLabel: 'Delivery Time',
+    },
+    reroute_to_service: {
+      title: 'Reroute Accepted!',
+      subtitle: 'You have accepted the premium service reroute request successfully',
+      timeLabel: 'Transfer Time',
+    },
+    service_return: {
+      title: 'Return Accepted!',
+      subtitle: 'You have accepted the franchise return request successfully',
+      timeLabel: 'Return Time',
+    },
+  }[flowType] || {
+    title: 'Order Accepted!',
+    subtitle: 'You have accepted the pickup request successfully',
+    timeLabel: 'Pickup Time',
+  };
+
+  // Dynamic button label and navigation target based on flowType
+  const buttonConfig = {
+    customer_pickup: {
+      text: "Track Order",
+      route: "order-tracking",
+    },
+    franchise_delivery: {
+      text: "Track Laundry",
+      route: "laundry-tracking",
+    },
+    franchise_delivery_transit: {
+      text: "Track Delivery",
+      route: "order-tracking",
+    },
+    reroute_to_service: {
+      text: "Track Order",
+      route: "order-tracking",
+    },
+    service_return: {
+      text: "Track Laundry",
+      route: "laundry-tracking",
+    },
+  }[flowType] || {
+    text: "Track Order",
+    route: "order-tracking",
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
@@ -153,8 +233,8 @@ export function OrderAcceptedScreen() {
         <Text style={styles.headerTitle} pointerEvents="none">
           {orderId}
         </Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </View>
 
@@ -232,9 +312,9 @@ export function OrderAcceptedScreen() {
             </Animated.View>
           </View>
 
-          <Text style={styles.successTitle}>Order Accepted!</Text>
+          <Text style={styles.successTitle}>{flowContent.title}</Text>
           <Text style={styles.successSubtitle}>
-            You have accepted the pickup request successfully
+            {flowContent.subtitle}
           </Text>
         </View>
 
@@ -245,7 +325,7 @@ export function OrderAcceptedScreen() {
           </View>
           <View style={styles.cardDivider} />
           <View style={styles.pickupRow}>
-            <Text style={styles.cardLabel}>Pickup Time</Text>
+            <Text style={styles.cardLabel}>{flowContent.timeLabel}</Text>
             <Text style={styles.pickupValue}>Tomorrow, 2:00PM - 4:00PM</Text>
           </View>
         </View>
@@ -254,21 +334,21 @@ export function OrderAcceptedScreen() {
           style={styles.trackButton}
           onPress={() => {
             try {
-              (navigation as any).navigate("order-tracking", { orderId });
+              (navigation as any).navigate(buttonConfig.route, { orderId, flowType, status });
             } catch (e) {
               const parentNav =
                 (navigation as any).getParent && (navigation as any).getParent();
               if (parentNav && typeof parentNav.navigate === "function") {
                 parentNav.navigate("home", {
-                  screen: "order-tracking",
-                  params: { orderId },
+                  screen: buttonConfig.route,
+                  params: { orderId, flowType, status },
                 });
               }
             }
           }}
           activeOpacity={0.7}
         >
-          <Text style={styles.trackButtonText}>Track Order</Text>
+          <Text style={styles.trackButtonText}>{buttonConfig.text}</Text>
         </TouchableOpacity>
 
         <View style={styles.bottomSpacer} />

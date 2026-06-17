@@ -277,7 +277,7 @@ const ProfileScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#FFFFFF" },
-  scroll: { paddingHorizontal: 16, paddingTop: 10 },
+  scroll: { paddingHorizontal: 16, paddingTop: 20 },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",

@@ -6,6 +6,7 @@ interface RequestCardProps {
   address: string
   customer: string
   distance: string
+  status?: 'pickup' | 'delivery' | 'rerouting'
   onPress?: () => void
 }
 
@@ -15,14 +16,38 @@ export function RequestCard({
   address,
   customer,
   distance,
+  status = 'pickup',
   onPress,
 }: RequestCardProps) {
+  // Dynamic styling and text based on status
+  const badgeStyles = {
+    pickup: {
+      bg: '#DEF7EC',
+      text: '#15803D',
+      label: 'Pickup',
+    },
+    delivery: {
+      bg: '#EFF6FF',
+      text: '#1D4ED8',
+      label: 'Delivery',
+    },
+    rerouting: {
+      bg: '#FEF3C7',
+      text: '#D97706',
+      label: 'Rerouting',
+    },
+  }[status] || {
+    bg: '#DEF7EC',
+    text: '#15803D',
+    label: 'Pickup',
+  };
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <View style={styles.topRow}>
         <Text style={styles.orderNumber}>{orderNumber}</Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </View>
       <Text style={styles.time}>{time}</Text>

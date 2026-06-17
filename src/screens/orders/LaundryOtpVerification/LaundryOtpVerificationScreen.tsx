@@ -34,10 +34,19 @@ const OTP_GAP = 12;
 export function LaundryOtpVerificationScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const orderId = (route.params as any)?.orderId ?? "#DRV-8821";
-  const customerName =
-    (route.params as any)?.customerName ?? "Rahul Sharma";
-  const status = "Order Dropped";
+  const {
+    orderId = "#DRV-8821",
+    franchiseName = "Franchise Hub A",
+    flowType = "reroute_to_service",
+    status = "rerouting",
+    statusLabel = "Order Dropped"
+  } = (route.params || {}) as {
+    orderId: string;
+    franchiseName?: string;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'reroute_to_service' | 'service_return';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+    statusLabel?: string;
+  };
 
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [keypadVisible, setKeypadVisible] = useState(false);
@@ -51,6 +60,18 @@ export function LaundryOtpVerificationScreen() {
   const isComplete =
     otp.every((d) => d !== "") && otp.length === OTP_LENGTH;
 
+  const navigateToNextScreen = () => {
+    if (flowType === 'franchise_delivery') {
+      (navigation as any).navigate("order-accepted", { orderId, flowType: 'franchise_delivery_transit', status });
+    } else if (flowType === 'reroute_to_service') {
+      (navigation as any).navigate("order-collected-success", { orderId, flowType, status });
+    } else if (flowType === 'service_return') {
+      (navigation as any).navigate("order-collected-success", { orderId, flowType: 'service_return_transit', status });
+    } else {
+      (navigation as any).navigate("order-at-laundry", { orderId, flowType, status });
+    }
+  };
+
   const handleKeyPress = (digit: string) => {
     setOtp((prev) => {
       const next = [...prev];
@@ -62,6 +83,9 @@ export function LaundryOtpVerificationScreen() {
       const isNowComplete = next.every((d) => d !== "");
       if (isNowComplete) {
         setKeypadVisible(false);
+        setTimeout(() => {
+          navigateToNextScreen();
+        }, 300);
       }
       
       return next;
@@ -84,8 +108,26 @@ export function LaundryOtpVerificationScreen() {
 
   const handleVerify = () => {
     if (!isComplete) return;
-    (navigation as any).navigate("order-at-laundry", { orderId });
+    navigateToNextScreen();
   };
+
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
+
+  // Dynamic label for verification button
+  const buttonLabel = {
+    customer_pickup: "Verify & Complete Delivery",
+    franchise_delivery: "Verify & Confirm Pickup",
+    franchise_delivery_transit: "Verify & Complete Delivery",
+    reroute_to_service: "Verify & Confirm Pickup",
+    reroute_to_service_drop: "Verify & Confirm Dropoff",
+    service_return: "Verify & Confirm Pickup",
+    service_return_drop: "Verify & Confirm Dropoff",
+  }[flowType] || "Verify & Complete Delivery";
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
@@ -97,8 +139,8 @@ export function LaundryOtpVerificationScreen() {
           <HeaderBackButton />
         </View>
         <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </Animated.View>
 
@@ -186,14 +228,14 @@ export function LaundryOtpVerificationScreen() {
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {customerName}
+                {franchiseName}
               </Text>
             </View>
 
             <View style={styles.statusContainer}>
               <Text style={styles.statusLabelText}>Status</Text>
               <View style={styles.statusBadge}>
-                <Text style={styles.statusText}>{status}</Text>
+                <Text style={styles.statusText}>{statusLabel}</Text>
               </View>
             </View>
           </Animated.View>
@@ -225,7 +267,7 @@ export function LaundryOtpVerificationScreen() {
                 disabled={!isComplete}
               >
                 <Text style={styles.verifyText}>
-                  Verify & Complete Delivery
+                  {buttonLabel}
                 </Text>
               </TouchableOpacity>
             </Animated.View>

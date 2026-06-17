@@ -14,30 +14,55 @@ import { EarningsCard } from "./components/EarningsCard";
 import { RequestCard } from "./components/RequestCard";
 import { SectionHeader } from "./components/SectionHeader";
 
-const MOCK_REQUESTS = [
+interface MockRequestItem {
+  orderNumber: string;
+  time: string;
+  address: string;
+  customer: string;
+  distance: string;
+  flowType: 'customer_pickup' | 'franchise_delivery' | 'reroute_to_service' | 'service_return';
+  status: 'pickup' | 'delivery' | 'rerouting';
+}
+
+const MOCK_REQUESTS: MockRequestItem[] = [
   {
     orderNumber: "#123454797",
     time: "2:00-4:00 PM",
     address: "221b baker street , Bangalore",
-    customer: "Krishna Laundry",
+    customer: "Krishna (Customer)",
     distance: "1.2 Km away",
+    flowType: "customer_pickup",
+    status: "pickup",
   },
-];
-
-const MOCK_SCHEDULE = [
   {
     orderNumber: "#123454798",
-    time: "4:00-6:00 PM",
+    time: "3:00-5:00 PM",
     address: "15, Koramangala, Bangalore",
     customer: "Priya Patel",
     distance: "2.5 Km away",
+    flowType: "franchise_delivery",
+    status: "delivery",
   },
+];
+
+const MOCK_SCHEDULE: MockRequestItem[] = [
   {
     orderNumber: "#123454799",
     time: "6:00-8:00 PM",
     address: "42, Indiranagar, Bangalore",
-    customer: "Rahul Sharma",
+    customer: "Service Franchise (Premium Hub)",
     distance: "3.0 Km away",
+    flowType: "reroute_to_service",
+    status: "rerouting",
+  },
+  {
+    orderNumber: "#123454800",
+    time: "7:30-9:30 PM",
+    address: "80, Outer Ring Road, Bangalore",
+    customer: "Franchise Hub A",
+    distance: "4.5 Km away",
+    flowType: "service_return",
+    status: "rerouting",
   },
 ];
 
@@ -82,9 +107,12 @@ export function DashboardScreen() {
             address={req.address}
             customer={req.customer}
             distance={req.distance}
+            status={req.status}
             onPress={() =>
               navigation.navigate("order-accepted", {
                 orderId: req.orderNumber,
+                flowType: req.flowType,
+                status: req.status,
               })
             }
           />
@@ -100,9 +128,12 @@ export function DashboardScreen() {
             address={item.address}
             customer={item.customer}
             distance={item.distance}
+            status={item.status}
             onPress={() =>
               navigation.navigate("order-accepted", {
                 orderId: item.orderNumber,
+                flowType: item.flowType,
+                status: item.status,
               })
             }
           />
@@ -124,7 +155,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingTop: 4,
+    paddingTop: 16,
   },
   header: {
     flexDirection: "row",

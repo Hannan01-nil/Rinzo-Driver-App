@@ -23,7 +23,12 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export function OrderTrackingScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { orderId, fromCollected } = route.params as { orderId: string; fromCollected?: boolean };
+  const { orderId, fromCollected, flowType = 'customer_pickup', status = 'pickup' } = (route.params || {}) as {
+    orderId: string;
+    fromCollected?: boolean;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'reroute_to_service' | 'service_return';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+  };
 
   useEffect(() => {
     const { redirectToCollect } = (route.params || {}) as {
@@ -35,6 +40,8 @@ export function OrderTrackingScreen() {
           (navigation as any).navigate("collect-clothes", {
             orderId,
             fromScreen: "order-tracking",
+            flowType,
+            status,
           });
         } catch (e) {
           const parentNav =
@@ -42,7 +49,7 @@ export function OrderTrackingScreen() {
           if (parentNav && typeof parentNav.navigate === "function") {
             parentNav.navigate("orders", {
               screen: "collect-clothes",
-              params: { orderId, fromScreen: "order-tracking" },
+              params: { orderId, fromScreen: "order-tracking", flowType, status },
             });
           }
         }
@@ -52,6 +59,51 @@ export function OrderTrackingScreen() {
     }
   }, [route.params]);
 
+  // Dynamic timeline content and button text based on flowType
+  const trackingConfig = {
+    customer_pickup: {
+      loc1Label: "Customer Location (Pickup)",
+      loc1Value: "221b baker street, Bangalore",
+      loc2Label: "Franchise Dropoff",
+      loc2Value: "Franchise Hub - Drop clothes for washing",
+      buttonText: "Reached Pickup Point",
+    },
+    franchise_delivery: {
+      loc1Label: "Franchise Hub (Pickup)",
+      loc1Value: "Franchise Hub - Pick washed clothes",
+      loc2Label: "Customer Location (Dropoff)",
+      loc2Value: "15, Koramangala, Bangalore",
+      buttonText: "Reached Customer Location",
+    },
+    franchise_delivery_transit: {
+      loc1Label: "Laundry Hub (Completed)",
+      loc1Value: "Washed clothes picked up",
+      loc2Label: "Customer Location (Delivery)",
+      loc2Value: "15, Koramangala, Bangalore",
+      buttonText: "Reached Customer Location",
+    },
+    reroute_to_service: {
+      loc1Label: "Franchise Hub (Pickup)",
+      loc1Value: "Franchise Hub - Pick clothes to reroute",
+      loc2Label: "Premium Service Hub (Dropoff)",
+      loc2Value: "Premium Service Hub - Koramangala",
+      buttonText: "Reached Franchise Hub",
+    },
+    service_return: {
+      loc1Label: "Premium Service Hub (Pickup)",
+      loc1Value: "Premium Service Hub - Pick washed clothes",
+      loc2Label: "Franchise Hub (Dropoff)",
+      loc2Value: "Franchise Hub - Drop for final inspection",
+      buttonText: "Reached Franchise Location",
+    },
+  }[flowType] || {
+    loc1Label: "Pickup",
+    loc1Value: "221b baker street, bangalore - 500001",
+    loc2Label: "Dropoff",
+    loc2Value: "03:00PM (Max 20 min)",
+    buttonText: "Reached Pickup Point",
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
@@ -60,7 +112,7 @@ export function OrderTrackingScreen() {
             onPress={() => {
               if (fromCollected) {
                 try {
-                  (navigation as any).navigate("order-collected-success", { orderId });
+                  (navigation as any).navigate("order-collected-success", { orderId, flowType, status });
                 } catch (e) {
                   const parentNav =
                     (navigation as any).getParent &&
@@ -68,7 +120,7 @@ export function OrderTrackingScreen() {
                   if (parentNav && typeof parentNav.navigate === "function") {
                     parentNav.navigate("orders", {
                       screen: "order-collected-success",
-                      params: { orderId },
+                      params: { orderId, flowType, status },
                     });
                   }
                 }
@@ -124,6 +176,8 @@ export function OrderTrackingScreen() {
                   (navigation as any).navigate("order-in-transit", {
                     orderId,
                     fromHomeTrack: true,
+                    flowType,
+                    status,
                   });
                 } catch (e) {
                   const parentNav =
@@ -132,7 +186,7 @@ export function OrderTrackingScreen() {
                   if (parentNav && typeof parentNav.navigate === "function") {
                     parentNav.navigate("orders", {
                       screen: "order-in-transit",
-                      params: { orderId, fromHomeTrack: true },
+                      params: { orderId, fromHomeTrack: true, flowType, status },
                     });
                   }
                 }
@@ -152,9 +206,9 @@ export function OrderTrackingScreen() {
                 <Ionicons name="location-outline" size={16} color="#8259D2" />
               </View>
               <View style={styles.trackingContent}>
-                <Text style={styles.trackingLabel}>Pickup</Text>
+                <Text style={styles.trackingLabel}>{trackingConfig.loc1Label}</Text>
                 <Text style={styles.trackingValue}>
-                  221b baker street, bangalore - 500001
+                  {trackingConfig.loc1Value}
                 </Text>
               </View>
             </View>
@@ -164,8 +218,8 @@ export function OrderTrackingScreen() {
                 <Ionicons name="flag-outline" size={16} color="#8259D2" />
               </View>
               <View style={styles.trackingContent}>
-                <Text style={styles.trackingLabel}>Dropoff</Text>
-                <Text style={styles.trackingValue}>03:00PM (Max 20 min)</Text>
+                <Text style={styles.trackingLabel}>{trackingConfig.loc2Label}</Text>
+                <Text style={styles.trackingValue}>{trackingConfig.loc2Value}</Text>
               </View>
             </View>
           </View>
@@ -181,19 +235,21 @@ export function OrderTrackingScreen() {
               (navigation as any).navigate("collect-clothes", {
                 orderId,
                 fromScreen: "order-tracking",
+                flowType,
+                status,
               });
             } catch (e) {
               const parentNav = (navigation as any).getParent?.();
               if (parentNav && typeof parentNav.navigate === "function") {
                 parentNav.navigate("orders", {
                   screen: "collect-clothes",
-                  params: { orderId, fromScreen: "order-tracking" },
+                  params: { orderId, fromScreen: "order-tracking", flowType, status },
                 });
               }
             }
           }}
         >
-          <Text style={styles.reachedButtonText}>Reached Pickup Point</Text>
+          <Text style={styles.reachedButtonText}>{trackingConfig.buttonText}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

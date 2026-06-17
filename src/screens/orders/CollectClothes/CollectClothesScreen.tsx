@@ -31,10 +31,43 @@ const FALLBACK_ITEMS = [
 export function CollectClothesScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const route = useRoute()
-  const { orderId } = (route.params || {}) as { orderId: string }
+  const { orderId, flowType = 'customer_pickup', status = 'pickup' } = (route.params || {}) as {
+    orderId: string;
+    flowType?: 'customer_pickup' | 'franchise_delivery' | 'franchise_delivery_transit' | 'reroute_to_service' | 'service_return';
+    status?: 'pickup' | 'delivery' | 'rerouting';
+  }
 
   const { orders } = useOrders()
-  const order = orders.find(o => o.id === orderId || o.orderNumber === orderId)
+  const foundOrder = orders.find(o => o.id === orderId || o.orderNumber === orderId)
+  const order = foundOrder || {
+    id: orderId || 'ord_006',
+    orderNumber: orderId || '#123454798',
+    status: 'at_laundry',
+    customerName: 'Priya Patel',
+    customerPhone: '+919812345678',
+    pickupAddress: {
+      street: '15, Koramangala',
+      city: 'Bangalore',
+      state: 'Karnataka',
+      zipCode: '560034',
+      coordinates: { latitude: 12.9352, longitude: 77.6245 },
+    },
+    deliveryAddress: {
+      street: '15, Koramangala',
+      city: 'Bangalore',
+      state: 'Karnataka',
+      zipCode: '560034',
+      coordinates: { latitude: 12.9352, longitude: 77.6245 },
+    },
+    pickupTime: '2024-12-15T11:00:00Z',
+    itemsCount: 3,
+    totalWeight: 2.5,
+    totalAmount: 450,
+    serviceType: 'express',
+    timeline: [],
+    createdAt: '2024-12-15T10:00:00Z',
+    updatedAt: '2024-12-15T12:00:00Z',
+  };
   
   const [items, setItems] = useState([
     { id: '1', name: 'Wash and Fold', price: '₹200/kg', verified: false, isKg: true },
@@ -92,6 +125,76 @@ export function CollectClothesScreen() {
     }
   }
 
+  // Dynamic styling for status badge
+  const badgeStyles = {
+    pickup: { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' },
+    delivery: { bg: '#EFF6FF', text: '#1D4ED8', label: 'Delivery' },
+    rerouting: { bg: '#FEF3C7', text: '#D97706', label: 'Rerouting' },
+  }[status] || { bg: '#DEF7EC', text: '#15803D', label: 'Pickup' };
+
+  // Dynamic text content based on flowType
+  const flowConfig = {
+    customer_pickup: {
+      headerTitle: "Collect Clothes",
+      partyLabel: "Customer",
+      partyName: order?.customerName ?? "Customer",
+      verifyTitle: "Verify Items",
+      verifySubtitle: "Please verify the items with customer",
+      buttonText: "Confirm Collection",
+      otpRoute: "customer-otp",
+      otpParams: { customerName: order?.customerName ?? "Customer", statusLabel: "At Doorstep" },
+    },
+    franchise_delivery: {
+      headerTitle: "Collect from Laundry",
+      partyLabel: "Laundry Partner",
+      partyName: "Rinzo Laundry Hub",
+      verifyTitle: "Verify Wash Items",
+      verifySubtitle: "Please verify items with the laundry partner",
+      buttonText: "Confirm Pickup",
+      otpRoute: "laundry-otp",
+      otpParams: { franchiseName: "Rinzo Laundry Hub", statusLabel: "Collection Verification" },
+    },
+    franchise_delivery_transit: {
+      headerTitle: "Deliver Clothes",
+      partyLabel: "Customer",
+      partyName: order?.customerName ?? "Customer",
+      verifyTitle: "Verify Items",
+      verifySubtitle: "Please verify the items with customer",
+      buttonText: "Confirm Delivery",
+      otpRoute: "customer-otp",
+      otpParams: { customerName: order?.customerName ?? "Customer", statusLabel: "Delivery Verification" },
+    },
+    reroute_to_service: {
+      headerTitle: "Collect from Franchise",
+      partyLabel: "Franchise Hub",
+      partyName: "Franchise Hub A",
+      verifyTitle: "Verify Reroute Items",
+      verifySubtitle: "Please verify items to reroute with Franchise Hub",
+      buttonText: "Confirm Collection",
+      otpRoute: "laundry-otp",
+      otpParams: { franchiseName: "Franchise Hub A", statusLabel: "Reroute Verification" },
+    },
+    service_return: {
+      headerTitle: "Collect from Service Hub",
+      partyLabel: "Service Franchise",
+      partyName: "Service Franchise (Premium Hub)",
+      verifyTitle: "Verify Return Items",
+      verifySubtitle: "Please verify items to return with Service Franchise",
+      buttonText: "Confirm Collection",
+      otpRoute: "laundry-otp",
+      otpParams: { franchiseName: "Service Franchise (Premium Hub)", statusLabel: "Return Collection Verification" },
+    },
+  }[flowType] || {
+    headerTitle: "Collect Clothes",
+    partyLabel: "Customer",
+    partyName: order?.customerName ?? "Customer",
+    verifyTitle: "Verify Items",
+    verifySubtitle: "Please verify the items with customer",
+    buttonText: "Confirm Collection",
+    otpRoute: "customer-otp",
+    otpParams: { customerName: order?.customerName ?? "Customer", statusLabel: "At Doorstep" },
+  };
+
   if (!order) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -102,13 +205,13 @@ export function CollectClothesScreen() {
                 const fromScreen = (route.params as any)?.fromScreen;
                 if (fromScreen === 'order-tracking') {
                   try {
-                    navigation.navigate('order-tracking' as any, { orderId } as any);
+                    navigation.navigate('order-tracking' as any, { orderId, flowType, status } as any);
                   } catch (e) {
                     const parentNav = navigation.getParent && navigation.getParent();
                     if (parentNav && typeof parentNav.navigate === 'function') {
                       parentNav.navigate('home', {
                         screen: 'order-tracking',
-                        params: { orderId },
+                        params: { orderId, flowType, status },
                       });
                     }
                   }
@@ -118,7 +221,7 @@ export function CollectClothesScreen() {
               }}
             />
           </View>
-          <Text style={styles.headerTitle} pointerEvents="none">Collect Clothes</Text>
+          <Text style={styles.headerTitle} pointerEvents="none">{flowConfig.headerTitle}</Text>
           <View style={styles.headerSide} />
         </View>
         <Text style={styles.notFound}>Order not found</Text>
@@ -135,13 +238,13 @@ export function CollectClothesScreen() {
               const fromScreen = (route.params as any)?.fromScreen;
               if (fromScreen === 'order-tracking') {
                 try {
-                  navigation.navigate('order-tracking' as any, { orderId } as any);
+                  navigation.navigate('order-tracking' as any, { orderId, flowType, status } as any);
                 } catch (e) {
                   const parentNav = navigation.getParent && navigation.getParent();
                   if (parentNav && typeof parentNav.navigate === 'function') {
                     parentNav.navigate('home', {
                       screen: 'order-tracking',
-                      params: { orderId },
+                      params: { orderId, flowType, status },
                     });
                   }
                 }
@@ -156,8 +259,8 @@ export function CollectClothesScreen() {
           {order.orderNumber}
         </Text>
 
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Pickup</Text>
+        <View style={[styles.badge, { backgroundColor: badgeStyles.bg }]}>
+          <Text style={[styles.badgeText, { color: badgeStyles.text }]}>{badgeStyles.label}</Text>
         </View>
       </View>
 
@@ -167,8 +270,8 @@ export function CollectClothesScreen() {
       >
         <View style={styles.customerCard}>
           <View style={styles.customerLeft}>
-            <Text style={styles.customerLabel}>Customer</Text>
-            <Text style={styles.customerName}>{order.customerName}</Text>
+            <Text style={styles.customerLabel}>{flowConfig.partyLabel}</Text>
+            <Text style={styles.customerName}>{flowConfig.partyName}</Text>
           </View>
 
           <TouchableOpacity
@@ -181,9 +284,9 @@ export function CollectClothesScreen() {
         </View>
 
         <View style={styles.verifySection}>
-          <Text style={styles.verifyTitle}>Verify Items</Text>
+          <Text style={styles.verifyTitle}>{flowConfig.verifyTitle}</Text>
           <Text style={styles.verifySubtitle}>
-            Please verify the items with customer
+            {flowConfig.verifySubtitle}
           </Text>
         </View>
 
@@ -346,14 +449,15 @@ export function CollectClothesScreen() {
               })
             }}
             onPress={() =>
-              navigation.navigate('customer-otp', {
+              navigation.navigate(flowConfig.otpRoute, {
                 orderId,
-                customerName: order?.customerName ?? "Rahul Sharma",
-                status: "At Doorstep",
+                flowType,
+                status,
+                ...flowConfig.otpParams,
               })
             }
           >
-            <Text style={styles.confirmButtonText}>Confirm collection</Text>
+            <Text style={styles.confirmButtonText}>{flowConfig.buttonText}</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>
