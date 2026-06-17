@@ -45,5 +45,15 @@ export function useProfile() {
     }
   }, [])
 
-  return { profile, vehicle, isLoading, fetchProfile, updateProfile, updateVehicle, updateAvatar }
+  const updateVehicleImage = useCallback(async (uri: string | undefined) => {
+    try {
+      mockVehicleInfo.image = uri;
+      setVehicle((prev) => ({ ...prev, image: uri }));
+      return true;
+    } catch {
+      return false;
+    }
+  }, [])
+
+  return { profile, vehicle, isLoading, fetchProfile, updateProfile, updateVehicle, updateAvatar, updateVehicleImage }
 }

@@ -3,6 +3,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { ProfileStackParamList } from "@/types/navigation";
 import { useState, useRef } from "react";
+import { uiStore } from "@/store/ui-store";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -34,6 +35,7 @@ export function ReportIssueScreen() {
   const handleSubmit = () => {
     const ticketId = `#REP-${Math.floor(10000 + Math.random() * 90000)}-ZV`;
     try {
+      uiStore.getState().showToast("Issue report submitted successfully!", "success");
       navigation.navigate("support/report-submitted", { ticketId });
     } catch (error: any) {
       console.error("Navigation error:", error);

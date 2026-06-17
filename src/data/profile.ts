@@ -43,6 +43,7 @@ export const mockVehicleInfo: TVehicleInfo = {
   color: "Red",
   licensePlate: "KA-01-AB-1234",
   isVerified: true,
+  image: undefined,
 };
 
 export const mockVehicleDetails = {

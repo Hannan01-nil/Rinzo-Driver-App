@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 import { useEarnings } from "@/hooks";
+import { uiStore } from "@/store/ui-store";
 
 type PaymentMethod = "bank" | "upi";
 
@@ -37,6 +38,7 @@ export function WithdrawScreen() {
     setIsLoading(false);
 
     if (success) {
+      uiStore.getState().showToast("Withdrawal request initiated successfully!", "success");
       navigation.goBack();
     }
   };

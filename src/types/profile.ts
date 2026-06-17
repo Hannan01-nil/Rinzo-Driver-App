@@ -33,6 +33,7 @@ export interface TVehicleInfo {
   color: string
   licensePlate: string
   isVerified: boolean
+  image?: string
 }
 
 export interface TPerformance {

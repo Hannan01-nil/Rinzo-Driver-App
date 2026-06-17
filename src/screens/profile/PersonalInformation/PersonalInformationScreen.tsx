@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import { uiStore } from "@/store/ui-store";
 import {
   Image,
   Modal,
@@ -431,6 +432,7 @@ export function PersonalInformationScreen() {
     mockProfile.phone = phone;
     mockProfile.email = email;
 
+    uiStore.getState().showToast("Personal information updated successfully!", "success");
     navigation.goBack();
   };
 
@@ -778,8 +780,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    height: 48,
+    height: 56,
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F1F1",
+    backgroundColor: "#FFFFFF",
   },
   backBtn: {
     width: 32,
@@ -791,7 +796,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 16,
+    fontSize: 18,
     color: "#1F2A5A",
   },
   headerRight: {
