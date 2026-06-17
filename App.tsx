@@ -286,6 +286,8 @@ function RootNavigator() {
   );
 }
 
+import { Toast } from "@/components/ui/toast";
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -309,6 +311,7 @@ export default function App() {
         <NavigationContainer linking={linking as any}>
           <RootNavigator />
         </NavigationContainer>
+        <Toast />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

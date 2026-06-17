@@ -4,6 +4,7 @@ import { DOCUMENT_TYPE_LABELS } from "@/constants";
 import type { DocumentType } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { uiStore } from "@/store/ui-store";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
@@ -119,7 +120,10 @@ export function UploadDocumentScreen() {
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.submitTouchable}
-              onPress={() => navigation.goBack()}
+              onPress={() => {
+                uiStore.getState().showToast("Document submitted successfully!", "success");
+                navigation.goBack();
+              }}
             >
               <Text style={styles.submitText}>Submit for Verification</Text>
             </TouchableOpacity>

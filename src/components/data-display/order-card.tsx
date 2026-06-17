@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { colors, typography, spacing, borderRadius } from '@/theme'
-import { formatCurrency } from '@/utils'
 import type { TOrder } from '@/types'
 
 interface OrderCardProps {
@@ -38,9 +37,8 @@ export function OrderCard({ order, onPress }: OrderCardProps) {
           <Text style={styles.address}>{order.pickupAddress.street}</Text>
         </View>
 
-        {/* Right Info Column (Price & Chevron) */}
+        {/* Right Info Column (Chevron only) */}
         <View style={styles.rightCol}>
-          <Text style={styles.amount}>{formatCurrency(200)}</Text>
           <Ionicons name="chevron-forward" size={22} color="#1F1A3C" style={styles.chevron} />
         </View>
       </View>

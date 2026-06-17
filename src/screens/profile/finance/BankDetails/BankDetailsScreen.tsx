@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Clipboard from "expo-clipboard";
 import { useNavigation } from "@react-navigation/native";
+import { uiStore } from "@/store/ui-store";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
@@ -151,7 +152,10 @@ export function BankDetailsScreen() {
         <TouchableOpacity
           activeOpacity={0.9}
           style={styles.updateWrap}
-          onPress={() => navigation.navigate("index")}
+          onPress={() => {
+            uiStore.getState().showToast("Bank details updated successfully!", "success");
+            navigation.navigate("index");
+          }}
         >
           <LinearGradient
             colors={["#8259D2", "#8259D2"]}
