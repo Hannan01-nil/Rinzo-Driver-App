@@ -1,29 +1,28 @@
+import orderTickImage from "@/assets/images/DriverAppImages/order_tick.png";
 import { CustomKeypad } from "@/components/common/CustomKeypad";
+import { HeaderBackButton } from "@/components/layout/header-back-button";
 import { OTP_LENGTH } from "@/constants/config";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useState } from "react";
 import {
   Dimensions,
+  Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
-  ScrollView,
 } from "react-native";
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
+  Easing,
   FadeInUp,
   SlideInUp,
-  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { HeaderBackButton } from "@/components/layout/header-back-button";
-import orderTickImage from "@/assets/images/DriverAppImages/order_tick.png";
-import Svg, { Path } from "react-native-svg";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -31,13 +30,12 @@ const OTP_WIDTH = 56;
 const OTP_HEIGHT = 68;
 const OTP_GAP = 12;
 
-export function LaundryOtpVerificationScreen() {
+export function CustomerOtpVerificationScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const orderId = (route.params as any)?.orderId ?? "#DRV-8821";
-  const customerName =
-    (route.params as any)?.customerName ?? "Rahul Sharma";
-  const status = "Order Dropped";
+  const customerName = (route.params as any)?.customerName ?? "Rahul Sharma";
+  const status = "At Doorstep";
 
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [keypadVisible, setKeypadVisible] = useState(false);
@@ -48,8 +46,7 @@ export function LaundryOtpVerificationScreen() {
     transform: [{ scale: verifyScale.value }],
   }));
 
-  const isComplete =
-    otp.every((d) => d !== "") && otp.length === OTP_LENGTH;
+  const isComplete = otp.every((d) => d !== "") && otp.length === OTP_LENGTH;
 
   const handleKeyPress = (digit: string) => {
     setOtp((prev) => {
@@ -58,12 +55,15 @@ export function LaundryOtpVerificationScreen() {
       if (emptyIndex !== -1) {
         next[emptyIndex] = digit;
       }
-      
+
       const isNowComplete = next.every((d) => d !== "");
       if (isNowComplete) {
         setKeypadVisible(false);
+        setTimeout(() => {
+          (navigation as any).navigate("order-collected-success", { orderId });
+        }, 300);
       }
-      
+
       return next;
     });
   };
@@ -84,7 +84,7 @@ export function LaundryOtpVerificationScreen() {
 
   const handleVerify = () => {
     if (!isComplete) return;
-    (navigation as any).navigate("order-at-laundry", { orderId });
+    (navigation as any).navigate("order-collected-success", { orderId });
   };
 
   return (
@@ -96,7 +96,9 @@ export function LaundryOtpVerificationScreen() {
         <View style={styles.headerSide}>
           <HeaderBackButton />
         </View>
-        <Text style={styles.headerTitle} pointerEvents="none">{orderId}</Text>
+        <Text style={styles.headerTitle} pointerEvents="none">
+          {orderId}
+        </Text>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>Pickup</Text>
         </View>
@@ -127,7 +129,8 @@ export function LaundryOtpVerificationScreen() {
             entering={FadeInUp.delay(400).duration(400).springify()}
             style={styles.description}
           >
-            Please ask the laundry person for the 4-digit verification code.
+            Please ask the customer for the 4-digit verification code sent to
+            their phone.
           </Animated.Text>
 
           <Animated.View
@@ -139,18 +142,12 @@ export function LaundryOtpVerificationScreen() {
               return (
                 <TouchableOpacity
                   key={`otp-${index}`}
-                  style={[
-                    styles.otpBox,
-                    filled && styles.otpBoxFilled,
-                  ]}
+                  style={[styles.otpBox, filled && styles.otpBoxFilled]}
                   onPress={() => setKeypadVisible(true)}
                   activeOpacity={0.7}
                 >
                   <Text
-                    style={[
-                      styles.otpDigit,
-                      filled && styles.otpDigitFilled,
-                    ]}
+                    style={[styles.otpDigit, filled && styles.otpDigitFilled]}
                   >
                     {filled ? otp[index] : ""}
                   </Text>
@@ -225,7 +222,7 @@ export function LaundryOtpVerificationScreen() {
                 disabled={!isComplete}
               >
                 <Text style={styles.verifyText}>
-                  Verify & Complete Delivery
+                  Verify & Confirm Collection
                 </Text>
               </TouchableOpacity>
             </Animated.View>

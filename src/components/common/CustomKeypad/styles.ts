@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { verticalScale, moderateScale } from '../../../utils/responsive'
 
 export const styles = StyleSheet.create({
   container: {
@@ -6,7 +7,7 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     padding: 16,
-    paddingBottom: 20,
+    paddingBottom: 24,
   },
   row: {
     flexDirection: 'row',
@@ -16,15 +17,15 @@ export const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    height: 60,
-    borderRadius: 8,
+    height: verticalScale(52),
+    borderRadius: 12,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonText: {
     fontFamily: 'Poppins_500Medium',
-    fontSize: 20,
+    fontSize: moderateScale(18),
     color: '#1F1F1F',
   },
   deleteButton: {

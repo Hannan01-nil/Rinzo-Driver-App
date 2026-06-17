@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
@@ -23,6 +24,10 @@ export function LaundryTrackingScreen() {
 
   const handleTransitNavigate = () => {
     (navigation as any).navigate("order-in-transit", { orderId });
+  };
+
+  const handleCall = () => {
+    Linking.openURL("tel:+919999999999");
   };
 
   return (
@@ -58,7 +63,7 @@ export function LaundryTrackingScreen() {
             <TouchableOpacity
               style={styles.callButton}
               activeOpacity={0.7}
-              onPress={handleTransitNavigate}
+              onPress={handleCall}
             >
               <Ionicons name="call-outline" size={20} color="#8259D2" />
             </TouchableOpacity>

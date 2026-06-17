@@ -1,7 +1,7 @@
 export const colors = {
-  primary: "#208AEF",
-  primaryDark: "#1A6FBF",
-  primaryLight: "#6BB3F5",
+  primary: "#8259D2",
+  primaryDark: "#6A44B8",
+  primaryLight: "#A384DF",
 
   secondary: "#FF6B35",
   secondaryDark: "#D4551A",
@@ -29,7 +29,7 @@ export const colors = {
   divider: "#F0F0F0",
 
   tabInactive: "#ADB5BD",
-  tabActive: "#208AEF",
+  tabActive: "#8259D2",
 
   overlay: "rgba(0, 0, 0, 0.5)",
   shadow: "rgba(0, 0, 0, 0.08)",
@@ -42,7 +42,7 @@ export const colors = {
   cardBorder: "#E9ECEF",
   inputBackground: "#F8F9FA",
   inputBorder: "#DEE2E6",
-  inputFocusBorder: "#208AEF",
+  inputFocusBorder: "#8259D2",
   placeholder: "#ADB5BD",
 } as const;
 

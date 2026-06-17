@@ -346,8 +346,10 @@ export function CollectClothesScreen() {
               })
             }}
             onPress={() =>
-              navigation.navigate('order-collected-success', {
+              navigation.navigate('customer-otp', {
                 orderId,
+                customerName: order?.customerName ?? "Rahul Sharma",
+                status: "At Doorstep",
               })
             }
           >
