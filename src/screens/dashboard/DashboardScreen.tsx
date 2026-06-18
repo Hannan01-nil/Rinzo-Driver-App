@@ -97,7 +97,7 @@ export function DashboardScreen() {
 
         <EarningsCard />
 
-        <SectionHeader title="New Requests" />
+        <SectionHeader title="Today's Schedule" />
 
         {MOCK_REQUESTS.map((req) => (
           <RequestCard
@@ -117,8 +117,6 @@ export function DashboardScreen() {
             }
           />
         ))}
-
-        <SectionHeader title="Today's Schedule" />
 
         {MOCK_SCHEDULE.map((item) => (
           <RequestCard

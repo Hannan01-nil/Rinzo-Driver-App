@@ -3,8 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 export function EarningsCard() {
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Today's Earnings</Text>
-      <Text style={styles.amount}>Rs 620</Text>
+      <Text style={styles.title}>Today's Summary</Text>
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
           <Text style={styles.statNumber}>5</Text>
@@ -43,17 +42,12 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 16,
-    color: "rgba(255,255,255,0.9)",
-  },
-  amount: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 20,
     color: "#FFFFFF",
+    marginBottom: 12,
   },
   statsRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
   },
   statItem: {
     flex: 1,

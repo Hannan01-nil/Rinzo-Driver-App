@@ -85,9 +85,9 @@ const styles = StyleSheet.create({
   },
   badge: {
     backgroundColor: '#DEF7EC',
+    width: 85,
     height: 24,
     borderRadius: 8,
-    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_600SemiBold',
     fontSize: 11,
     color: '#15803D',
+    textAlign: 'center',
   },
   time: {
     fontFamily: 'Poppins_400Regular',
