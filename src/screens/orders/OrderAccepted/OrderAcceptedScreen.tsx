@@ -238,95 +238,91 @@ export function OrderAcceptedScreen() {
         </View>
       </View>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View
-          style={[styles.animationSection, { minHeight: SCREEN_HEIGHT * 0.35 }]}
-        >
-          <View style={styles.animationContainer}>
-            <Animated.View
-              style={[
-                styles.outerRing,
-                {
-                  opacity: ringsOpacity,
-                  transform: [{ scale: outerScale }],
-                },
-              ]}
-            />
-            <Animated.View
-              style={[
-                styles.innerRing,
-                {
-                  opacity: ringsOpacity,
-                  transform: [{ scale: innerScale }],
-                },
-              ]}
-            />
-
-            {CONFETTI_CONFIG.map((config, i) => (
+      <View style={styles.content}>
+        <View style={styles.mainGroup}>
+          <View style={styles.animationSection}>
+            <View style={styles.animationContainer}>
               <Animated.View
-                key={i}
                 style={[
-                  styles.confettiPiece,
+                  styles.outerRing,
                   {
-                    backgroundColor: config.color,
-                    opacity: Animated.multiply(
-                      confettiOpacity,
-                      confettiValues[i].opacity,
-                    ),
-                    transform: [
-                      { translateX: confettiValues[i].x },
-                      { translateY: confettiValues[i].y },
-                    ],
+                    opacity: ringsOpacity,
+                    transform: [{ scale: outerScale }],
                   },
                 ]}
               />
-            ))}
+              <Animated.View
+                style={[
+                  styles.innerRing,
+                  {
+                    opacity: ringsOpacity,
+                    transform: [{ scale: innerScale }],
+                  },
+                ]}
+              />
 
-            <Animated.View
-              style={[
-                styles.successCircle,
-                { transform: [{ scale: circleScale }] },
-              ]}
-            >
-              <Svg
-                width={110}
-                height={110}
-                viewBox="0 0 120 120"
-                style={{ alignSelf: "center" }}
-              >
-                <AnimatedPath
-                  d="M 35 55 L 50 70 L 85 35"
-                  stroke="#FFFFFF"
-                  strokeWidth={10}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="none"
-                  strokeDasharray={80}
-                  strokeDashoffset={checkmarkOffset as any}
+              {CONFETTI_CONFIG.map((config, i) => (
+                <Animated.View
+                  key={i}
+                  style={[
+                    styles.confettiPiece,
+                    {
+                      backgroundColor: config.color,
+                      opacity: Animated.multiply(
+                        confettiOpacity,
+                        confettiValues[i].opacity,
+                      ),
+                      transform: [
+                        { translateX: confettiValues[i].x },
+                        { translateY: confettiValues[i].y },
+                      ],
+                    },
+                  ]}
                 />
-              </Svg>
-            </Animated.View>
+              ))}
+
+              <Animated.View
+                style={[
+                  styles.successCircle,
+                  { transform: [{ scale: circleScale }] },
+                ]}
+              >
+                <Svg
+                  width={110}
+                  height={110}
+                  viewBox="0 0 120 120"
+                  style={{ alignSelf: "center" }}
+                >
+                  <AnimatedPath
+                    d="M 35 55 L 50 70 L 85 35"
+                    stroke="#FFFFFF"
+                    strokeWidth={10}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                    strokeDasharray={80}
+                    strokeDashoffset={checkmarkOffset as any}
+                  />
+                </Svg>
+              </Animated.View>
+            </View>
+
+            <Text style={styles.successTitle}>{flowContent.title}</Text>
+            <Text style={styles.successSubtitle}>
+              {flowContent.subtitle}
+            </Text>
           </View>
 
-          <Text style={styles.successTitle}>{flowContent.title}</Text>
-          <Text style={styles.successSubtitle}>
-            {flowContent.subtitle}
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <View style={styles.cardRow}>
-            <Text style={styles.cardLabel}>Order ID</Text>
-            <Text style={styles.cardValue}>{orderId}</Text>
-          </View>
-          <View style={styles.cardDivider} />
-          <View style={styles.pickupRow}>
-            <Text style={styles.cardLabel}>{flowContent.timeLabel}</Text>
-            <Text style={styles.pickupValue}>Tomorrow, 2:00PM - 4:00PM</Text>
+          <View style={styles.card}>
+            <View style={styles.cardRow}>
+              <Text style={styles.cardLabel}>Order ID</Text>
+              <Text style={styles.cardValue}>{orderId}</Text>
+            </View>
+            <View style={styles.cardDivider} />
+            <View style={styles.pickupRow}>
+              <Text style={styles.cardLabel}>{flowContent.timeLabel}</Text>
+              <Text style={styles.pickupValue}>Tomorrow, 2:00PM - 4:00PM</Text>
+            </View>
           </View>
         </View>
 
@@ -350,9 +346,7 @@ export function OrderAcceptedScreen() {
         >
           <Text style={styles.trackButtonText}>{buttonConfig.text}</Text>
         </TouchableOpacity>
-
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -400,53 +394,57 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#5D9C74",
   },
-  scroll: {
+  content: {
     flex: 1,
-  },
-  scrollContent: {
     paddingHorizontal: 20,
+    paddingBottom: 110,
+    justifyContent: "space-between",
+  },
+  mainGroup: {
+    flex: 1,
+    justifyContent: "flex-start",
   },
   animationSection: {
     justifyContent: "center",
     alignItems: "center",
   },
   animationContainer: {
-    width: 260,
-    height: 260,
+    width: 220,
+    height: 220,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 4,
-    marginTop: 48,
+    marginTop: 20,
   },
   outerRing: {
     position: "absolute",
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    borderWidth: 15,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 12,
     borderColor: "#F2F2F6",
     backgroundColor: "#FFFFFF",
   },
   innerRing: {
     position: "absolute",
-    width: 170,
-    height: 170,
-    borderRadius: 85,
-    borderWidth: 10,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 8,
     borderColor: "#FFFFFF",
     backgroundColor: "#F7F5FF",
   },
   successCircle: {
-    width: 130,
-    height: 130,
-    borderRadius: 65,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     backgroundColor: "#8259D2",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#8259D2",
     shadowOpacity: 0.2,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
     elevation: 6,
   },
   confettiPiece: {
@@ -460,7 +458,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "#1F1F1F",
     textAlign: "center",
-    marginTop: 24,
+    marginTop: 12,
   },
   successSubtitle: {
     fontFamily: "Poppins_400Regular",
@@ -468,7 +466,7 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
     textAlign: "center",
     maxWidth: "85%",
-    marginTop: 8,
+    marginTop: 4,
     lineHeight: 22,
   },
   card: {
@@ -477,7 +475,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EAEAEA",
     padding: 16,
-    marginTop: 40,
+    marginTop: 20,
     shadowColor: "#000",
     shadowOpacity: 0.03,
     shadowRadius: 10,
@@ -524,7 +522,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 40,
     shadowColor: "#8259D2",
     shadowOpacity: 0.2,
     shadowRadius: 10,
@@ -535,8 +532,5 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_600SemiBold",
     color: "#FFFFFF",
     fontSize: 16,
-  },
-  bottomSpacer: {
-    height: 110,
   },
 });
