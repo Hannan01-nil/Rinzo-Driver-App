@@ -225,42 +225,44 @@ export function DeliveredSuccessScreen() {
 
       {/* Main Content */}
       <View style={styles.content}>
-        {/* Success Icon Animation wrapper */}
-        <View style={styles.animationWrapper}>
-          {/* Fading expanding rings */}
-          <Animated.View style={[styles.ring, styles.ringOuter, ring1Style]} />
-          <Animated.View style={[styles.ring, styles.ringInner, ring2Style]} />
+        <View style={styles.mainGroup}>
+          {/* Success Icon Animation wrapper */}
+          <View style={styles.animationWrapper}>
+            {/* Fading expanding rings */}
+            <Animated.View style={[styles.ring, styles.ringOuter, ring1Style]} />
+            <Animated.View style={[styles.ring, styles.ringInner, ring2Style]} />
 
-          {/* Core success circle */}
-          <Animated.View style={[styles.successCircle, circleStyle]}>
-            <Svg width={96} height={96} viewBox="0 0 120 120">
-              <AnimatedPath
-                animatedProps={checkmarkProps}
-                d="M 32 58 L 50 76 L 88 38"
-                stroke="#FFFFFF"
-                strokeWidth={11}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                strokeDasharray={80}
-              />
-            </Svg>
+            {/* Core success circle */}
+            <Animated.View style={[styles.successCircle, circleStyle]}>
+              <Svg width={96} height={96} viewBox="0 0 120 120">
+                <AnimatedPath
+                  animatedProps={checkmarkProps}
+                  d="M 32 58 L 50 76 L 88 38"
+                  stroke="#FFFFFF"
+                  strokeWidth={11}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                  strokeDasharray={80}
+                />
+              </Svg>
+            </Animated.View>
+          </View>
+
+          {/* Text descriptions */}
+          <Animated.Text style={[styles.title, titleStyle]}>
+            {flowContent.title}
+          </Animated.Text>
+          <Animated.Text style={[styles.subtitle, subtitleStyle]}>
+            {flowContent.subtitle}
+          </Animated.Text>
+
+          {/* Delivery Card */}
+          <Animated.View style={[styles.deliveryCard, cardStyle]}>
+            <Text style={styles.cardLabel}>Delivered at</Text>
+            <Text style={styles.cardTime}>{deliveryTime}</Text>
           </Animated.View>
         </View>
-
-        {/* Text descriptions */}
-        <Animated.Text style={[styles.title, titleStyle]}>
-          {flowContent.title}
-        </Animated.Text>
-        <Animated.Text style={[styles.subtitle, subtitleStyle]}>
-          {flowContent.subtitle}
-        </Animated.Text>
-
-        {/* Delivery Card */}
-        <Animated.View style={[styles.deliveryCard, cardStyle]}>
-          <Text style={styles.cardLabel}>Delivered at</Text>
-          <Text style={styles.cardTime}>{deliveryTime}</Text>
-        </Animated.View>
 
         {/* Action Button */}
         <Animated.View style={[styles.buttonWrap, buttonAnimatedStyle]}>
@@ -330,11 +332,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 28,
     paddingBottom: 110,
+    justifyContent: 'space-between',
+  },
+  mainGroup: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   animationWrapper: {
-    width: 260,
-    height: 260,
-    marginTop: 56,
+    width: 220,
+    height: 220,
+    marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -346,19 +354,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   ringOuter: {
-    width: 230,
-    height: 230,
-    borderRadius: 115,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
   },
   ringInner: {
-    width: 190,
-    height: 190,
-    borderRadius: 95,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
   },
   successCircle: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     backgroundColor: '#8259D2',
     justifyContent: 'center',
     alignItems: 'center',
@@ -373,7 +381,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: '#1F1F1F',
     textAlign: 'center',
-    marginTop: 36,
+    marginTop: 12,
   },
   subtitle: {
     fontFamily: 'Poppins_400Regular',
@@ -381,7 +389,7 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
     textAlign: 'center',
     lineHeight: 20,
-    marginTop: 8,
+    marginTop: 4,
   },
   deliveryCard: {
     width: '100%',
@@ -391,7 +399,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 20,
     paddingVertical: 18,
-    marginTop: 36,
+    marginTop: 20,
   },
   cardLabel: {
     fontFamily: 'Poppins_600SemiBold',
@@ -406,7 +414,6 @@ const styles = StyleSheet.create({
   },
   buttonWrap: {
     width: '100%',
-    marginTop: 56,
   },
   confirmButton: {
     height: 52,
