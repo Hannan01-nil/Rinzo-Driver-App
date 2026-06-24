@@ -177,7 +177,7 @@ export function BottomTabBar({
           style={[
             styles.activeCapsuleBg,
             {
-              left: 8 + ((containerWidth - 16) / tabs.length - 76) / 2,
+              left: 8 + ((containerWidth - 16) / tabs.length - 80) / 2,
               transform: [{ translateX }],
             },
           ]}
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   activeCapsuleBg: {
     position: "absolute",
     height: 48,
-    width: 76,
+    width: 80,
     borderRadius: 24,
     backgroundColor: "#FFFFFF",
     top: 8,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   activeText: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 9.5,
+    fontSize: 8.8,
     color: "#8259D2",
     position: "absolute",
     bottom: 2,
