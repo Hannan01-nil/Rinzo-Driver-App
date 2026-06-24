@@ -1,6 +1,6 @@
 import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Animated, Easing } from "react-native";
 import { TabConfig, BottomTabBarProps } from "./types";
 
 const DEFAULT_TABS: TabConfig[] = [
@@ -19,32 +19,121 @@ function TabItem({
   isActive: boolean;
   onPress: () => void;
 }) {
+  const activeProgress = React.useRef(new Animated.Value(isActive ? 1 : 0)).current;
+
+  React.useEffect(() => {
+    const anim = Animated.timing(activeProgress, {
+      toValue: isActive ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+      easing: Easing.out(Easing.ease),
+    });
+    
+    anim.start();
+
+    return () => {
+      anim.stop();
+    };
+  }, [isActive]);
+
+  const activeScale = activeProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.6, 1.0],
+  });
+
+  const inactiveScale = activeProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1.0, 0.6],
+  });
+
+  const activeOpacity = activeProgress;
+  const inactiveOpacity = activeProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+
+  const animatedTranslateY = activeProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -5],
+  });
+
+  const animatedTextOpacity = activeProgress.interpolate({
+    inputRange: [0, 0.6, 1],
+    outputRange: [0, 0, 1],
+  });
+
+  const animatedTextTranslateY = activeProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [6, 0],
+  });
+
   return (
     <TouchableOpacity
       style={[styles.tabItem, { flex: 1 }]}
       onPress={onPress}
       activeOpacity={0.8}
     >
-      {isActive ? (
-        <View style={styles.activeCapsule}>
-          <MaterialCommunityIcons
-            name={tab.icon as any}
-            size={18}
-            color="#8259D2"
-          />
-          <Text style={styles.activeText} numberOfLines={1} adjustsFontSizeToFit>
-            {tab.label}
-          </Text>
-        </View>
-      ) : (
-        <View style={styles.inactiveContainer}>
-          <MaterialCommunityIcons
-            name={tab.icon as any}
-            size={22}
-            color="#FFFFFF"
-          />
-        </View>
-      )}
+      <View style={styles.tabContentContainer}>
+        <Animated.View
+          style={{
+            transform: [{ translateY: animatedTranslateY }],
+            alignItems: "center",
+            justifyContent: "center",
+            width: 24,
+            height: 24,
+          }}
+        >
+          {/* Active Purple Icon (fades in, scales up, size 18) */}
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                opacity: activeOpacity,
+                transform: [{ scale: activeScale }],
+                justifyContent: "center",
+                alignItems: "center",
+              },
+            ]}
+          >
+            <MaterialCommunityIcons
+              name={tab.icon as any}
+              size={18}
+              color="#8259D2"
+            />
+          </Animated.View>
+
+          {/* Inactive White Icon (fades out, scales down, size 22) */}
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                opacity: inactiveOpacity,
+                transform: [{ scale: inactiveScale }],
+                justifyContent: "center",
+                alignItems: "center",
+              },
+            ]}
+          >
+            <MaterialCommunityIcons
+              name={tab.icon as any}
+              size={22}
+              color="#FFFFFF"
+            />
+          </Animated.View>
+        </Animated.View>
+        <Animated.Text
+          style={[
+            styles.activeText,
+            {
+              opacity: animatedTextOpacity,
+              transform: [{ translateY: animatedTextTranslateY }],
+            },
+          ]}
+          numberOfLines={1}
+        >
+          {tab.label}
+        </Animated.Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -54,8 +143,46 @@ export function BottomTabBar({
   onTabPress,
   tabs = DEFAULT_TABS,
 }: BottomTabBarProps) {
+  const [containerWidth, setContainerWidth] = React.useState(0);
+  const activeIndex = tabs.findIndex((tab) => tab.key === activeTab);
+  const translateX = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    let anim: Animated.CompositeAnimation | null = null;
+    if (containerWidth > 0 && activeIndex !== -1) {
+      const tabWidth = (containerWidth - 16) / tabs.length;
+      const targetValue = activeIndex * tabWidth;
+      anim = Animated.timing(translateX, {
+        toValue: targetValue,
+        useNativeDriver: true,
+        duration: 200,
+        easing: Easing.out(Easing.ease),
+      });
+      anim.start();
+    }
+    return () => {
+      if (anim) {
+        anim.stop();
+      }
+    };
+  }, [activeIndex, containerWidth, tabs.length]);
+
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+    >
+      {containerWidth > 0 && activeIndex !== -1 && (
+        <Animated.View
+          style={[
+            styles.activeCapsuleBg,
+            {
+              left: 8 + ((containerWidth - 16) / tabs.length - 76) / 2,
+              transform: [{ translateX }],
+            },
+          ]}
+        />
+      )}
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         return (
@@ -95,32 +222,31 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  activeCapsule: {
-    flexDirection: "column",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    width: 76,
+  tabContentContainer: {
     height: 48,
-    borderRadius: 24,
+    width: "100%",
     justifyContent: "center",
+    alignItems: "center",
+  },
+  activeCapsuleBg: {
+    position: "absolute",
+    height: 48,
+    width: 76,
+    borderRadius: 24,
+    backgroundColor: "#FFFFFF",
+    top: 8,
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
-    paddingHorizontal: 4,
   },
   activeText: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 9.5,
     color: "#8259D2",
-    marginTop: 1,
+    position: "absolute",
+    bottom: 2,
     textAlign: "center",
-  },
-  inactiveContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 48,
-    height: 48,
   },
 });
