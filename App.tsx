@@ -34,10 +34,10 @@ import { SignUpScreen } from "@/screens/auth/SignUp/SignUpScreen";
 import { DashboardScreen } from "@/screens/dashboard/DashboardScreen";
 import { DocumentViewScreen } from "@/screens/documents/DocumentView/DocumentViewScreen";
 import { UploadDocumentScreen } from "@/screens/documents/UploadDocument/UploadDocumentScreen";
-import { EarningsDashboardScreen } from "@/screens/earnings/EarningsDashboard/EarningsDashboardScreen";
+import { PerformanceDashboardScreen } from "@/screens/earnings/PerformanceDashboard/PerformanceDashboardScreen";
 import { EarningsHistoryScreen } from "@/screens/profile/EarningsHistory/EarningsHistoryScreen";
-import { Last7DaysScreen } from "@/screens/earnings/Last7Days/Last7DaysScreen";
-import { WithdrawScreen } from "@/screens/earnings/Withdraw/WithdrawScreen";
+import { AttendanceActivityScreen } from "@/screens/earnings/AttendanceActivity/AttendanceActivityScreen";
+import { SalaryDetailsScreen } from "@/screens/earnings/SalaryDetails/SalaryDetailsScreen";
 import { BankDetailsScreen } from "@/screens/profile/finance/BankDetails/BankDetailsScreen";
 import { OrderTrackingScreen } from "@/screens/home/Tracking/TrackingScreen";
 import { CollectClothesScreen } from "@/screens/orders/CollectClothes/CollectClothesScreen";
@@ -135,9 +135,9 @@ function OrdersStackScreen() {
 function EarningsStackScreen() {
   return (
     <EarningsStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
-      <EarningsStack.Screen name="index" component={EarningsDashboardScreen} />
-      <EarningsStack.Screen name="withdraw" component={WithdrawScreen} />
-      <EarningsStack.Screen name="last-7-days" component={Last7DaysScreen} />
+      <EarningsStack.Screen name="index" component={PerformanceDashboardScreen} />
+      <EarningsStack.Screen name="withdraw" component={SalaryDetailsScreen} />
+      <EarningsStack.Screen name="last-7-days" component={AttendanceActivityScreen} />
       <EarningsStack.Screen name="earnings-history" component={EarningsHistoryScreen} />
     </EarningsStack.Navigator>
   );
